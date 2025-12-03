@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -18,7 +18,11 @@ interface Job {
 }
 
 const Jobs: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>(searchQuery);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,14 +31,29 @@ const Jobs: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (searchQuery) {
+      setSearchTerm(searchQuery);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
     fetchJobs();
-  }, [currentPage]);
+  }, [currentPage, searchTerm]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const fetchJobs = async () => {
     setIsLoading(true);
     try {
       const offset = (currentPage - 1) * itemsPerPage;
-      const response = await fetch(`/api/jobs?status=open&limit=${itemsPerPage}&offset=${offset}`);
+      let url = `/api/jobs?status=open&limit=${itemsPerPage}&offset=${offset}`;
+      if (searchTerm) {
+        url += `&search=${encodeURIComponent(searchTerm)}`;
+      }
+      
+      const response = await fetch(url);
       const data = await response.json();
       if (data.success) {
         setJobs(data.data);
@@ -81,13 +100,24 @@ const Jobs: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
             Phayao Jobs <span className="text-amber-500 text-lg font-normal">งานพะเยา</span>
           </h1>
           {isAuthenticated && (
             <div className="hidden"></div>
           )}
+        </div>
+
+        {/* Search Box */}
+        <div className="mb-6">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="ค้นหางาน..."
+            className="block w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue"
+          />
         </div>
 
         {isLoading ? (

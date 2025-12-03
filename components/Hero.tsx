@@ -30,8 +30,23 @@ const Hero: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would route to a global search page
-    alert(`กำลังค้นหา: ${searchTerm} (ฟีเจอร์นี้ยังไม่เปิดใช้งาน)`);
+    if (!searchTerm.trim()) return;
+    
+    // Detect search intent and navigate to appropriate page
+    const term = searchTerm.toLowerCase();
+    
+    if (term.includes('งาน') || term.includes('job') || term.includes('สมัคร')) {
+      navigate(`/jobs?search=${encodeURIComponent(searchTerm)}`);
+    } else if (term.includes('ซื้อ') || term.includes('ขาย') || term.includes('ของ')) {
+      navigate(`/market?search=${encodeURIComponent(searchTerm)}`);
+    } else if (term.includes('ที่เที่ยว') || term.includes('คาเฟ') || term.includes('ร้านอาหาร') || term.includes('ที่พัก')) {
+      navigate(`/guides?search=${encodeURIComponent(searchTerm)}`);
+    } else if (term.includes('คุย') || term.includes('แชร์') || term.includes('โพส')) {
+      navigate(`/community?search=${encodeURIComponent(searchTerm)}`);
+    } else {
+      // Default to market search
+      navigate(`/market?search=${encodeURIComponent(searchTerm)}`);
+    }
   };
 
   return (

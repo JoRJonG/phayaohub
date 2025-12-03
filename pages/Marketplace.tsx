@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 interface MarketItem {
   id: number;
@@ -23,23 +23,33 @@ interface Category {
 }
 
 const Marketplace: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   const [items, setItems] = useState<MarketItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>(searchQuery);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 20;
 
   useEffect(() => {
+    if (searchQuery) {
+      setSearchTerm(searchQuery);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
     fetchCategories();
     fetchItems();
-  }, [selectedCategory, currentPage]);
+  }, [selectedCategory, currentPage, searchTerm]);
 
-  // Reset to page 1 when category changes
+  // Reset to page 1 when category or search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory]);
+  }, [selectedCategory, searchTerm]);
 
   const fetchCategories = async () => {
     try {
@@ -60,6 +70,9 @@ const Marketplace: React.FC = () => {
       let url = `/api/market-items?status=available&limit=${itemsPerPage}&offset=${offset}`;
       if (selectedCategory) {
         url += `&category_id=${selectedCategory}`;
+      }
+      if (searchTerm) {
+        url += `&search=${encodeURIComponent(searchTerm)}`;
       }
 
       const response = await fetch(url);
@@ -82,8 +95,8 @@ const Marketplace: React.FC = () => {
           Phayao Market <span className="text-phayao-gold text-lg font-normal">ตลาดซื้อขาย</span>
         </h1>
 
-        {/* Filters */}
-        <div className="bg-white p-4 rounded-lg shadow-sm mb-8 flex flex-wrap gap-4 items-center">
+        {/* Filter Bar */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">หมวดหมู่</label>
             <select
@@ -96,6 +109,18 @@ const Marketplace: React.FC = () => {
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
+          </div>
+          
+          {/* Search Box */}
+          <div className="flex-1 max-w-md">
+            <label className="block text-sm font-medium text-gray-700 mb-1">ค้นหา</label>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="ค้นหาสินค้า..."
+              className="block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue"
+            />
           </div>
         </div>
 
