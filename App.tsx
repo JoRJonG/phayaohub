@@ -136,11 +136,21 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="market-items" element={<AdminMarketItems />} />
+              <Route path="jobs" element={<AdminJobs />} />
+              <Route path="posts" element={<AdminPosts />} />
+              <Route path="guides" element={<AdminGuides />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+
             {/* User Routes */}
             <Route path="/user" element={<UserLayout />}>
               <Route index element={<UserDashboard />} />
               <Route path="market-items" element={<MyMarketItems />} />
-
               <Route path="jobs" element={<MyJobs />} />
               <Route path="posts" element={<MyPosts />} />
               <Route path="profile" element={<Profile />} />
