@@ -47,7 +47,7 @@ app.use(helmet({
       connectSrc: ["'self'", "https:"],
       mediaSrc: ["'self'"],
       objectSrc: ["'none'"],
-      frameSrc: ["'none'"],
+      frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
       upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
