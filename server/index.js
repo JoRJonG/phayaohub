@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import compression from 'compression';
 
@@ -13,6 +14,8 @@ import authRoutes from './routes/auth.js';
 import dataRoutes from './routes/data.js';
 import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
+import jobProfileRoutes from './routes/jobProfiles.js';
+import * as jobProfileService from './services/jobProfileService.js';
 import { db } from './db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import { generalLimiter, botBlocker, sensitiveFileBlocker } from './middleware/securityMiddleware.js';
@@ -36,6 +39,8 @@ const __dirname = path.dirname(__filename);
 app.set('trust proxy', 1);
 
 // Security Middleware
+import cookieParser from 'cookie-parser';
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -66,6 +71,7 @@ app.use(helmet({
 }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(compression()); // Enable Gzip compression
+app.use(cookieParser()); // Parse Cookie header and populate req.cookies
 app.use(botBlocker); // Block bad bots
 app.use(sensitiveFileBlocker); // Block sensitive files
 app.use(generalLimiter); // Apply rate limiting to all requests
@@ -84,10 +90,10 @@ app.use(cors({
     if (process.env.NODE_ENV === 'development') {
       return callback(null, true);
     }
-    
+
     // In production: Allow requests with no origin (mobile apps, curl)
     if (!origin) return callback(null, true);
-    
+
     // Check whitelist
     if (allowedOrigins.indexOf(origin) === -1) {
       logger.warn(`CORS blocked origin: ${origin}`);
@@ -114,25 +120,36 @@ app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/job-profiles', jobProfileRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api', dataRoutes);
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../dist')));
+const distPath = path.join(__dirname, '../dist');
+const indexHtml = path.join(distPath, 'index.html');
 
-// The "catch-all" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get(/(.*)/, (req, res, next) => {
-  if (req.path.startsWith('/api')) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
+if (fs.existsSync(indexHtml)) {
+  app.use(express.static(distPath));
+
+  // The "catch-all" handler: for any request that doesn't
+  // match one above, send back React's index.html file.
+  app.get(/(.*)/, (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(indexHtml);
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('API Server is running. Frontend build not found. Use port 3000 for development.');
+  });
+}
 
 // Error Handling
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info(`🚀 Server is running on http://localhost:${PORT}`);
+  await jobProfileService.createTableIfNotExists();
 });

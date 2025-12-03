@@ -192,12 +192,10 @@ const MarketItemDetail: React.FC = () => {
                                         <span>{item.location}</span>
                                     </div>
                                 )}
-                                {item.seller_full_name && (
-                                    <div className="flex items-center gap-3 text-slate-600">
-                                        <User size={20} className="text-phayao-blue" />
-                                        <span>{item.seller_full_name}</span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-3 text-slate-600">
+                                    <User size={20} className="text-phayao-blue" />
+                                    <span>{item.seller_full_name || 'ผู้ใช้งาน'}</span>
+                                </div>
                                 <div className="flex items-center gap-3 text-slate-600">
                                     <Calendar size={20} className="text-phayao-blue" />
                                     <span>โพสต์เมื่อ {new Date(item.created_at).toLocaleDateString('th-TH')}</span>

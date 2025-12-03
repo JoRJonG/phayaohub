@@ -2,7 +2,7 @@ import express from 'express';
 import { db } from '../db.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/authMiddleware.js';
 import logger from '../utils/logger.js';
-
+import { checkAndIncrementView } from '../services/viewService.js';
 
 
 const router = express.Router();
@@ -23,7 +23,6 @@ router.get('/categories', async (req, res, next) => {
         query += ' ORDER BY name';
 
         const [categories] = await db.query(query, params);
-        console.log(`[DEBUG] Fetched ${categories.length} categories`);
         res.json({ success: true, data: categories });
     } catch (error) {
         logger.error('Get categories error', error);
@@ -38,8 +37,8 @@ router.get('/market-items', async (req, res, next) => {
 
         let query = `
       SELECT 
-        mi.*,
-        u.username as seller_name,
+        mi.id, mi.category_id, mi.title, mi.description, mi.price, 
+        mi.condition_type, mi.location, mi.status, mi.created_at, mi.view_count,
         u.full_name as seller_full_name,
         c.name as category_name,
         c.slug as category_slug,
@@ -72,7 +71,6 @@ router.get('/market-items', async (req, res, next) => {
         params.push(parseInt(limit), parseInt(offset));
 
         const [items] = await db.query(query, params);
-        console.log(`[DEBUG] Fetched ${items.length} market items (Status: ${status || 'default available'})`);
 
         // Get total count for pagination
         let countQuery = `
@@ -127,7 +125,10 @@ router.get('/market-items/:id/images', async (req, res, next) => {
 router.get('/market-items/:id', async (req, res, next) => {
     try {
         const [items] = await db.query(
-            `SELECT mi.*, u.username as seller_name, u.full_name as seller_full_name,
+            `SELECT mi.id, mi.category_id, mi.title, mi.description, mi.price, 
+                    mi.condition_type, mi.location, mi.contact_phone, mi.contact_line, 
+                    mi.status, mi.created_at, mi.view_count,
+                    u.full_name as seller_full_name,
                     c.name as category_name, c.slug as category_slug,
                     (SELECT image_url FROM market_images WHERE item_id = mi.id AND is_primary = TRUE LIMIT 1) as primary_image
              FROM market_items mi
@@ -141,8 +142,10 @@ router.get('/market-items/:id', async (req, res, next) => {
             return res.status(404).json({ success: false, error: 'ไม่พบสินค้า' });
         }
 
-        // Increment view count
-        await db.query('UPDATE market_items SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        // Increment view count with cookie check
+        await checkAndIncrementView(req, res, 'market', req.params.id, async () => {
+            await db.query('UPDATE market_items SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        });
 
         res.json({ success: true, data: items[0] });
     } catch (error) {
@@ -177,8 +180,8 @@ router.get('/jobs', async (req, res, next) => {
 
         let query = `
       SELECT 
-        j.*,
-        u.username as poster_name,
+        j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
+        j.salary_min, j.salary_max, j.salary_type, j.location, j.created_at, j.view_count,
         u.full_name as poster_full_name,
         c.name as category_name,
         c.slug as category_slug
@@ -260,7 +263,11 @@ router.get('/jobs', async (req, res, next) => {
 router.get('/jobs/:id', async (req, res, next) => {
     try {
         const [jobs] = await db.query(
-            `SELECT j.*, c.name as category_name, c.slug as category_slug
+            `SELECT j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
+                    j.salary_min, j.salary_max, j.salary_type, j.location, 
+                    j.contact_email, j.contact_phone, j.contact_line,
+                    j.requirements, j.benefits, j.status, j.created_at, j.view_count,
+                    c.name as category_name, c.slug as category_slug
              FROM jobs j
              LEFT JOIN categories c ON j.category_id = c.id
              WHERE j.id = ?`,
@@ -271,8 +278,10 @@ router.get('/jobs/:id', async (req, res, next) => {
             return res.status(404).json({ success: false, error: 'ไม่พบงาน' });
         }
 
-        // Increment view count
-        await db.query('UPDATE jobs SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        // Increment view count with cookie check
+        await checkAndIncrementView(req, res, 'job', req.params.id, async () => {
+            await db.query('UPDATE jobs SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        });
 
         res.json({ success: true, data: jobs[0] });
     } catch (error) {
@@ -316,8 +325,7 @@ router.get('/community-posts', optionalAuthMiddleware, async (req, res, next) =>
 
         let query = `
       SELECT 
-        cp.*,
-        u.username,
+        cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
         u.full_name,
         u.avatar_url,
         (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
@@ -419,7 +427,8 @@ router.post('/community-posts', authMiddleware, async (req, res, next) => {
 router.get('/community-posts/:id', async (req, res, next) => {
     try {
         const [posts] = await db.query(
-            `SELECT cp.*, u.username, u.full_name, u.avatar_url
+            `SELECT cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
+                    u.full_name, u.avatar_url
              FROM community_posts cp
              LEFT JOIN users u ON cp.user_id = u.id
              WHERE cp.id = ?`,
@@ -430,8 +439,10 @@ router.get('/community-posts/:id', async (req, res, next) => {
             return res.status(404).json({ success: false, error: 'ไม่พบโพสต์' });
         }
 
-        // Increment view count
-        await db.query('UPDATE community_posts SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        // Increment view count with cookie check
+        await checkAndIncrementView(req, res, 'post', req.params.id, async () => {
+            await db.query('UPDATE community_posts SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        });
 
         res.json({ success: true, data: posts[0] });
     } catch (error) {
@@ -444,7 +455,7 @@ router.get('/community-posts/:id', async (req, res, next) => {
 router.get('/community-posts/:id/comments', async (req, res, next) => {
     try {
         const [comments] = await db.query(
-            `SELECT c.*, u.username, u.full_name, u.avatar_url
+            `SELECT c.id, c.content, c.created_at, u.full_name, u.avatar_url
              FROM comments c
              LEFT JOIN users u ON c.user_id = u.id
              WHERE c.post_id = ?
@@ -550,8 +561,10 @@ router.get('/guides/:id', async (req, res, next) => {
         const [images] = await db.query('SELECT id, image_url FROM guide_images WHERE guide_id = ? ORDER BY display_order ASC', [guide.id]);
         guide.images = images;
 
-        // Increment view count
-        await db.query('UPDATE guides SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        // Increment view count with cookie check
+        await checkAndIncrementView(req, res, 'guide', req.params.id, async () => {
+            await db.query('UPDATE guides SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
+        });
 
         res.json({ success: true, data: guide });
     } catch (error) {

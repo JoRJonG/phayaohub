@@ -95,20 +95,20 @@ const Community: React.FC = () => {
                       {post.avatar_url ? (
                         <img
                           src={post.avatar_url}
-                          alt={post.full_name || post.username}
+                          alt={post.full_name}
                           className="w-full h-full object-cover"
                           loading="lazy"
                           decoding="async"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
-                          {(post.full_name || post.username).charAt(0).toUpperCase()}
+                          {(post.full_name || 'U').charAt(0).toUpperCase()}
                         </div>
                       )}
                     </div>
                     <div className="flex flex-col">
                       <span className="text-xs font-semibold text-gray-700">
-                        {post.full_name || post.username}
+                        {post.full_name || 'ผู้ใช้งาน'}
                       </span>
                       <span className="text-[10px] text-gray-400">{formatDate(post.created_at)}</span>
                     </div>

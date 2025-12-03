@@ -26,14 +26,14 @@ const storage = multer.memoryStorage();
 
 // กรองเฉพาะไฟล์รูปภาพ
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const allowedTypes = /jpeg|jpg|png|gif|webp|pdf/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const mimetype = allowedTypes.test(file.mimetype) || file.mimetype === 'application/pdf';
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('อนุญาตเฉพาะไฟล์รูปภาพเท่านั้น!'));
+    cb(new Error('อนุญาตเฉพาะไฟล์รูปภาพและ PDF เท่านั้น!'));
   }
 };
 
@@ -55,6 +55,14 @@ const processAndSaveImage = async (buffer, originalName, folder = 'others') => {
   }
 
   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+  // ถ้าเป็น PDF ให้บันทึกไฟล์เลย ไม่ต้องใช้ sharp
+  if (originalName.toLowerCase().endsWith('.pdf')) {
+    const filename = uniqueSuffix + '.pdf';
+    const filepath = path.join(targetDir, filename);
+    fs.writeFileSync(filepath, buffer);
+    return `${targetFolder}/${filename}`;
+  }
+
   const filename = uniqueSuffix + '.webp';
   const filepath = path.join(targetDir, filename);
 

@@ -229,13 +229,13 @@ const PostDetail: React.FC = () => {
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
                                         {post.avatar_url ? (
-                                            <img src={post.avatar_url} alt={post.username} className="w-full h-full object-cover" />
+                                            <img src={post.avatar_url} alt={post.full_name} className="w-full h-full object-cover" />
                                         ) : (
                                             <User className="text-slate-400" size={20} />
                                         )}
                                     </div>
                                     <div>
-                                        <div className="font-semibold text-slate-900">{post.full_name || post.username}</div>
+                                        <div className="font-semibold text-slate-900">{post.full_name || 'ผู้ใช้งาน'}</div>
                                         <div className="text-xs text-slate-500 flex items-center gap-1">
                                             <Clock size={12} />
                                             {formatDate(post.created_at)}
@@ -302,7 +302,7 @@ const PostDetail: React.FC = () => {
                                         <div key={comment.id} className="flex gap-4">
                                             <div className="w-10 h-10 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
                                                 {comment.avatar_url ? (
-                                                    <img src={comment.avatar_url} alt={comment.username} className="w-full h-full object-cover" />
+                                                    <img src={comment.avatar_url} alt={comment.full_name} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <User className="text-slate-400" size={20} />
                                                 )}
@@ -310,7 +310,7 @@ const PostDetail: React.FC = () => {
                                             <div className="flex-1">
                                                 <div className="bg-slate-50 rounded-2xl rounded-tl-none p-4">
                                                     <div className="flex justify-between items-start mb-1">
-                                                        <span className="font-semibold text-slate-900">{comment.full_name || comment.username}</span>
+                                                        <span className="font-semibold text-slate-900">{comment.full_name || 'ผู้ใช้งาน'}</span>
                                                         <span className="text-xs text-slate-400">{formatDate(comment.created_at)}</span>
                                                     </div>
                                                     <p className="text-slate-700 whitespace-pre-line">{comment.content}</p>
@@ -330,7 +330,7 @@ const PostDetail: React.FC = () => {
                                 <form onSubmit={handleSubmitComment} className="flex gap-4 items-start">
                                     <div className="w-10 h-10 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
                                         {user?.avatar_url ? (
-                                            <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                                            <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                                         ) : (
                                             <User className="text-slate-400" size={20} />
                                         )}

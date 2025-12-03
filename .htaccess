@@ -1,0 +1,25 @@
+# ----------------------------------------------------------------------
+# | Security                                                           |
+# ----------------------------------------------------------------------
+
+# Disable directory browsing
+Options -Indexes
+
+# Block access to dotfiles (hidden files) except .well-known
+<FilesMatch "^\.(?!well-known)">
+    Require all denied
+</FilesMatch>
+
+# Block access to sensitive files
+<FilesMatch "^(package\.json|package-lock\.json|yarn\.lock|composer\.json|composer\.lock|README\.md)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to backup and log files
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+    Require all denied
+</FilesMatch>
+
+# Prevent access to the server directory
+RewriteEngine On
+RewriteRule ^server/ - [F,L]

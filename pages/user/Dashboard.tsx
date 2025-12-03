@@ -6,7 +6,8 @@ import {
     MessageSquare,
     Plus,
     ArrowRight,
-    Settings
+    Settings,
+    FileText
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserActivities } from '../../services/api';
@@ -95,6 +96,14 @@ const UserDashboard: React.FC = () => {
             bg: 'bg-orange-50',
             link: '/user/posts',
             action: 'ตั้งกระทู้'
+        },
+        {
+            title: 'ฝากประวัติงาน',
+            value: 0,
+            icon: <FileText className="text-blue-600" size={24} />,
+            bg: 'bg-blue-50',
+            link: '/user/deposit-resume',
+            action: 'แก้ไขประวัติ'
         },
         {
             title: 'ตั้งค่าบัญชี',

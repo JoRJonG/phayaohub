@@ -10,6 +10,8 @@ const Marketplace = React.lazy(() => import('./pages/Marketplace'));
 const MarketItemDetail = React.lazy(() => import('./pages/MarketItemDetail'));
 const Jobs = React.lazy(() => import('./pages/Jobs'));
 const JobDetail = React.lazy(() => import('./pages/JobDetail'));
+const JobProfileForm = React.lazy(() => import('./pages/JobProfileForm'));
+const JobSeekerList = React.lazy(() => import('./pages/JobSeekerList'));
 const Guide = React.lazy(() => import('./pages/Guide'));
 const GuideDetail = React.lazy(() => import('./pages/GuideDetail'));
 const Community = React.lazy(() => import('./pages/Community'));
@@ -55,6 +57,8 @@ const LoadingFallback = () => (
   </div>
 );
 
+import CookieConsent from './components/CookieConsent';
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -95,6 +99,14 @@ const App: React.FC = () => {
               <div className="flex flex-col min-h-screen">
                 <Navbar />
                 <main className="flex-grow"><JobDetail /></main>
+                <Footer />
+              </div>
+            } />
+
+            <Route path="/jobs/seekers" element={
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow"><JobSeekerList /></main>
                 <Footer />
               </div>
             } />
@@ -153,10 +165,12 @@ const App: React.FC = () => {
               <Route path="market-items" element={<MyMarketItems />} />
               <Route path="jobs" element={<MyJobs />} />
               <Route path="posts" element={<MyPosts />} />
+              <Route path="deposit-resume" element={<JobProfileForm />} />
               <Route path="profile" element={<Profile />} />
             </Route>
           </Routes>
         </Suspense>
+        <CookieConsent />
       </AuthProvider>
     </Router>
   );

@@ -7,7 +7,8 @@ import {
     MessageSquare,
     LogOut,
     X,
-    Home
+    Home,
+    FileText
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -26,6 +27,7 @@ const UserSidebar: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => v
         { path: '/user', icon: <LayoutDashboard size={20} />, label: 'ภาพรวม' },
         { path: '/user/market-items', icon: <ShoppingBag size={20} />, label: 'สินค้าของฉัน' },
         { path: '/user/jobs', icon: <Briefcase size={20} />, label: 'งานที่ลงประกาศ' },
+        { path: '/user/deposit-resume', icon: <FileText size={20} />, label: 'ฝากประวัติงาน' },
         { path: '/user/posts', icon: <MessageSquare size={20} />, label: 'โพสต์ของฉัน' },
     ];
 
@@ -64,13 +66,13 @@ const UserSidebar: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => v
                         <div className="flex items-center gap-3">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${!user?.avatar_url ? 'bg-phayao-blue/10 text-phayao-blue font-bold' : ''}`}>
                                 {user?.avatar_url ? (
-                                    <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                                    <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                                 ) : (
-                                    user?.username?.charAt(0).toUpperCase()
+                                    (user?.full_name || 'U').charAt(0).toUpperCase()
                                 )}
                             </div>
                             <div className="overflow-hidden">
-                                <p className="font-medium text-slate-800 truncate">{user?.full_name || user?.username}</p>
+                                <p className="font-medium text-slate-800 truncate">{user?.full_name || 'ผู้ใช้งาน'}</p>
                                 <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                             </div>
                         </div>

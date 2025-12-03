@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
     { name: 'หน้าแรก', path: '/' },
     { name: 'ตลาดซื้อขาย', path: '/market' },
     { name: 'งานพะเยา', path: '/jobs' },
+    { name: 'คนหางาน', path: '/jobs/seekers' },
     { name: 'กิน-เที่ยว-พัก', path: '/guide' },
     { name: 'Phayao Talk', path: '/community' },
   ];
@@ -60,12 +61,12 @@ const Navbar: React.FC = () => {
                   >
                     <div className="w-8 h-8 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden">
                       {user?.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+                        <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                       ) : (
-                        user?.username?.charAt(0).toUpperCase()
+                        (user?.full_name || 'U').charAt(0).toUpperCase()
                       )}
                     </div>
-                    <span>{user?.username}</span>
+                    <span>{user?.full_name || 'ผู้ใช้งาน'}</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -74,7 +75,7 @@ const Navbar: React.FC = () => {
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                       <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                        <div className="font-medium">{user?.full_name || user?.username}</div>
+                        <div className="font-medium">{user?.full_name || 'ผู้ใช้งาน'}</div>
                         <div className="text-xs text-gray-500">{user?.email}</div>
                       </div>
                       {user?.role === 'admin' && (
@@ -165,7 +166,7 @@ const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <div className="border-t border-blue-700 pt-4 mt-4">
                 <div className="px-3 py-2 text-sm text-gray-300">
-                  <div className="font-medium">{user?.full_name || user?.username}</div>
+                  <div className="font-medium">{user?.full_name || 'ผู้ใช้งาน'}</div>
                   <div className="text-xs">{user?.email}</div>
                 </div>
                 {user?.role === 'admin' && (

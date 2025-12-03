@@ -21,8 +21,14 @@ const parsedPort = (() => {
   return Number.isFinite(n) && n > 0 ? n : 3306;
 })();
 
+const getEnvHost = () => {
+  const val = getEnv('DB_HOST', 'MYSQL_HOST');
+  if (!val || val === 'localhost') return '127.0.0.1';
+  return val;
+};
+
 const dbConfig = {
-  host: getEnv('DB_HOST', 'MYSQL_HOST') || 'localhost',
+  host: getEnvHost(),
   user: getEnv('DB_USER', 'MYSQL_USER') || 'root',
   password: getEnv('DB_PASSWORD', 'MYSQL_PASSWORD') || '',
   database: getEnv('DB_NAME', 'MYSQL_DATABASE', 'MYSQL_DB') || 'phayaohub',

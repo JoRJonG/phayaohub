@@ -25,7 +25,7 @@ interface Category {
 const Marketplace: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-  
+
   const [items, setItems] = useState<MarketItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -110,7 +110,7 @@ const Marketplace: React.FC = () => {
               ))}
             </select>
           </div>
-          
+
           {/* Search Box */}
           <div className="flex-1 max-w-md">
             <label className="block text-sm font-medium text-gray-700 mb-1">ค้นหา</label>
@@ -168,7 +168,7 @@ const Marketplace: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-gray-900 truncate">{item.title}</h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      ผู้ขาย: {item.seller_full_name || item.seller_name}
+                      ผู้ขาย: {item.seller_full_name || 'ผู้ใช้งาน'}
                     </p>
                     <div className="flex justify-between items-end mt-3">
                       <span className="text-lg font-bold text-phayao-gold">
