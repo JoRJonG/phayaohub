@@ -9,8 +9,8 @@ const getAuthHeaders = () => {
 
 // Generic fetch wrapper
 const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
+    const url = `${API_BASE_URL}${endpoint}`;
     try {
-        const url = `${API_BASE_URL}${endpoint}`;
         const response = await fetch(url, {
             ...options,
             headers: {
