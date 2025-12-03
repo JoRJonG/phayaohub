@@ -49,8 +49,16 @@ const validateProfile = [
     body('experience').optional().trim().escape(),
     body('education').optional().trim().escape(),
     body('skills').optional().trim().escape(),
-    body('resume_url').optional().trim().isURL().withMessage('Invalid resume URL'), // Don't escape URLs, just validate
-    body('photo_url').optional().trim().isURL().withMessage('Invalid photo URL'), // Don't escape URLs, just validate
+    body('resume_url').optional().trim().custom(value => {
+        if (!value) return true;
+        if (value.startsWith('/') || value.startsWith('http')) return true;
+        throw new Error('Invalid resume URL or path');
+    }),
+    body('photo_url').optional().trim().custom(value => {
+        if (!value) return true;
+        if (value.startsWith('/') || value.startsWith('http')) return true;
+        throw new Error('Invalid photo URL or path');
+    }),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

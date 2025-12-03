@@ -28,14 +28,32 @@ const Register: React.FC = () => {
         e.preventDefault();
         setError('');
 
+        // ตรวจสอบชื่อผู้ใช้
+        if (formData.username.length < 3 || formData.username.length > 20) {
+            setError('ชื่อผู้ใช้ต้องมีความยาว 3-20 ตัวอักษร');
+            return;
+        }
+
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        if (!usernameRegex.test(formData.username)) {
+            setError('ชื่อผู้ใช้ต้องประกอบด้วยตัวอักษรภาษาอังกฤษ ตัวเลข หรือ _ เท่านั้น');
+            return;
+        }
+
         // ตรวจสอบรหัสผ่าน
         if (formData.password !== formData.confirmPassword) {
             setError('รหัสผ่านไม่ตรงกัน');
             return;
         }
 
-        if (formData.password.length < 6) {
-            setError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
+        if (formData.password.length < 8) {
+            setError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+        if (!passwordRegex.test(formData.password)) {
+            setError('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข');
             return;
         }
 
@@ -46,7 +64,7 @@ const Register: React.FC = () => {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
-                full_name: formData.full_name || undefined,
+                full_name: formData.full_name,
                 phone: formData.phone || undefined
             });
             navigate('/', { replace: true });
@@ -107,7 +125,7 @@ const Register: React.FC = () => {
 
                         <div>
                             <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
-                                ชื่อ-นามสกุล
+                                ชื่อ-นามสกุล *
                             </label>
                             <input
                                 id="full_name"
@@ -115,6 +133,7 @@ const Register: React.FC = () => {
                                 type="text"
                                 value={formData.full_name}
                                 onChange={handleChange}
+                                required
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                                 placeholder="กรอกชื่อ-นามสกุล"
                             />
@@ -147,7 +166,7 @@ const Register: React.FC = () => {
                                 onChange={handleChange}
                                 required
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="อย่างน้อย 6 ตัวอักษร"
+                                placeholder="อย่างน้อย 8 ตัวอักษร (ตัวใหญ่, เล็ก, ตัวเลข)"
                             />
                         </div>
 
