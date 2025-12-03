@@ -59,8 +59,25 @@ app.use(sensitiveFileBlocker); // Block sensitive files
 app.use(generalLimiter); // Apply rate limiting to all requests
 
 // Middleware
+const allowedOrigins = [
+  'https://phayaohub.com',
+  'https://www.phayaohub.com',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://127.0.0.1:3000'], // Restrict to frontend URL
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      // Optional: Allow all for now to debug, or keep strict
+      // return callback(null, true); 
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10kb' })); // Limit body size
@@ -74,40 +91,6 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 
 // Routes
 import settingsRoutes from './routes/settings.js';
-
-// Temporary DB Test Route
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const connection = await db.getConnection();
-    await connection.ping();
-    const [tables] = await connection.query('SHOW TABLES'); // List tables
-    connection.release();
-    res.json({
-      success: true,
-      message: 'Database connected successfully',
-      tables: tables,
-      config: {
-        host: process.env.DB_HOST || process.env.MYSQL_HOST,
-        user: process.env.DB_USER || process.env.MYSQL_USER,
-        database: process.env.DB_NAME || process.env.MYSQL_DATABASE,
-        port: process.env.DB_PORT || process.env.MYSQL_PORT
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      config: {
-        host: process.env.DB_HOST || process.env.MYSQL_HOST,
-        user: process.env.DB_USER || process.env.MYSQL_USER,
-        port: process.env.DB_PORT || process.env.MYSQL_PORT,
-        database: process.env.DB_NAME || process.env.MYSQL_DATABASE
-      },
-      code: error.code,
-      stack: error.stack
-    });
-  }
-});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
