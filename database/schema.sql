@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   phone VARCHAR(20),
   avatar_url VARCHAR(500),
   role ENUM('user', 'admin') DEFAULT 'user',
+  status ENUM('active', 'suspended') DEFAULT 'active',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_email (email),
@@ -214,6 +215,19 @@ INSERT INTO categories (name, slug, description, icon, type) VALUES
 -- เพิ่มข้อมูลตัวอย่าง User (Admin)
 INSERT INTO users (username, email, password_hash, full_name, role) VALUES
 ('admin', 'admin@phayaohub.com', '$2a$10$YourHashedPasswordHere', 'ผู้ดูแลระบบ', 'admin');
+
+-- ตาราง system_settings (เก็บค่า config เช่น hero background)
+CREATE TABLE IF NOT EXISTS system_settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  setting_key VARCHAR(50) NOT NULL UNIQUE,
+  setting_value TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ค่า default hero background
+INSERT IGNORE INTO system_settings (setting_key, setting_value)
+VALUES ('hero_bg_image', 'https://picsum.photos/1920/1080?blur=2');
 
 -- เพิ่มข้อมูลตัวอย่าง Guides
 INSERT INTO guides (title, slug, description, content, category, is_featured, status) VALUES
