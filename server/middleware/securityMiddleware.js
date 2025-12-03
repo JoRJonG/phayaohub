@@ -14,6 +14,65 @@ export const generalLimiter = rateLimit({
     }
 });
 
+
+
+// Bot Blocker Middleware
+export const botBlocker = (req, res, next) => {
+    const userAgent = req.get('User-Agent');
+    if (!userAgent) {
+        return next();
+    }
+
+    const botPatterns = [
+        'bot', 'spider', 'crawl', 'scanner', 'curl', 'wget', 'python', 'ruby', 'go-http-client',
+        'semrush', 'ahrefs', 'mj12bot', 'dotbot', 'bingbot', 'googlebot', 'slurp', 'baiduspider',
+        'yandex', 'sogou', 'exabot', 'facebot', 'ia_archiver'
+    ];
+
+    // Allow legitimate bots if needed (e.g., Googlebot for SEO)
+    // For now, we are blocking "unsafe" bots as requested. 
+    // Note: Blocking 'googlebot' might hurt SEO. The user asked to block "unsafe bots".
+    // I will filter out known good bots from the block list if the user wants "unsafe" ones blocked.
+    // However, the user said "block unsafe bot IPs auto". 
+    // Let's stick to a list of generally aggressive/useless bots for a private app or just block suspicious ones.
+    // Given the request "block unsafe bots", I'll block common scanners and tools, but maybe keep search engines?
+    // The user said "unsafe bots". I'll block generic 'bot' pattern but maybe exclude known search engines if this was a public site.
+    // But for "Phayao Hub", it's likely a public site.
+    // Let's refine the list to be "bad bots".
+
+    const badBots = [
+        'semrush', 'ahrefs', 'mj12bot', 'dotbot', 'blexbot', 'seokicks', 'megaindex', 'waitify',
+        'python-requests', 'curl', 'wget', 'netcraft', 'nmap', 'sqlmap', 'nikto', 'masscan'
+    ];
+
+    const isBadBot = badBots.some(bot => userAgent.toLowerCase().includes(bot));
+
+    if (isBadBot) {
+        console.log(`Blocked bad bot: ${userAgent} from IP: ${req.ip}`);
+        return res.status(403).json({ success: false, error: 'Access denied' });
+    }
+
+    next();
+};
+
+// Sensitive File Blocker Middleware
+export const sensitiveFileBlocker = (req, res, next) => {
+    const sensitivePatterns = [
+        /\.env/, /\.git/, /\.vscode/, /\.idea/,
+        /package\.json/, /package-lock\.json/,
+        /node_modules/, /server\//, /src\//
+    ];
+
+    const isSensitive = sensitivePatterns.some(pattern => pattern.test(req.path));
+
+    if (isSensitive) {
+        console.log(`Blocked sensitive file access: ${req.path} from IP: ${req.ip}`);
+        return res.status(403).json({ success: false, error: 'Access denied' });
+    }
+
+    next();
+};
+
 // Stricter limiter for auth routes (login/register)
 export const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour

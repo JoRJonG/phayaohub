@@ -1,20 +1,86 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Phayao Hub
 
-# Run and deploy your AI Studio app
+Phayao Hub is a comprehensive web application designed for the community of Phayao province, Thailand. It serves as a central platform for local commerce, job opportunities, tourism, and community interaction.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/1b_8JDPHw_hY6CMd9Uin2cHl01bwbesmv
+- **🛍️ Marketplace**: A platform for users to buy and sell second-hand items and local products.
+- **💼 Job Board**: A dedicated section for finding local job opportunities and for employers to post vacancies.
+- **🗺️ Travel Guide**: A curated guide to Phayao's tourist attractions, accommodations, and restaurants, complete with maps and details.
+- **💬 Community**: A social space for users to share posts, news, and updates.
+- **🛡️ Admin Dashboard**: A powerful backend interface for administrators to manage users, content, system settings, and monitor platform activity.
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend**: React, Vite, Tailwind CSS, Lucide React
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL
+- **Security**: Helmet, Rate Limiting, JWT Authentication, Bot Protection
 
+## Prerequisites
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Before you begin, ensure you have met the following requirements:
+- **Node.js**: v18 or higher
+- **MySQL**: v8.0 or higher
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/JoRJonG/phayaohub.git
+   cd phayaohub
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   Create a `.env.local` file in the root directory with the following variables:
+   ```env
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=your_password
+   DB_NAME=phayaohub
+   JWT_SECRET=your_jwt_secret
+   PORT=3001
+   ```
+
+4. **Database Setup**
+   Import the provided SQL file (if available) or ensure the database schema is set up in your MySQL instance.
+
+5. **Run Locally**
+   ```bash
+   npm run dev
+   ```
+   This command runs both the frontend (Vite) and backend (Express) concurrently.
+   - Frontend: `http://localhost:3000`
+   - Backend: `http://localhost:3001`
+
+## Deployment
+
+This project is configured for deployment on Node.js hosting environments (e.g., HostAtom).
+
+1. **Build for Production**
+   ```bash
+   npm run build
+   ```
+   This compiles the React frontend into the `dist` directory.
+
+2. **Start the Server**
+   ```bash
+   node server/index.js
+   ```
+   The server is configured to serve the static files from the `dist` folder automatically.
+
+## Security Features
+
+- **Bot Protection**: Blocks malicious bots and scanners based on User-Agent.
+- **Sensitive File Blocking**: Prevents access to sensitive system files like `.env` and `.git`.
+- **Rate Limiting**: Limits the number of requests to prevent abuse.
+- **Secure Headers**: Uses Helmet to set secure HTTP headers.
+
+## License
+
+This project is proprietary software.

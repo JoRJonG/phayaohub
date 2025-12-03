@@ -15,7 +15,7 @@ import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
 import { db } from './db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
-import { generalLimiter } from './middleware/securityMiddleware.js';
+import { generalLimiter, botBlocker, sensitiveFileBlocker } from './middleware/securityMiddleware.js';
 import logger from './utils/logger.js';
 
 // Enforce JWT Secret
@@ -46,6 +46,8 @@ app.use(helmet({
 }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(compression()); // Enable Gzip compression
+app.use(botBlocker); // Block bad bots
+app.use(sensitiveFileBlocker); // Block sensitive files
 app.use(generalLimiter); // Apply rate limiting to all requests
 
 // Middleware
@@ -71,6 +73,20 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api', dataRoutes);
+
+app.use('/api', dataRoutes);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// The "catch-all" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 // Error Handling
 app.use(notFound);
