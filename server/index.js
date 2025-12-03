@@ -113,7 +113,7 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 // The "catch-all" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-app.get('*', (req, res, next) => {
+app.get(/(.*)/, (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
   }
