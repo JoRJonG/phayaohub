@@ -1,3 +1,6 @@
+// Get API base URL from environment or use relative path
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 // Helper function for auth headers
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
@@ -7,7 +10,8 @@ const getAuthHeaders = () => {
 // Generic fetch wrapper
 const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     try {
-        const response = await fetch(endpoint, {
+        const url = `${API_BASE_URL}${endpoint}`;
+        const response = await fetch(url, {
             ...options,
             headers: {
                 'Content-Type': 'application/json',
@@ -17,7 +21,7 @@ const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error(`Error fetching ${endpoint}:`, error);
+        console.error(`Error fetching ${url}:`, error);
         throw error;
     }
 };
@@ -171,7 +175,7 @@ export const uploadSingleFile = async (file: File) => {
     const headers: any = token ? { 'Authorization': `Bearer ${token}` } : {};
 
     try {
-        const response = await fetch('/api/upload/single', {
+        const response = await fetch(`${API_BASE_URL}/api/upload/single`, {
             method: 'POST',
             headers,
             body: formData,
@@ -193,7 +197,7 @@ export const uploadMultipleFiles = async (files: File[]) => {
     const headers: any = token ? { 'Authorization': `Bearer ${token}` } : {};
 
     try {
-        const response = await fetch('/api/upload/multiple', {
+        const response = await fetch(`${API_BASE_URL}/api/upload/multiple`, {
             method: 'POST',
             headers,
             body: formData,
