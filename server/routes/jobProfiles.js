@@ -21,10 +21,8 @@ router.get('/', async (req, res) => {
 router.get('/me', authMiddleware, async (req, res) => {
     try {
         const profile = await jobProfileService.getProfileByUserId(req.user.id);
-        if (!profile) {
-            return res.status(404).json({ success: false, error: 'Profile not found' });
-        }
-        res.json({ success: true, data: profile });
+        // Return null instead of 404 if not found, to avoid console errors
+        res.json({ success: true, data: profile || null });
     } catch (error) {
         logger.error('Error fetching user profile:', error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });
