@@ -1,0 +1,14 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Pass Authorization header to backend
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Proxy API requests to Node.js backend (port 3001)
+RewriteCond %{REQUEST_URI} ^/api
+RewriteRule ^(.*)$ http://localhost:3001/$1 [P,L]
+
+# Serve static files and React app
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
