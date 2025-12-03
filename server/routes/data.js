@@ -23,6 +23,7 @@ router.get('/categories', async (req, res, next) => {
         query += ' ORDER BY name';
 
         const [categories] = await db.query(query, params);
+        console.log(`[DEBUG] Fetched ${categories.length} categories`);
         res.json({ success: true, data: categories });
     } catch (error) {
         logger.error('Get categories error', error);
@@ -71,6 +72,7 @@ router.get('/market-items', async (req, res, next) => {
         params.push(parseInt(limit), parseInt(offset));
 
         const [items] = await db.query(query, params);
+        console.log(`[DEBUG] Fetched ${items.length} market items (Status: ${status || 'default available'})`);
 
         // Get total count for pagination
         let countQuery = `
