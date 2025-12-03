@@ -5,11 +5,19 @@ import logger from './utils/logger.js';
 
 dotenv.config({ path: '.env.local' });
 
+const parsedPort = (() => {
+  const v = process.env.DB_PORT;
+  if (v == null || v === '') return 3306;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) && n > 0 ? n : 3306;
+})();
+
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'phayaohub',
+  port: parsedPort,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
