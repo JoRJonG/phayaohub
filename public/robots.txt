@@ -1,0 +1,30 @@
+# Phayao Hub - robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /user/dashboard
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://phayaohub.com/sitemap.xml
+
+# Crawl Delay
+Crawl-delay: 1
+
+# Allow search engines to index images
+User-agent: Googlebot-Image
+Allow: /uploads/
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

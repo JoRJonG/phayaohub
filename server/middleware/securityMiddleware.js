@@ -5,12 +5,16 @@ import { body, validationResult } from 'express-validator';
 // General limiter for most routes
 export const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // Limit each IP to 1000 requests per windowMs
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    max: 500, // Limit each IP to 500 requests per 15 minutes (reduced from 1000)
+    standardHeaders: true,
+    legacyHeaders: false,
     message: {
         success: false,
         error: 'Too many requests from this IP, please try again after 15 minutes'
+    },
+    skip: (req) => {
+        // Skip rate limiting for static files
+        return req.path.startsWith('/uploads');
     }
 });
 
@@ -76,13 +80,14 @@ export const sensitiveFileBlocker = (req, res, next) => {
 // Stricter limiter for auth routes (login/register)
 export const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 100, // Limit each IP to 100 login/register requests per hour
+    max: 50, // Limit each IP to 50 login/register requests per hour (reduced from 100)
     standardHeaders: true,
     legacyHeaders: false,
     message: {
         success: false,
         error: 'Too many login attempts from this IP, please try again after an hour'
-    }
+    },
+    skipSuccessfulRequests: true // Don't count successful logins against limit
 });
 
 // Input Validation Middleware
@@ -114,7 +119,8 @@ export const registerValidation = [
         .isEmail().withMessage('รูปแบบอีเมลไม่ถูกต้อง')
         .normalizeEmail(),
     body('password')
-        .isLength({ min: 6 }).withMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร'),
+        .isLength({ min: 8 }).withMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข'),
     body('full_name')
         .trim()
         .notEmpty().withMessage('กรุณากรอกชื่อ-นามสกุล')
@@ -137,6 +143,7 @@ export const changePasswordValidation = [
     body('current_password')
         .notEmpty().withMessage('กรุณากรอกรหัสผ่านปัจจุบัน'),
     body('new_password')
-        .isLength({ min: 6 }).withMessage('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 6 ตัวอักษร')
+        .isLength({ min: 8 }).withMessage('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('รหัสผ่านใหม่ต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข')
         .not().equals('current_password').withMessage('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม')
 ];

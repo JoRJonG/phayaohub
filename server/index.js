@@ -39,18 +39,30 @@ app.set('trust proxy', 1);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Allow inline scripts/eval for React
-      "img-src": ["'self'", "data:", "https:", "blob:"], // Allow images
-      "connect-src": ["'self'", "https:", "wss:"], // Allow connections
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"], // React needs unsafe-inline
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      connectSrc: ["'self'", "https:"],
+      mediaSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
     },
   },
-  crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading images from uploads
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false, // Allow embedding for uploads
   hsts: {
     maxAge: 31536000, // 1 year
     includeSubDomains: true,
     preload: true
-  }
+  },
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  noSniff: true, // X-Content-Type-Options: nosniff
+  xssFilter: true, // X-XSS-Protection (legacy but doesn't hurt)
 }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(compression()); // Enable Gzip compression
@@ -68,11 +80,17 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // In development, allow all origins
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    
+    // In production: Allow requests with no origin (mobile apps, curl)
     if (!origin) return callback(null, true);
+    
+    // Check whitelist
     if (allowedOrigins.indexOf(origin) === -1) {
-      // Optional: Allow all for now to debug, or keep strict
-      // return callback(null, true); 
+      logger.warn(`CORS blocked origin: ${origin}`);
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }

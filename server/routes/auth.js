@@ -46,7 +46,7 @@ router.post('/register', authLimiter, validate(registerValidation), async (req, 
                 role: 'user'
             },
             JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: '24h' } // ลดเหลือ 24 ชม. เพื่อความปลอดภัย
         );
 
         res.json({
@@ -123,7 +123,7 @@ router.post('/login', authLimiter, validate(loginValidation), async (req, res, n
                 status: user.status
             },
             JWT_SECRET,
-            { expiresIn: '7d' }
+            { expiresIn: '24h' } // ลดเหลือ 24 ชม. เพื่อความปลอดภัย
         );
 
         res.json({
