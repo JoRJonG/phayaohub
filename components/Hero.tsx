@@ -74,15 +74,30 @@ const Hero: React.FC = () => {
 
         {/* Quick Tags */}
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          {['งานว่าง', 'ของมือสอง', 'คาเฟ่', 'ที่พัก'].map((tag) => (
-            <span
-              key={tag}
-              onClick={() => navigate('/market')} // Mock navigation
-              className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
-            >
-              #{tag}
-            </span>
-          ))}
+          <span
+            onClick={() => navigate('/jobs')}
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          >
+            #งานว่าง
+          </span>
+          <span
+            onClick={() => navigate('/market')}
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          >
+            #ของมือสอง
+          </span>
+          <span
+            onClick={() => navigate('/guides')}
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          >
+            #คาเฟ่
+          </span>
+          <span
+            onClick={() => navigate('/guides')}
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          >
+            #ที่พัก
+          </span>
         </div>
       </div>
     </div>
