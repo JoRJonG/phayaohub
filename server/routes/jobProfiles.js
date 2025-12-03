@@ -29,8 +29,39 @@ router.get('/me', authMiddleware, async (req, res) => {
     }
 });
 
+// Rate limiting
+import rateLimit from 'express-rate-limit';
+
+const profileLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // Limit each IP to 10 requests per windowMs
+    message: 'Too many requests from this IP, please try again later'
+});
+
+// Validation middleware
+import { body, validationResult } from 'express-validator';
+
+const validateProfile = [
+    body('full_name').trim().notEmpty().withMessage('Full name is required').escape(),
+    body('email').trim().isEmail().withMessage('Invalid email address').normalizeEmail(),
+    body('phone').optional().trim().escape(),
+    body('address').optional().trim().escape(),
+    body('experience').optional().trim().escape(),
+    body('education').optional().trim().escape(),
+    body('skills').optional().trim().escape(),
+    body('resume_url').optional().trim().isURL().withMessage('Invalid resume URL'), // Don't escape URLs, just validate
+    body('photo_url').optional().trim().isURL().withMessage('Invalid photo URL'), // Don't escape URLs, just validate
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ success: false, errors: errors.array() });
+        }
+        next();
+    }
+];
+
 // Create profile
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, profileLimiter, validateProfile, async (req, res) => {
     try {
         const existingProfile = await jobProfileService.getProfileByUserId(req.user.id);
         if (existingProfile) {
@@ -51,7 +82,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Update profile
-router.put('/:id', authMiddleware, async (req, res) => {
+router.put('/:id', authMiddleware, profileLimiter, validateProfile, async (req, res) => {
     try {
         const success = await jobProfileService.updateProfile(req.params.id, req.user.id, req.body);
         if (!success) {

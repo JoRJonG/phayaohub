@@ -12,8 +12,10 @@ interface JobProfile {
     education: string;
     skills: string;
     resume_url: string;
+    photo_url?: string;
     view_count?: number;
     created_at: string;
+    avatar_url?: string;
 }
 
 const JobSeekerList = () => {
@@ -105,9 +107,17 @@ const JobSeekerList = () => {
                             <div className="p-6 flex-grow">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">
-                                            {profile.full_name.charAt(0)}
-                                        </div>
+                                        {profile.photo_url ? (
+                                            <img
+                                                src={profile.photo_url}
+                                                alt={profile.full_name}
+                                                className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">
+                                                {profile.full_name.charAt(0)}
+                                            </div>
+                                        )}
                                         <div>
                                             <h3 className="font-bold text-lg text-gray-800 line-clamp-1">{profile.full_name}</h3>
                                         </div>
@@ -178,9 +188,17 @@ const JobSeekerList = () => {
                     <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">
-                                    {selectedProfile.full_name.charAt(0)}
-                                </div>
+                                {selectedProfile.avatar_url ? (
+                                    <img
+                                        src={selectedProfile.avatar_url}
+                                        alt={selectedProfile.full_name}
+                                        className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
+                                    />
+                                ) : (
+                                    <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl border-4 border-white shadow-md">
+                                        {selectedProfile.full_name.charAt(0)}
+                                    </div>
+                                )}
                                 <div>
                                     <h2 className="text-xl font-bold text-slate-800">{selectedProfile.full_name}</h2>
                                     <div className="flex items-center gap-3 text-sm text-slate-500">
@@ -207,6 +225,15 @@ const JobSeekerList = () => {
                                         <User size={18} className="text-blue-500" /> ข้อมูลส่วนตัว
                                     </h3>
                                     <div className="space-y-2 text-sm">
+                                        {selectedProfile.photo_url && (
+                                            <div className="mb-4">
+                                                <img
+                                                    src={selectedProfile.photo_url}
+                                                    alt={selectedProfile.full_name}
+                                                    className="w-32 h-40 rounded-lg object-cover shadow-md border border-slate-200 mx-auto md:mx-0"
+                                                />
+                                            </div>
+                                        )}
                                         <p><span className="font-medium text-slate-600">เบอร์โทรศัพท์:</span> {selectedProfile.phone || '-'}</p>
                                         <p><span className="font-medium text-slate-600">ที่อยู่:</span> {selectedProfile.address || '-'}</p>
                                         <p><span className="font-medium text-slate-600">วันที่ลงประกาศ:</span> {new Date(selectedProfile.created_at).toLocaleDateString('th-TH')}</p>

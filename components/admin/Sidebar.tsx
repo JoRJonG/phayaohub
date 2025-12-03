@@ -31,6 +31,7 @@ const Sidebar: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => void 
         { path: '/admin/users', icon: <Users size={20} />, label: 'จัดการผู้ใช้' },
         { path: '/admin/market-items', icon: <ShoppingBag size={20} />, label: 'จัดการสินค้า' },
         { path: '/admin/jobs', icon: <Briefcase size={20} />, label: 'จัดการงาน' },
+        { path: '/admin/job-seekers', icon: <Users size={20} />, label: 'จัดการคนหางาน' },
         { path: '/admin/posts', icon: <MessageSquare size={20} />, label: 'จัดการโพสต์' },
         { path: '/admin/guides', icon: <MapPin size={20} />, label: 'กิน-เที่ยว-พัก' },
         { path: '/admin/settings', icon: <Settings size={20} />, label: 'ตั้งค่าเว็บไซต์' },

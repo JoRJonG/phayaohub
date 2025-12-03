@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     Users,
     ShoppingBag,
@@ -27,6 +28,7 @@ interface Stats {
     totalPosts: number;
     newUsersThisWeek: number;
     newItemsThisWeek: number;
+    chartData?: { name: string; users: number; items: number; jobs: number; posts: number; seekers: number }[];
 }
 
 interface ActivityItem {
@@ -40,17 +42,7 @@ const AdminDashboard: React.FC = () => {
     const [stats, setStats] = useState<Stats | null>(null);
     const [activities, setActivities] = useState<ActivityItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    // Mock data for the chart (In a real app, fetch this from API)
-    const chartData = [
-        { name: 'จ.', users: 4, items: 2 },
-        { name: 'อ.', users: 3, items: 5 },
-        { name: 'พ.', users: 2, items: 3 },
-        { name: 'พฤ.', users: 7, items: 8 },
-        { name: 'ศ.', users: 5, items: 4 },
-        { name: 'ส.', users: 10, items: 12 },
-        { name: 'อา.', users: 8, items: 7 },
-    ];
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchStats();
@@ -120,6 +112,23 @@ const AdminDashboard: React.FC = () => {
             case 'job': return 'bg-purple-100';
             case 'post': return 'bg-orange-100';
             default: return 'bg-gray-100';
+        }
+    };
+
+    const handleActivityClick = (item: ActivityItem) => {
+        switch (item.type) {
+            case 'market':
+                navigate(`/market/${item.id}`);
+                break;
+            case 'job':
+                navigate(`/jobs/${item.id}`);
+                break;
+            case 'post':
+                navigate(`/community/${item.id}`);
+                break;
+            case 'user':
+                navigate(`/admin/users`);
+                break;
         }
     };
 
@@ -207,7 +216,7 @@ const AdminDashboard: React.FC = () => {
                     </div>
                     <div className="h-64 md:h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                            <AreaChart data={chartData}>
+                            <AreaChart data={stats?.chartData || []}>
                                 <defs>
                                     <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
@@ -217,6 +226,18 @@ const AdminDashboard: React.FC = () => {
                                         <stop offset="5%" stopColor="#10b981" stopOpacity={0.1} />
                                         <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                                     </linearGradient>
+                                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#a855f7" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorPosts" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorSeekers" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#ec4899" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                                    </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
@@ -224,24 +245,11 @@ const AdminDashboard: React.FC = () => {
                                 <Tooltip
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 />
-                                <Area
-                                    type="monotone"
-                                    dataKey="users"
-                                    name="ผู้ใช้ใหม่"
-                                    stroke="#3b82f6"
-                                    strokeWidth={3}
-                                    fillOpacity={1}
-                                    fill="url(#colorUsers)"
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="items"
-                                    name="สินค้าใหม่"
-                                    stroke="#10b981"
-                                    strokeWidth={3}
-                                    fillOpacity={1}
-                                    fill="url(#colorItems)"
-                                />
+                                <Area type="monotone" dataKey="users" name="ผู้ใช้ใหม่" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorUsers)" />
+                                <Area type="monotone" dataKey="items" name="สินค้าใหม่" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorItems)" />
+                                <Area type="monotone" dataKey="jobs" name="งานใหม่" stroke="#a855f7" strokeWidth={2} fillOpacity={1} fill="url(#colorJobs)" />
+                                <Area type="monotone" dataKey="posts" name="โพสต์ใหม่" stroke="#f97316" strokeWidth={2} fillOpacity={1} fill="url(#colorPosts)" />
+                                <Area type="monotone" dataKey="seekers" name="คนหางานใหม่" stroke="#ec4899" strokeWidth={2} fillOpacity={1} fill="url(#colorSeekers)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -255,7 +263,11 @@ const AdminDashboard: React.FC = () => {
                             <p className="text-slate-500 text-sm text-center py-4">ไม่มีกิจกรรมล่าสุด</p>
                         ) : (
                             activities.map((item, i) => (
-                                <div key={i} className="flex items-start gap-3 pb-4 border-b border-slate-50 last:border-0 last:pb-0">
+                                <div
+                                    key={i}
+                                    onClick={() => handleActivityClick(item)}
+                                    className="flex items-start gap-3 pb-4 border-b border-slate-50 last:border-0 last:pb-0 cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors"
+                                >
                                     <div className={`w-8 h-8 rounded-full ${getActivityColor(item.type)} flex items-center justify-center flex-shrink-0`}>
                                         {getActivityIcon(item.type)}
                                     </div>

@@ -32,6 +32,56 @@ router.get('/stats', async (req, res, next) => {
         const [recentUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)');
         const [recentItems] = await db.query('SELECT COUNT(*) as count FROM market_items WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)');
 
+        // Generate Chart Data (Last 7 Days)
+        const chartData = [];
+        const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            const dayName = days[date.getDay()];
+
+            // Count users
+            const [dailyUsers] = await db.query(
+                'SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = ?',
+                [dateStr]
+            );
+
+            // Count items
+            const [dailyItems] = await db.query(
+                'SELECT COUNT(*) as count FROM market_items WHERE DATE(created_at) = ?',
+                [dateStr]
+            );
+
+            // Count jobs
+            const [dailyJobs] = await db.query(
+                'SELECT COUNT(*) as count FROM jobs WHERE DATE(created_at) = ?',
+                [dateStr]
+            );
+
+            // Count posts
+            const [dailyPosts] = await db.query(
+                'SELECT COUNT(*) as count FROM community_posts WHERE DATE(created_at) = ?',
+                [dateStr]
+            );
+
+            // Count job seekers (profiles)
+            const [dailySeekers] = await db.query(
+                'SELECT COUNT(*) as count FROM job_profiles WHERE DATE(created_at) = ?',
+                [dateStr]
+            );
+
+            chartData.push({
+                name: dayName,
+                users: dailyUsers[0].count,
+                items: dailyItems[0].count,
+                jobs: dailyJobs[0].count,
+                posts: dailyPosts[0].count,
+                seekers: dailySeekers[0].count
+            });
+        }
+
         res.json({
             success: true,
             data: {
@@ -40,7 +90,8 @@ router.get('/stats', async (req, res, next) => {
                 totalJobs: jobCount[0].count,
                 totalPosts: postCount[0].count,
                 newUsersThisWeek: recentUsers[0].count,
-                newItemsThisWeek: recentItems[0].count
+                newItemsThisWeek: recentItems[0].count,
+                chartData
             }
         });
     } catch (error) {
@@ -858,6 +909,71 @@ router.delete('/guides/:id', async (req, res) => {
     } catch (error) {
         console.error('Delete guide error:', error);
         res.status(500).json({ success: false, error: 'ไม่สามารถลบข้อมูลได้' });
+    }
+});
+
+// Job Seekers Management
+router.get('/job-seekers', async (req, res, next) => {
+    try {
+        const { search, limit = 50, offset = 0 } = req.query;
+
+        let query = `
+            SELECT jp.*, u.username, u.email as user_email, u.avatar_url
+            FROM job_profiles jp
+            LEFT JOIN users u ON jp.user_id = u.id
+            WHERE 1=1
+        `;
+        const params = [];
+
+        if (search) {
+            query += ' AND (jp.full_name LIKE ? OR jp.email LIKE ? OR jp.phone LIKE ?)';
+            params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        query += ' ORDER BY jp.created_at DESC LIMIT ? OFFSET ?';
+        params.push(parseInt(limit), parseInt(offset));
+
+        const [seekers] = await db.query(query, params);
+
+        // Get total count
+        let countQuery = 'SELECT COUNT(*) as total FROM job_profiles jp WHERE 1=1';
+        const countParams = [];
+
+        if (search) {
+            countQuery += ' AND (jp.full_name LIKE ? OR jp.email LIKE ? OR jp.phone LIKE ?)';
+            countParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        const [totalResult] = await db.query(countQuery, countParams);
+
+        res.json({ success: true, data: seekers, total: totalResult[0].total });
+    } catch (error) {
+        logger.error('Get job seekers error', error);
+        next(error);
+    }
+});
+
+router.delete('/job-seekers/:id', async (req, res, next) => {
+    try {
+        // Get profile info to delete resume and photo files
+        const [profile] = await db.query('SELECT resume_url, photo_url FROM job_profiles WHERE id = ?', [req.params.id]);
+
+        await db.query('DELETE FROM job_profiles WHERE id = ?', [req.params.id]);
+
+        // Delete files if exist
+        if (profile.length > 0) {
+            if (profile[0].resume_url) {
+                deleteFile(profile[0].resume_url);
+            }
+            if (profile[0].photo_url) {
+                deleteFile(profile[0].photo_url);
+            }
+        }
+
+        res.json({ success: true, message: 'ลบข้อมูลคนหางานสำเร็จ' });
+    } catch (error) {
+        logger.error('Delete job seeker error', error);
+        next(error);
     }
 });
 

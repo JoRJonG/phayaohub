@@ -24,9 +24,11 @@ const JobProfileForm = () => {
         experience: '',
         education: '',
         skills: '',
-        resume_url: ''
+        resume_url: '',
+        photo_url: ''
     });
     const [resumeFile, setResumeFile] = useState<File | null>(null);
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
 
     // Redirect if not logged in
     useEffect(() => {
@@ -71,7 +73,8 @@ const JobProfileForm = () => {
                 experience: profile.experience || '',
                 education: profile.education || '',
                 skills: profile.skills || '',
-                resume_url: profile.resume_url || ''
+                resume_url: profile.resume_url || '',
+                photo_url: profile.photo_url || ''
             });
         } else {
             setFormData({
@@ -82,10 +85,12 @@ const JobProfileForm = () => {
                 experience: '',
                 education: '',
                 skills: '',
-                resume_url: ''
+                resume_url: '',
+                photo_url: ''
             });
         }
         setResumeFile(null);
+        setPhotoFile(null);
         setShowModal(true);
     };
 
@@ -97,6 +102,12 @@ const JobProfileForm = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setResumeFile(e.target.files[0]);
+        }
+    };
+
+    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setPhotoFile(e.target.files[0]);
         }
     };
 
@@ -126,7 +137,27 @@ const JobProfileForm = () => {
                 }
             }
 
-            const payload = { ...formData, resume_url: resumeUrl };
+            let photoUrl = formData.photo_url;
+            if (photoFile) {
+                const uploadData = new FormData();
+                uploadData.append('file', photoFile);
+                uploadData.append('folder', 'users');
+
+                const uploadRes = await fetch('/api/upload/single', {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: uploadData
+                });
+
+                const uploadResult = await uploadRes.json();
+                if (uploadResult.success) {
+                    photoUrl = uploadResult.url;
+                } else {
+                    throw new Error(uploadResult.error || 'Photo upload failed');
+                }
+            }
+
+            const payload = { ...formData, resume_url: resumeUrl, photo_url: photoUrl };
             let res;
 
             if (profile) {
@@ -244,9 +275,23 @@ const JobProfileForm = () => {
                         <div className="flex flex-col md:flex-row justify-between items-start gap-6">
                             <div className="flex-1 space-y-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-2xl">
-                                        {profile.full_name.charAt(0)}
-                                    </div>
+                                    {profile.photo_url ? (
+                                        <img
+                                            src={profile.photo_url}
+                                            alt={profile.full_name}
+                                            className="w-16 h-16 rounded-full object-cover border border-slate-200"
+                                        />
+                                    ) : profile.avatar_url ? (
+                                        <img
+                                            src={profile.avatar_url}
+                                            alt={profile.full_name}
+                                            className="w-16 h-16 rounded-full object-cover border border-slate-200"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-2xl">
+                                            {profile.full_name.charAt(0)}
+                                        </div>
+                                    )}
                                     <div>
                                         <h2 className="text-xl font-bold text-gray-800">{profile.full_name}</h2>
                                         <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
@@ -370,6 +415,24 @@ const JobProfileForm = () => {
                         <div className="overflow-y-auto p-6">
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="md:col-span-2 flex justify-center mb-4">
+                                        <div className="relative group">
+                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-slate-100 flex items-center justify-center">
+                                                {photoFile ? (
+                                                    <img src={URL.createObjectURL(photoFile)} alt="Preview" className="w-full h-full object-cover" />
+                                                ) : formData.photo_url ? (
+                                                    <img src={formData.photo_url} alt="Current" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <User size={48} className="text-slate-300" />
+                                                )}
+                                            </div>
+                                            <label htmlFor="photo-upload" className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-slate-50 border border-slate-200" title="อัพโหลดรูปถ่ายสำหรับสมัครงาน">
+                                                <Upload size={16} className="text-slate-600" />
+                                                <input id="photo-upload" type="file" className="hidden" onChange={handlePhotoChange} accept="image/*" />
+                                            </label>
+                                        </div>
+                                    </div>
+
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล <span className="text-red-500">*</span></label>
                                         <input

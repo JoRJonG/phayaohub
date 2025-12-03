@@ -26,6 +26,7 @@ const AdminDashboard = React.lazy(() => import('./pages/admin/Dashboard'));
 const AdminUsers = React.lazy(() => import('./pages/admin/Users'));
 const AdminMarketItems = React.lazy(() => import('./pages/admin/MarketItems'));
 const AdminJobs = React.lazy(() => import('./pages/admin/Jobs'));
+const AdminJobSeekers = React.lazy(() => import('./pages/admin/JobSeekers'));
 const AdminPosts = React.lazy(() => import('./pages/admin/Posts'));
 const AdminGuides = React.lazy(() => import('./pages/admin/Guides'));
 const AdminSettings = React.lazy(() => import('./pages/admin/Settings'));
@@ -154,6 +155,7 @@ const App: React.FC = () => {
               <Route path="users" element={<AdminUsers />} />
               <Route path="market-items" element={<AdminMarketItems />} />
               <Route path="jobs" element={<AdminJobs />} />
+              <Route path="job-seekers" element={<AdminJobSeekers />} />
               <Route path="posts" element={<AdminPosts />} />
               <Route path="guides" element={<AdminGuides />} />
               <Route path="settings" element={<AdminSettings />} />
