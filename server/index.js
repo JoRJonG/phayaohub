@@ -53,68 +53,6 @@ app.use(helmet({
   }
 }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
-app.use(compression()); // Enable Gzip compression
-app.use(botBlocker); // Block bad bots
-app.use(sensitiveFileBlocker); // Block sensitive files
-app.use(generalLimiter); // Apply rate limiting to all requests
-
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || ['http://localhost:3000', 'http://127.0.0.1:3000'], // Restrict to frontend URL
-  credentials: true
-}));
-app.use(express.json({ limit: '10kb' })); // Limit body size
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// เสิร์ฟไฟล์ static จากโฟลเดอร์ uploads พร้อม Cache-Control
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '1d', // Cache for 1 day
-  immutable: true // Content doesn't change
-}));
-
-// Routes
-import settingsRoutes from './routes/settings.js';
-
-// Temporary DB Test Route
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const connection = await db.getConnection();
-    await connection.ping();
-    const [tables] = await connection.query('SHOW TABLES'); // List tables
-    connection.release();
-    res.json({
-      success: true,
-      message: 'Database connected successfully',
-      tables: tables,
-      config: {
-        host: process.env.DB_HOST || process.env.MYSQL_HOST,
-        user: process.env.DB_USER || process.env.MYSQL_USER,
-        database: process.env.DB_NAME || process.env.MYSQL_DATABASE,
-        port: process.env.DB_PORT || process.env.MYSQL_PORT
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      config: {
-        host: process.env.DB_HOST || process.env.MYSQL_HOST,
-        user: process.env.DB_USER || process.env.MYSQL_USER,
-        port: process.env.DB_PORT || process.env.MYSQL_PORT,
-        database: process.env.DB_NAME || process.env.MYSQL_DATABASE
-      },
-      code: error.code,
-      stack: error.stack
-    });
-  }
-});
-
-app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api', dataRoutes);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../dist')));
