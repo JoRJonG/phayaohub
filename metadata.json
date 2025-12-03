@@ -1,0 +1,7 @@
+{
+  "name": "Phayao Hub",
+  "description": "The ultimate platform for Phayao locals and visitors. Marketplace, Jobs, Travel Guide, and Community Forum.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

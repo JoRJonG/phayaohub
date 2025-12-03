@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: 'Kanit', sans-serif;
+
+    --color-phayao-blue: #1e3a8a;
+    --color-phayao-sky: #3b82f6;
+    --color-phayao-gold: #f59e0b;
+    --color-phayao-sand: #fffbeb;
+}
+
+/* Hide scrollbar for clean horizontal scrolling */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
