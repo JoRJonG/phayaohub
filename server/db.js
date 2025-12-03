@@ -5,18 +5,27 @@ import logger from './utils/logger.js';
 
 dotenv.config({ path: '.env.local' });
 
+// Helper: return first non-empty env value from the list of names
+const getEnv = (...names) => {
+  for (const n of names) {
+    const v = process.env[n];
+    if (v != null && String(v).trim() !== '') return v;
+  }
+  return undefined;
+};
+
 const parsedPort = (() => {
-  const v = process.env.DB_PORT;
+  const v = getEnv('DB_PORT', 'MYSQL_PORT');
   if (v == null || v === '') return 3306;
   const n = parseInt(v, 10);
   return Number.isFinite(n) && n > 0 ? n : 3306;
 })();
 
 const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'phayaohub',
+  host: getEnv('DB_HOST', 'MYSQL_HOST') || 'localhost',
+  user: getEnv('DB_USER', 'MYSQL_USER') || 'root',
+  password: getEnv('DB_PASSWORD', 'MYSQL_PASSWORD') || '',
+  database: getEnv('DB_NAME', 'MYSQL_DATABASE', 'MYSQL_DB') || 'phayaohub',
   port: parsedPort,
   waitForConnections: true,
   connectionLimit: 10,
