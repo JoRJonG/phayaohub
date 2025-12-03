@@ -234,6 +234,7 @@ const JobSeekerList = () => {
                                                 />
                                             </div>
                                         )}
+                                        <p><span className="font-medium text-slate-600">ชื่อ-นามสกุล:</span> {selectedProfile.full_name}</p>
                                         <p><span className="font-medium text-slate-600">เบอร์โทรศัพท์:</span> {selectedProfile.phone || '-'}</p>
                                         <p><span className="font-medium text-slate-600">ที่อยู่:</span> {selectedProfile.address || '-'}</p>
                                         <p><span className="font-medium text-slate-600">วันที่ลงประกาศ:</span> {new Date(selectedProfile.created_at).toLocaleDateString('th-TH')}</p>

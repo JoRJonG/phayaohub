@@ -17,6 +17,13 @@ const UserDashboard: React.FC = () => {
     const [activities, setActivities] = React.useState<any[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
+    const [statsData, setStatsData] = React.useState({
+        marketItems: 0,
+        jobs: 0,
+        posts: 0,
+        hasProfile: false
+    });
+
     React.useEffect(() => {
         fetchActivities();
         fetchStats();
@@ -36,8 +43,40 @@ const UserDashboard: React.FC = () => {
     };
 
     const fetchStats = async () => {
-        // Placeholder for fetching counts if needed in future
-        // Currently using static 0 or could implement count endpoints
+        try {
+            // Fetch Market Items Count
+            const marketRes = await fetch('/api/user/market-items', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            const marketData = await marketRes.json();
+
+            // Fetch Jobs Count
+            const jobsRes = await fetch('/api/user/jobs', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            const jobsData = await jobsRes.json();
+
+            // Fetch Posts Count
+            const postsRes = await fetch('/api/user/posts', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            const postsData = await postsRes.json();
+
+            // Check Job Profile
+            const profileRes = await fetch('/api/job-profiles/me', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            const profileData = await profileRes.json();
+
+            setStatsData({
+                marketItems: marketData.data ? marketData.data.length : 0,
+                jobs: jobsData.data ? jobsData.data.length : 0,
+                posts: postsData.data ? postsData.data.length : 0,
+                hasProfile: !!profileData.data
+            });
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
     };
 
     const getActivityIcon = (type: string) => {
@@ -75,7 +114,7 @@ const UserDashboard: React.FC = () => {
     const stats = [
         {
             title: 'สินค้าของฉัน',
-            value: 0,
+            value: statsData.marketItems,
             icon: <ShoppingBag className="text-green-600" size={24} />,
             bg: 'bg-green-50',
             link: '/user/market-items',
@@ -83,7 +122,7 @@ const UserDashboard: React.FC = () => {
         },
         {
             title: 'งานที่ลงประกาศ',
-            value: 0,
+            value: statsData.jobs,
             icon: <Briefcase className="text-purple-600" size={24} />,
             bg: 'bg-purple-50',
             link: '/user/jobs',
@@ -91,7 +130,7 @@ const UserDashboard: React.FC = () => {
         },
         {
             title: 'โพสต์ของฉัน',
-            value: 0,
+            value: statsData.posts,
             icon: <MessageSquare className="text-orange-600" size={24} />,
             bg: 'bg-orange-50',
             link: '/user/posts',
@@ -99,15 +138,15 @@ const UserDashboard: React.FC = () => {
         },
         {
             title: 'ฝากประวัติงาน',
-            value: 0,
+            value: statsData.hasProfile ? 1 : 0,
             icon: <FileText className="text-blue-600" size={24} />,
             bg: 'bg-blue-50',
             link: '/user/deposit-resume',
-            action: 'แก้ไขประวัติ'
+            action: statsData.hasProfile ? 'แก้ไขประวัติ' : 'ฝากประวัติ'
         },
         {
             title: 'ตั้งค่าบัญชี',
-            value: 0,
+            value: '-',
             icon: <Settings className="text-slate-600" size={24} />,
             bg: 'bg-slate-100',
             link: '/user/profile',

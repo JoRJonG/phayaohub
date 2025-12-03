@@ -42,13 +42,13 @@ const profileLimiter = rateLimit({
 import { body, validationResult } from 'express-validator';
 
 const validateProfile = [
-    body('full_name').trim().notEmpty().withMessage('Full name is required').escape(),
+    body('full_name').trim().notEmpty().withMessage('Full name is required'),
     body('email').trim().isEmail().withMessage('Invalid email address').normalizeEmail(),
-    body('phone').optional().trim().escape(),
-    body('address').optional().trim().escape(),
-    body('experience').optional().trim().escape(),
-    body('education').optional().trim().escape(),
-    body('skills').optional().trim().escape(),
+    body('phone').optional().trim(),
+    body('address').optional().trim(),
+    body('experience').optional().trim(),
+    body('education').optional().trim(),
+    body('skills').optional().trim(),
     body('resume_url').optional().trim().custom(value => {
         if (!value) return true;
         if (value.startsWith('/') || value.startsWith('http')) return true;
