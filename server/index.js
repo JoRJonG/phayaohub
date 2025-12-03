@@ -67,6 +67,38 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 // Routes
 import settingsRoutes from './routes/settings.js';
 
+// Temporary DB Test Route
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const connection = await db.getConnection();
+    await connection.ping();
+    connection.release();
+    res.json({
+      success: true,
+      message: 'Database connected successfully',
+      config: {
+        host: process.env.DB_HOST || process.env.MYSQL_HOST,
+        user: process.env.DB_USER || process.env.MYSQL_USER,
+        database: process.env.DB_NAME || process.env.MYSQL_DATABASE,
+        port: process.env.DB_PORT || process.env.MYSQL_PORT
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      config: {
+        host: process.env.DB_HOST || process.env.MYSQL_HOST,
+        user: process.env.DB_USER || process.env.MYSQL_USER,
+        port: process.env.DB_PORT || process.env.MYSQL_PORT,
+        database: process.env.DB_NAME || process.env.MYSQL_DATABASE
+      },
+      code: error.code,
+      stack: error.stack
+    });
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
