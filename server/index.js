@@ -37,6 +37,14 @@ app.set('trust proxy', 1);
 
 // Security Middleware
 app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Allow inline scripts/eval for React
+      "img-src": ["'self'", "data:", "https:", "blob:"], // Allow images
+      "connect-src": ["'self'", "https:", "wss:"], // Allow connections
+    },
+  },
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow loading images from uploads
   hsts: {
     maxAge: 31536000, // 1 year
@@ -72,10 +80,12 @@ app.get('/api/test-db', async (req, res) => {
   try {
     const connection = await db.getConnection();
     await connection.ping();
+    const [tables] = await connection.query('SHOW TABLES'); // List tables
     connection.release();
     res.json({
       success: true,
       message: 'Database connected successfully',
+      tables: tables,
       config: {
         host: process.env.DB_HOST || process.env.MYSQL_HOST,
         user: process.env.DB_USER || process.env.MYSQL_USER,
@@ -104,8 +114,6 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/settings', settingsRoutes);
-app.use('/api', dataRoutes);
-
 app.use('/api', dataRoutes);
 
 // Serve static files from the React app
