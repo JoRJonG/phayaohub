@@ -806,15 +806,15 @@ router.get('/guides/:id', async (req, res, next) => {
 
 router.post('/guides', async (req, res, next) => {
     try {
-        const { title, slug, description, content, category, image_url, is_featured, status, images } = req.body;
+        const { title, slug, description, content, category, image_url, is_featured, status, images, latitude, longitude } = req.body;
 
         if (!title || !category) {
             return res.status(400).json({ success: false, error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
         }
 
         const [result] = await db.query(
-            'INSERT INTO guides (title, slug, description, content, category, image_url, is_featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [sanitizeInput(title), slug || title.toLowerCase().replace(/\s+/g, '-'), sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured || false, status || 'published']
+            'INSERT INTO guides (title, slug, description, content, category, image_url, is_featured, status, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [sanitizeInput(title), slug || title.toLowerCase().replace(/\s+/g, '-'), sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured || false, status || 'published', latitude, longitude]
         );
 
         const guideId = result.insertId;
@@ -837,7 +837,7 @@ router.post('/guides', async (req, res, next) => {
 
 router.put('/guides/:id', async (req, res, next) => {
     try {
-        const { title, slug, description, content, category, image_url, is_featured, status, images } = req.body;
+        const { title, slug, description, content, category, image_url, is_featured, status, images, latitude, longitude } = req.body;
 
         // Auto-generate slug if not provided
         const finalSlug = slug || title.toLowerCase().replace(/\s+/g, '-');
@@ -851,8 +851,8 @@ router.put('/guides/:id', async (req, res, next) => {
         }
 
         await db.query(
-            'UPDATE guides SET title=?, slug=?, description=?, content=?, category=?, image_url=?, is_featured=?, status=? WHERE id=?',
-            [sanitizeInput(title), finalSlug, sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured, status, req.params.id]
+            'UPDATE guides SET title=?, slug=?, description=?, content=?, category=?, image_url=?, is_featured=?, status=?, latitude=?, longitude=? WHERE id=?',
+            [sanitizeInput(title), finalSlug, sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured, status, latitude, longitude, req.params.id]
         );
 
         // Update additional images

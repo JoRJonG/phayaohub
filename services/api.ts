@@ -36,6 +36,10 @@ export const getFeaturedGuides = async (limit = 4) => {
     return fetchAPI(`/api/guides?limit=${limit}&sort=latest`);
 };
 
+export const getGuides = async (params: string = '') => {
+    return fetchAPI(`/api/guides?${params}`);
+};
+
 export const getLatestJobs = async (limit = 10) => {
     return fetchAPI(`/api/jobs?limit=${limit}`);
 };

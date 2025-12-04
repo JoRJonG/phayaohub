@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePreventRefresh } from '../../hooks/usePreventRefresh';
-import { Plus, Edit2, Trash2, Eye, Star, ImageIcon, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, Star, ImageIcon, X, MapPin } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Pagination from '../../components/admin/Pagination';
 
@@ -16,6 +16,8 @@ interface Guide {
     status: string;
     view_count: number;
     created_at: string;
+    latitude?: number;
+    longitude?: number;
 }
 
 const AdminGuides: React.FC = () => {
@@ -34,7 +36,9 @@ const AdminGuides: React.FC = () => {
         category: 'เที่ยว',
         image_url: '',
         is_featured: false,
-        status: 'published'
+        status: 'published',
+        latitude: '',
+        longitude: ''
     });
 
     // Multiple images handling
@@ -118,7 +122,9 @@ const AdminGuides: React.FC = () => {
                 body: JSON.stringify({
                     ...formData,
                     image_url: mainImageUrl,
-                    images: allImages
+                    images: allImages,
+                    latitude: formData.latitude ? parseFloat(formData.latitude) : null,
+                    longitude: formData.longitude ? parseFloat(formData.longitude) : null
                 })
             });
 
@@ -158,7 +164,9 @@ const AdminGuides: React.FC = () => {
                     category: fullGuide.category,
                     image_url: fullGuide.image_url || '',
                     is_featured: fullGuide.is_featured,
-                    status: fullGuide.status
+                    status: fullGuide.status,
+                    latitude: fullGuide.latitude ? fullGuide.latitude.toString() : '',
+                    longitude: fullGuide.longitude ? fullGuide.longitude.toString() : ''
                 });
 
                 // Set existing images
@@ -222,7 +230,9 @@ const AdminGuides: React.FC = () => {
             category: 'เที่ยว',
             image_url: '',
             is_featured: false,
-            status: 'published'
+            status: 'published',
+            latitude: '',
+            longitude: ''
         });
         setImageFiles([]);
         setPreviewImages([]);
@@ -456,6 +466,44 @@ const AdminGuides: React.FC = () => {
                                         className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-phayao-blue/20 focus:border-phayao-blue outline-none"
                                     />
                                 </div>
+
+                                {/* Location Fields */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">ละติจูด (Latitude)</label>
+                                        <input
+                                            type="number"
+                                            step="any"
+                                            placeholder="เช่น 19.1667"
+                                            value={formData.latitude}
+                                            onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-phayao-blue/20 focus:border-phayao-blue outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">ลองจิจูด (Longitude)</label>
+                                        <input
+                                            type="number"
+                                            step="any"
+                                            placeholder="เช่น 99.9000"
+                                            value={formData.longitude}
+                                            onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-phayao-blue/20 focus:border-phayao-blue outline-none"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex justify-end">
+                                    <a
+                                        href="https://www.google.com/maps"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-phayao-blue hover:underline flex items-center gap-1"
+                                    >
+                                        <MapPin size={12} />
+                                        ค้นหาพิกัดจาก Google Maps
+                                    </a>
+                                </div>
+
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">คำอธิบายสั้น</label>
                                     <textarea

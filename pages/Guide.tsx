@@ -131,20 +131,24 @@ const Guide: React.FC = () => {
           </div>
         )}
 
-        {/* Map Section (Placeholder) */}
-        <div className="bg-white p-4 rounded-2xl shadow-sm">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">แผนที่พะเยา</h2>
-          <div className="w-full h-[300px] md:h-[500px] lg:h-[600px] bg-gray-200 rounded-xl overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d239480.8858069566!2d99.82755125!3d19.19699935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30d9d6a3b6a3b6a3%3A0x30d9d6a3b6a3b6a3!2sPhayao!5e0!3m2!1sth!2sth!4v1620000000000!5m2!1sth!2sth"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Phayao Map"
-            ></iframe>
+        {/* Map Section */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
+          <div className="max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MapPin size={32} />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">แผนที่พะเยา</h2>
+            <p className="text-gray-500 mb-6">
+              สำรวจสถานที่ท่องเที่ยว ร้านอาหาร และที่พักในจังหวัดพะเยาผ่านแผนที่แบบโต้ตอบ
+              ค้นหาสถานที่ที่น่าสนใจและวางแผนการเดินทางของคุณได้ง่ายๆ
+            </p>
+            <Link
+              to="/map"
+              className="inline-flex items-center gap-2 bg-phayao-blue text-white px-6 py-3 rounded-xl hover:bg-blue-800 transition shadow-lg shadow-blue-900/20 font-medium"
+            >
+              <MapPin size={20} />
+              เปิดแผนที่พะเยา
+            </Link>
           </div>
         </div>
       </div>
