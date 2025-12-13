@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { Home, ShoppingBag, Briefcase, Users, MapPin, MessageCircle, User, LogOut, Settings } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,12 +11,12 @@ const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   const navLinks = [
-    { name: 'หน้าแรก', path: '/' },
-    { name: 'ตลาดซื้อขาย', path: '/market' },
-    { name: 'งานพะเยา', path: '/jobs' },
-    { name: 'คนหางาน', path: '/jobs/seekers' },
-    { name: 'กิน-เที่ยว-พัก', path: '/guide' },
-    { name: 'Phayao Talk', path: '/community' },
+    { name: 'หน้าแรก', path: '/', icon: Home },
+    { name: 'ตลาดซื้อขาย', path: '/market', icon: ShoppingBag },
+    { name: 'งานพะเยา', path: '/jobs', icon: Briefcase },
+    { name: 'คนหางาน', path: '/jobs/seekers', icon: Users },
+    { name: 'กิน-เที่ยว-พัก', path: '/guide', icon: MapPin },
+    { name: 'Phayao Talk', path: '/community', icon: MessageCircle },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -38,84 +39,108 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(link.path)
-                    ? 'bg-blue-800 text-phayao-gold'
-                    : 'hover:bg-blue-800 hover:text-white'
-                    }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+            <div className="ml-10 flex items-center space-x-1">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                      ? 'bg-blue-800 text-phayao-gold shadow-md'
+                      : 'text-white hover:bg-blue-800 hover:shadow-sm'
+                      }`}
+                  >
+                    <Icon size={18} className="flex-shrink-0" />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
 
               {/* User Menu */}
               {isAuthenticated ? (
-                <div className="relative ml-3">
+                <div className="relative ml-4">
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-all duration-200 group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden">
+                    <div className="w-9 h-9 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden ring-2 ring-transparent group-hover:ring-white/30 transition-all">
                       {user?.avatar_url ? (
                         <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
                       ) : (
                         (user?.full_name || 'U').charAt(0).toUpperCase()
                       )}
                     </div>
-                    <span>{user?.full_name || 'ผู้ใช้งาน'}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="max-w-[120px] truncate">{user?.full_name || 'ผู้ใช้งาน'}</span>
+                    <svg className={`w-4 h-4 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                        <div className="font-medium">{user?.full_name || 'ผู้ใช้งาน'}</div>
-                        <div className="text-xs text-gray-500">{user?.email}</div>
+                    <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-2xl py-2 z-50 border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden">
+                            {user?.avatar_url ? (
+                              <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                            ) : (
+                              (user?.full_name || 'U').charAt(0).toUpperCase()
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-gray-900 truncate">{user?.full_name || 'ผู้ใช้งาน'}</div>
+                            <div className="text-xs text-gray-500 truncate">{user?.email}</div>
+                          </div>
+                        </div>
                       </div>
-                      {user?.role === 'admin' && (
+                      <div className="py-1">
+                        {user?.role === 'admin' && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-phayao-blue transition-colors"
+                          >
+                            <Settings size={18} className="flex-shrink-0" />
+                            <span>Admin Dashboard</span>
+                          </Link>
+                        )}
                         <Link
-                          to="/admin"
+                          to="/user"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-phayao-blue transition-colors"
                         >
-                          🔧 Admin Dashboard
+                          <User size={18} className="flex-shrink-0" />
+                          <span>จัดการข้อมูลส่วนตัว</span>
                         </Link>
-                      )}
-                      <Link
-                        to="/user"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        จัดการข้อมูลส่วนตัว
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        ออกจากระบบ
-                      </button>
+                      </div>
+                      <div className="border-t border-gray-100 pt-1">
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut size={18} className="flex-shrink-0" />
+                          <span>ออกจากระบบ</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-2 ml-3">
+                <div className="flex items-center gap-2 ml-4">
                   <Link
                     to="/login"
-                    className="px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-800 transition-all duration-200 border border-white/20"
                   >
-                    เข้าสู่ระบบ
+                    <User size={18} />
+                    <span>เข้าสู่ระบบ</span>
                   </Link>
                   <Link
                     to="/register"
-                    className="px-4 py-2 rounded-md text-sm font-medium bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-all duration-200 shadow-md hover:shadow-lg"
                   >
-                    สมัครสมาชิก
+                    <User size={18} />
+                    <span>สมัครสมาชิก</span>
                   </Link>
                 </div>
               )}
@@ -144,72 +169,98 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Menu Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden" id="mobile-menu">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${isActive(link.path)
-                  ? 'bg-blue-900 text-phayao-gold'
-                  : 'text-gray-300 hover:bg-blue-700 hover:text-white'
-                  }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+        <div className="md:hidden fixed top-16 left-0 right-0 bottom-0 z-50 bg-phayao-blue shadow-2xl overflow-y-auto animate-in slide-in-from-top duration-300" id="mobile-menu">
+          <div className="px-4 pt-4 pb-6 space-y-2">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${isActive(link.path)
+                    ? 'bg-blue-800 text-phayao-gold shadow-lg scale-[1.02]'
+                    : 'text-white hover:bg-blue-700 hover:translate-x-1'
+                    }`}
+                >
+                  <Icon size={20} className="flex-shrink-0" />
+                  <span>{link.name}</span>
+                </Link>
+              );
+            })}
 
             {/* Mobile User Menu */}
             {isAuthenticated ? (
-              <div className="border-t border-blue-700 pt-4 mt-4">
-                <div className="px-3 py-2 text-sm text-gray-300">
-                  <div className="font-medium">{user?.full_name || 'ผู้ใช้งาน'}</div>
-                  <div className="text-xs">{user?.email}</div>
+              <div className="border-t border-blue-700/50 pt-4 mt-4">
+                <div className="flex items-center gap-3 px-4 py-3 bg-blue-800/50 rounded-xl mb-3">
+                  <div className="w-12 h-12 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold text-lg overflow-hidden flex-shrink-0">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      (user?.full_name || 'U').charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-white truncate">{user?.full_name || 'ผู้ใช้งาน'}</div>
+                    <div className="text-xs text-gray-300 truncate">{user?.email}</div>
+                  </div>
                 </div>
                 {user?.role === 'admin' && (
                   <Link
                     to="/admin"
                     onClick={() => setIsOpen(false)}
-                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-blue-700 hover:text-white"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-all duration-200 hover:translate-x-1"
                   >
-                    🔧 Admin Dashboard
+                    <Settings size={20} className="flex-shrink-0" />
+                    <span>Admin Dashboard</span>
                   </Link>
                 )}
                 <Link
                   to="/user"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-blue-700 hover:text-white"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-all duration-200 hover:translate-x-1"
                 >
-                  จัดการข้อมูลส่วนตัว
+                  <User size={20} className="flex-shrink-0" />
+                  <span>จัดการข้อมูลส่วนตัว</span>
                 </Link>
                 <button
                   onClick={() => {
                     handleLogout();
                     setIsOpen(false);
                   }}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-blue-700 hover:text-white"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-red-600 transition-all duration-200 hover:translate-x-1"
                 >
-                  ออกจากระบบ
+                  <LogOut size={20} className="flex-shrink-0" />
+                  <span>ออกจากระบบ</span>
                 </button>
               </div>
             ) : (
-              <div className="border-t border-blue-700 pt-4 mt-4 space-y-1">
+              <div className="border-t border-blue-700/50 pt-4 mt-4 space-y-2">
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-blue-700 hover:text-white"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-all duration-200 border border-white/20"
                 >
-                  เข้าสู่ระบบ
+                  <User size={20} />
+                  <span>เข้าสู่ระบบ</span>
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setIsOpen(false)}
-                  className="block px-3 py-2 rounded-md text-base font-medium bg-phayao-gold text-phayao-blue hover:bg-yellow-400"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-all duration-200 shadow-lg"
                 >
-                  สมัครสมาชิก
+                  <User size={20} />
+                  <span>สมัครสมาชิก</span>
                 </Link>
               </div>
             )}
