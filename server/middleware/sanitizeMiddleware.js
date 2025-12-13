@@ -1,8 +1,4 @@
-import createDOMPurify from 'isomorphic-dompurify';
-
-const DOMPurify = createDOMPurify();
-
-// Sanitize HTML input to prevent XSS
+// Sanitize HTML input to prevent XSS (Fallback version - no external dependencies)
 export const sanitizeHtml = (req, res, next) => {
     // Skip if no body (e.g., GET requests)
     if (!req.body || Object.keys(req.body).length === 0) {
@@ -12,11 +8,12 @@ export const sanitizeHtml = (req, res, next) => {
     const fieldsToSanitize = ['title', 'description', 'content', 'message', 'full_name', 'company_name', 'location', 'requirements', 'benefits'];
 
     for (const field of fieldsToSanitize) {
-        if (req.body[field]) {
-            req.body[field] = DOMPurify.sanitize(req.body[field], {
-                ALLOWED_TAGS: [], // No HTML tags allowed
-                KEEP_CONTENT: true
-            });
+        if (req.body[field] && typeof req.body[field] === 'string') {
+            // Simple HTML tag removal (fallback)
+            req.body[field] = req.body[field]
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
         }
     }
 
