@@ -1,6 +1,7 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { disableDevTools } from './utils/disableDevTools';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -61,6 +62,11 @@ const LoadingFallback = () => (
 import CookieConsent from './components/CookieConsent';
 
 const App: React.FC = () => {
+  // เปิดใช้งานการป้องกัน DevTools ใน production
+  useEffect(() => {
+    disableDevTools();
+  }, []);
+
   return (
     <Router>
       <AuthProvider>

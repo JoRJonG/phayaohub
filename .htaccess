@@ -1,25 +1,171 @@
+# ==============================================================================
+# PhayaoHub - Professional Security Configuration
+# ==============================================================================
+
 # ----------------------------------------------------------------------
-# | Security                                                           |
+# | Security Headers                                                   |
 # ----------------------------------------------------------------------
 
-# Disable directory browsing
+<IfModule mod_headers.c>
+    # X-Frame-Options: ป้องกัน Clickjacking attacks
+    Header set X-Frame-Options "SAMEORIGIN"
+    
+    # X-Content-Type-Options: ป้องกัน MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # X-XSS-Protection: เปิดใช้งาน XSS filter ในเบราว์เซอร์เก่า
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Referrer-Policy: ควบคุมข้อมูล referrer ที่ส่งไป
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy: จำกัดการใช้งาน browser features
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+    
+    # Remove server information
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Directory Browsing & Server Signature                             |
+# ----------------------------------------------------------------------
+
+# ปิดการแสดงรายการไฟล์ในโฟลเดอร์
 Options -Indexes
 
-# Block access to dotfiles (hidden files) except .well-known
+# ----------------------------------------------------------------------
+# | File Access Protection                                             |
+# ----------------------------------------------------------------------
+
+# บล็อกการเข้าถึง dotfiles (ไฟล์ที่ขึ้นต้นด้วย .) ยกเว้น .well-known
 <FilesMatch "^\.(?!well-known)">
     Require all denied
 </FilesMatch>
 
-# Block access to sensitive files
-<FilesMatch "^(package\.json|package-lock\.json|yarn\.lock|composer\.json|composer\.lock|README\.md)$">
+# บล็อกไฟล์ configuration และ sensitive files
+<FilesMatch "^(package\.json|package-lock\.json|yarn\.lock|\.env|\.env\..*|\.git.*|\.htpasswd|web\.config|phpinfo\.php)$">
     Require all denied
 </FilesMatch>
 
-# Block access to backup and log files
-<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+# บล็อก backup files, log files, และไฟล์ชั่วคราว
+<FilesMatch "\.(bak|backup|log|sql|sqlite|old|orig|save|tmp)$">
     Require all denied
 </FilesMatch>
 
-# Prevent access to the server directory
-RewriteEngine On
-RewriteRule ^server/ - [F,L]
+# บล็อกไฟล์ที่มีนามสกุลอันตราย
+<FilesMatch "\.(bat|cmd|exe|sh)$">
+    Require all denied
+</FilesMatch>
+
+# บล็อก source maps และ TypeScript files (ป้องกันการดู source code)
+<FilesMatch "\.(map|ts|tsx)$">
+    Require all denied
+</FilesMatch>
+
+# ----------------------------------------------------------------------
+# | Directory & Path Protection                                        |
+# ----------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # บล็อกการเข้าถึงโฟลเดอร์ server
+    RewriteRule ^server/ - [F,L]
+    
+    # บล็อกการเข้าถึงโฟลเดอร์ node_modules
+    RewriteRule ^node_modules/ - [F,L]
+    
+    # บล็อกการเข้าถึงโฟลเดอร์ .git
+    RewriteRule ^\.git/ - [F,L]
+    
+    # ป้องกัน directory traversal attacks
+    RewriteCond %{QUERY_STRING} \.\.\/ [NC,OR]
+    RewriteCond %{QUERY_STRING} \.\.\\ [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | SQL Injection & Code Injection Protection                          |
+# ----------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+    # บล็อก SQL injection patterns ที่อันตรายที่สุด
+    RewriteCond %{QUERY_STRING} (union.*select|drop.*table|insert.*into.*values) [NC]
+    RewriteRule .* - [F,L]
+    
+    # บล็อก dangerous PHP functions
+    RewriteCond %{QUERY_STRING} (eval\(|base64_decode|shell_exec|system|passthru) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | MIME Type Security                                                 |
+# ----------------------------------------------------------------------
+
+<IfModule mod_mime.c>
+    # กำหนด MIME types ที่ปลอดภัย
+    AddType application/javascript js mjs
+    AddType application/json json
+    AddType image/svg+xml svg svgz
+    AddEncoding gzip svgz
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Upload Directory Protection                                        |
+# ----------------------------------------------------------------------
+
+# ป้องกันการ execute scripts ในโฟลเดอร์ uploads
+<IfModule mod_php.c>
+    <Directory "uploads">
+        php_flag engine off
+    </Directory>
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Cookie Security                                                    |
+# ----------------------------------------------------------------------
+
+<IfModule mod_headers.c>
+    # ตั้งค่า cookie flags สำหรับความปลอดภัย
+    # ใช้ Lax แทน Strict เพื่อไม่ให้กระทบการทำงาน
+    Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; SameSite=Lax"
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Cache Control for Static Assets                                   |
+# ----------------------------------------------------------------------
+
+<IfModule mod_headers.c>
+    # Cache static assets
+    <FilesMatch "\.(jpg|jpeg|png|gif|svg|webp|ico|css|js|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    
+    # Don't cache HTML
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# ----------------------------------------------------------------------
+# | Compression                                                        |
+# ----------------------------------------------------------------------
+
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# ==============================================================================
+# End of Security Configuration
+# ==============================================================================
