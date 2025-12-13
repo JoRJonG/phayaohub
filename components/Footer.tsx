@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   return (
@@ -8,28 +9,29 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-xl font-bold text-phayao-gold mb-4">Phayao Hub</h3>
             <p className="text-sm">
-              รวมทุกเรื่องราว.. เพื่อชาวพะเยา <br/>
+              รวมทุกเรื่องราว.. เพื่อชาวพะเยา <br />
               Connecting Phayao Community
             </p>
           </div>
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">เมนูลัด</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#/market" className="hover:text-phayao-gold">ตลาดซื้อขาย</a></li>
-              <li><a href="#/jobs" className="hover:text-phayao-gold">หางาน</a></li>
-              <li><a href="#/guide" className="hover:text-phayao-gold">ท่องเที่ยว</a></li>
+              <li><Link to="/market" className="hover:text-phayao-gold transition-colors">ตลาดซื้อขาย</Link></li>
+              <li><Link to="/jobs" className="hover:text-phayao-gold transition-colors">หางาน</Link></li>
+              <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ท่องเที่ยว</Link></li>
+              <li><Link to="/community" className="hover:text-phayao-gold transition-colors">เว็บบอร์ด</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">ติดต่อเรา</h4>
             <p className="text-sm">
-              Email: contact@phayaohub.com <br/>
+              Email: contact@phayaohub.com <br />
               Facebook: Phayao Hub Official
             </p>
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-4 text-center text-xs">
-          &copy; {new Date().getFullYear()} Phayao Hub. All rights reserved. (Demo)
+          &copy; {new Date().getFullYear()} Phayao Hub. All rights reserved.
         </div>
       </div>
     </footer>

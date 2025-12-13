@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 import { getFeaturedProducts, getFeaturedGuides, getLatestJobs, getTrendingPosts } from '../services/api';
 
@@ -55,57 +57,39 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchFeaturedProducts();
-    fetchFeaturedGuides();
-    fetchLatestJobs();
-    fetchTrendingPosts();
+    const fetchAllData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch all data in parallel for better performance
+        const [productsRes, guidesRes, jobsRes, postsRes] = await Promise.all([
+          getFeaturedProducts(),
+          getFeaturedGuides(),
+          getLatestJobs(),
+          getTrendingPosts()
+        ]);
+
+        // Update state with fetched data
+        if (productsRes.success) {
+          setFeaturedProducts(productsRes.data);
+        }
+        if (guidesRes.success) {
+          setFeaturedGuides(guidesRes.data);
+        }
+        if (jobsRes.success) {
+          setLatestJobs(jobsRes.data);
+        }
+        if (postsRes.success) {
+          setTrendingPosts(postsRes.data);
+        }
+      } catch (error) {
+        console.error('Error fetching homepage data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllData();
   }, []);
-
-  const fetchFeaturedProducts = async () => {
-    try {
-      const data = await getFeaturedProducts();
-      if (data.success) {
-        setFeaturedProducts(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchFeaturedGuides = async () => {
-    try {
-      const data = await getFeaturedGuides();
-      if (data.success) {
-        setFeaturedGuides(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching guides:', error);
-    }
-  };
-
-  const fetchLatestJobs = async () => {
-    try {
-      const data = await getLatestJobs();
-      if (data.success) {
-        setLatestJobs(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-    }
-  };
-
-  const fetchTrendingPosts = async () => {
-    try {
-      const data = await getTrendingPosts();
-      if (data.success) {
-        setTrendingPosts(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
-  };
 
   const formatSalary = (job: Job) => {
     if (job.salary_min && job.salary_max) {
@@ -157,8 +141,8 @@ const Home: React.FC = () => {
       <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
-          <Link to="/market" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-blue-50 text-phayao-blue rounded-full flex items-center justify-center mb-4 group-hover:bg-phayao-blue group-hover:text-white transition-colors duration-300">
+          <Link to="/market" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn">
+            <div className="w-14 h-14 bg-blue-50 text-phayao-blue rounded-full flex items-center justify-center mb-4 group-hover:bg-phayao-blue group-hover:text-white group-hover:scale-110 transition-all duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
@@ -167,8 +151,8 @@ const Home: React.FC = () => {
             <p className="text-slate-500 text-xs mt-1">สินค้า OTOP & มือสอง</p>
           </Link>
 
-          <Link to="/jobs" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
+          <Link to="/jobs" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+            <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-phayao-gold group-hover:text-white group-hover:scale-110 transition-all duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
@@ -177,8 +161,8 @@ const Home: React.FC = () => {
             <p className="text-slate-500 text-xs mt-1">งานประจำ & Part-time</p>
           </Link>
 
-          <Link to="/guide" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300">
+          <Link to="/guide" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <div className="w-14 h-14 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-500 group-hover:text-white group-hover:scale-110 transition-all duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -188,8 +172,8 @@ const Home: React.FC = () => {
             <p className="text-slate-500 text-xs mt-1">กิน เที่ยว พัก</p>
           </Link>
 
-          <Link to="/map" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300">
+          <Link to="/map" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <div className="w-14 h-14 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-500 group-hover:text-white group-hover:scale-110 transition-all duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
@@ -211,13 +195,13 @@ const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {featuredGuides.map((guide) => (
-              <Link to={`/guide/${guide.id}`} key={guide.id} className="rounded-lg overflow-hidden hover:shadow-lg transition block group">
+              <Link to={`/guide/${guide.id}`} key={guide.id} className="rounded-lg overflow-hidden hover:shadow-xl transition-all duration-500 block group">
                 <div className="h-48 bg-gray-200 overflow-hidden">
                   {guide.image_url ? (
                     <img
                       src={guide.image_url}
                       alt={guide.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       loading="lazy"
                       decoding="async"
                     />
@@ -263,13 +247,13 @@ const Home: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {featuredProducts.map((product) => (
-                <Link to={`/market/${product.id}`} key={product.id} className="rounded-lg overflow-hidden hover:shadow-lg transition block bg-white">
-                  <div className="h-48 bg-gray-200">
+                <Link to={`/market/${product.id}`} key={product.id} className="rounded-lg overflow-hidden hover:shadow-xl transition-all duration-500 block bg-white group">
+                  <div className="h-48 bg-gray-200 overflow-hidden">
                     {product.primary_image || product.image_url ? (
                       <img
                         src={product.primary_image || product.image_url}
                         alt={product.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         loading="lazy"
                         decoding="async"
                       />
