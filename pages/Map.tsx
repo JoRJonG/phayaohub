@@ -140,8 +140,8 @@ const MapPage: React.FC = () => {
                     center={[19.1667, 99.9000]}
                     zoom={13}
                     scrollWheelZoom={true}
-                    className="w-full h-full min-h-[500px]"
-                    style={{ height: 'calc(100vh - 80px)', width: '100%' }}
+                    className="w-full h-full"
+                    style={{ height: 'calc(100vh - 200px)', width: '100%' }}
                 >
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

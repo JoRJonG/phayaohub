@@ -71,18 +71,9 @@ const JobSeekerList = () => {
     return (
         <div className="min-h-screen bg-slate-50 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800 mb-2">คนหางาน</h1>
-                        <p className="text-gray-600">ค้นหาผู้สมัครงานที่มีคุณสมบัติตรงใจคุณ</p>
-                    </div>
-                    <Link
-                        to="/user/deposit-resume"
-                        className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-md"
-                    >
-                        <FileText size={20} />
-                        ฝากประวัติ
-                    </Link>
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-2">คนหางาน</h1>
+                    <p className="text-gray-600">ค้นหาผู้สมัครงานที่มีคุณสมบัติตรงใจคุณ</p>
                 </div>
 
                 <div className="mb-8 relative">
@@ -174,10 +165,7 @@ const JobSeekerList = () => {
                             <div className="col-span-full text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
                                 <User size={48} className="mx-auto text-gray-300 mb-4" />
                                 <h3 className="text-lg font-medium text-gray-900">ไม่พบข้อมูลผู้สมัครงาน</h3>
-                                <p className="text-gray-500 mt-1">ลองเปลี่ยนคำค้นหา หรือเป็นคนแรกที่ฝากประวัติ</p>
-                                <Link to="/user/deposit-resume" className="mt-4 inline-block text-blue-600 hover:underline">
-                                    ฝากประวัติทันที
-                                </Link>
+                                <p className="text-gray-500 mt-1">ลองเปลี่ยนคำค้นหาหรือค้นหาด้วยคำอื่น</p>
                             </div>
                         )}
                     </div>
