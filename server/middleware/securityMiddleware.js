@@ -1,5 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import { body, validationResult } from 'express-validator';
+import { logSecurityEvent } from '../utils/securityLogger.js';
 
 // Rate Limiting
 // General limiter for most routes
@@ -27,32 +28,20 @@ export const botBlocker = (req, res, next) => {
         return next();
     }
 
-    const botPatterns = [
-        'bot', 'spider', 'crawl', 'scanner', 'curl', 'wget', 'python', 'ruby', 'go-http-client',
-        'semrush', 'ahrefs', 'mj12bot', 'dotbot', 'bingbot', 'googlebot', 'slurp', 'baiduspider',
-        'yandex', 'sogou', 'exabot', 'facebot', 'ia_archiver'
-    ];
-
-    // Allow legitimate bots if needed (e.g., Googlebot for SEO)
-    // For now, we are blocking "unsafe" bots as requested. 
-    // Note: Blocking 'googlebot' might hurt SEO. The user asked to block "unsafe bots".
-    // I will filter out known good bots from the block list if the user wants "unsafe" ones blocked.
-    // However, the user said "block unsafe bot IPs auto". 
-    // Let's stick to a list of generally aggressive/useless bots for a private app or just block suspicious ones.
-    // Given the request "block unsafe bots", I'll block common scanners and tools, but maybe keep search engines?
-    // The user said "unsafe bots". I'll block generic 'bot' pattern but maybe exclude known search engines if this was a public site.
-    // But for "Phayao Hub", it's likely a public site.
-    // Let's refine the list to be "bad bots".
-
     const badBots = [
         'semrush', 'ahrefs', 'mj12bot', 'dotbot', 'blexbot', 'seokicks', 'megaindex', 'waitify',
-        'python-requests', 'curl', 'wget', 'netcraft', 'nmap', 'sqlmap', 'nikto', 'masscan'
+        'python-requests', 'curl', 'wget', 'netcraft', 'nmap', 'sqlmap', 'nikto', 'masscan',
+        'scrapy', 'httpclient', 'go-http', 'java/', 'libwww-perl'
     ];
 
     const isBadBot = badBots.some(bot => userAgent.toLowerCase().includes(bot));
 
     if (isBadBot) {
-        console.log(`Blocked bad bot: ${userAgent} from IP: ${req.ip}`);
+        logSecurityEvent('BOT_BLOCKED', {
+            userAgent,
+            ip: req.ip,
+            path: req.path
+        });
         return res.status(403).json({ success: false, error: 'Access denied' });
     }
 
@@ -147,3 +136,31 @@ export const changePasswordValidation = [
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('รหัสผ่านใหม่ต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข')
         .not().equals('current_password').withMessage('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม')
 ];
+
+// Upload Rate Limiter
+export const uploadLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 100, // 100 uploads per hour
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        error: 'คุณอัปโหลดไฟล์มากเกินไป กรุณารอสักครู่'
+    }
+});
+
+// API Rate Limiter
+export const apiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 60, // 60 requests per minute
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        error: 'คำขอมากเกินไป กรุณารอสักครู่'
+    },
+    skip: (req) => {
+        // Skip for static files and uploads
+        return req.path.startsWith('/uploads');
+    }
+});

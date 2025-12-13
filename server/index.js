@@ -18,7 +18,8 @@ import jobProfileRoutes from './routes/jobProfiles.js';
 import * as jobProfileService from './services/jobProfileService.js';
 import { db } from './db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
-import { generalLimiter, botBlocker, sensitiveFileBlocker } from './middleware/securityMiddleware.js';
+import { generalLimiter, botBlocker, sensitiveFileBlocker, uploadLimiter } from './middleware/securityMiddleware.js';
+import { sanitizeHtml, sanitizeSql } from './middleware/sanitizeMiddleware.js';
 import logger from './utils/logger.js';
 
 // Enforce JWT Secret
@@ -68,6 +69,10 @@ app.use(helmet({
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   noSniff: true, // X-Content-Type-Options: nosniff
   xssFilter: true, // X-XSS-Protection (legacy but doesn't hurt)
+  permittedCrossDomainPolicies: { permittedPolicies: "none" },
+  dnsPrefetchControl: { allow: false },
+  frameguard: { action: 'deny' },
+  hidePoweredBy: true
 }));
 app.use(hpp()); // Prevent HTTP Parameter Pollution
 app.use(compression()); // Enable Gzip compression
@@ -75,6 +80,17 @@ app.use(cookieParser()); // Parse Cookie header and populate req.cookies
 app.use(botBlocker); // Block bad bots
 app.use(sensitiveFileBlocker); // Block sensitive files
 app.use(generalLimiter); // Apply rate limiting to all requests
+
+// เพิ่ม custom security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  next();
+});
 
 // Middleware
 const allowedOrigins = [
@@ -107,8 +123,12 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' })); // Limit body size
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+// Input sanitization middleware
+app.use(sanitizeHtml);
+app.use(sanitizeSql);
+
 // เสิร์ฟไฟล์ static จากโฟลเดอร์ uploads พร้อม Cache-Control
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
   maxAge: '1d', // Cache for 1 day
   immutable: true // Content doesn't change
 }));
@@ -117,7 +137,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 import settingsRoutes from './routes/settings.js';
 
 app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadLimiter, uploadRoutes); // เพิ่ม uploadLimiter
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/job-profiles', jobProfileRoutes);

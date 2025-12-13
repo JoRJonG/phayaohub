@@ -5,6 +5,12 @@ import { db } from '../db.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { authLimiter, validate, registerValidation, loginValidation, changePasswordValidation } from '../middleware/securityMiddleware.js';
 import logger from '../utils/logger.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
@@ -176,10 +182,49 @@ router.put('/profile', authMiddleware, async (req, res, next) => {
     try {
         const { full_name, phone, avatar_url } = req.body;
 
+        console.log('=== Profile Update Debug ===');
+        console.log('New avatar_url from request:', avatar_url);
+
+        // 1. ดึงข้อมูล avatar_url เก่าจากฐานข้อมูล
+        const [users] = await db.query(
+            'SELECT avatar_url FROM users WHERE id = ?',
+            [req.user.id]
+        );
+
+        const oldAvatarUrl = users.length > 0 ? users[0].avatar_url : null;
+        console.log('Old avatar_url from DB:', oldAvatarUrl);
+
+        // 2. อัปเดตข้อมูลในฐานข้อมูล
         await db.query(
             'UPDATE users SET full_name = ?, phone = ?, avatar_url = ? WHERE id = ?',
             [full_name || null, phone || null, avatar_url || null, req.user.id]
         );
+
+        // 3. ลบรูปเก่าถ้ามีการเปลี่ยนรูปและรูปเก่าอยู่ในโฟลเดอร์ /uploads/
+        console.log('Checking deletion conditions:');
+        console.log('  - oldAvatarUrl exists?', !!oldAvatarUrl);
+        console.log('  - URLs are different?', oldAvatarUrl !== avatar_url);
+        console.log('  - Starts with /uploads/?', oldAvatarUrl?.startsWith('/uploads/'));
+
+        if (oldAvatarUrl && oldAvatarUrl !== avatar_url && oldAvatarUrl.startsWith('/uploads/')) {
+            // ตัด leading slash ออกเพื่อให้ path.join ทำงานถูกต้อง
+            const relativePath = oldAvatarUrl.substring(1);
+            const oldImagePath = path.join(__dirname, '..', '..', relativePath);
+            console.log('Attempting to delete old avatar at:', oldImagePath);
+
+            // ตรวจสอบว่าไฟล์มีอยู่จริงก่อนลบ
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) console.error('Error deleting old avatar:', err);
+                    else console.log('✓ Deleted old avatar:', oldImagePath);
+                });
+            } else {
+                console.log('✗ Old avatar file does not exist:', oldImagePath);
+            }
+        } else {
+            console.log('✗ Deletion conditions not met, skipping deletion');
+        }
+        console.log('=== End Debug ===');
 
         res.json({
             success: true,

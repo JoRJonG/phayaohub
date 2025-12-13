@@ -49,7 +49,9 @@ router.put('/hero-bg', authMiddleware, adminMiddleware, async (req, res) => {
 
         // 3. Delete old image if it exists and is different from new image
         if (oldImageUrl && oldImageUrl !== imageUrl && oldImageUrl.startsWith('/uploads/')) {
-            const oldImagePath = path.join(__dirname, '..', '..', oldImageUrl);
+            // ตัด leading slash ออกเพื่อให้ path.join ทำงานถูกต้อง
+            const relativePath = oldImageUrl.substring(1);
+            const oldImagePath = path.join(__dirname, '..', '..', relativePath);
             // Check if file exists before deleting
             if (fs.existsSync(oldImagePath)) {
                 fs.unlink(oldImagePath, (err) => {

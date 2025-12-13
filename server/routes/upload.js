@@ -16,7 +16,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // สร้างโฟลเดอร์ uploads ถ้ายังไม่มี
-const uploadDir = path.join(__dirname, '../uploads');
+const uploadDir = path.join(__dirname, '..', '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -45,6 +45,12 @@ const upload = multer({
 
 // ฟังก์ชันสำหรับ process และบันทึกไฟล์
 const processAndSaveImage = async (buffer, originalName, folder = 'others') => {
+  // ตรวจสอบขนาดไฟล์ (max 10MB)
+  const maxSize = 10 * 1024 * 1024; // 10MB
+  if (buffer.length > maxSize) {
+    throw new Error('ไฟล์มีขนาดใหญ่เกินไป (สูงสุด 10MB)');
+  }
+
   // Whitelist folders
   const allowedFolders = ['market', 'posts', 'users', 'guides', 'others'];
   const targetFolder = allowedFolders.includes(folder) ? folder : 'others';
