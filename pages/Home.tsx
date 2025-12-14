@@ -122,6 +122,12 @@ const Home: React.FC = () => {
     return labels[category] || category;
   };
 
+  const decodeHTML = (html: string) => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -357,7 +363,7 @@ const Home: React.FC = () => {
                       <span className="text-xs text-gray-400">{getTimeAgo(post.created_at)}</span>
                     </div>
                     <Link to={`/community/${post.id}`}>
-                      <h4 className="font-medium text-gray-800 hover:text-phayao-blue cursor-pointer line-clamp-2">{post.title}</h4>
+                      <h4 className="font-medium text-gray-800 hover:text-phayao-blue cursor-pointer line-clamp-2">{decodeHTML(post.title)}</h4>
                     </Link>
                     <div className="flex gap-4 mt-2 text-xs text-gray-500">
                       <span className="flex items-center gap-1">

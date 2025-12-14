@@ -176,6 +176,12 @@ const PostDetail: React.FC = () => {
         }
     };
 
+    const decodeHTML = (html: string) => {
+        const txt = document.createElement('textarea');
+        txt.innerHTML = html;
+        return txt.value;
+    };
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('th-TH', {
             year: 'numeric',
@@ -249,7 +255,7 @@ const PostDetail: React.FC = () => {
                                 </div>
 
                                 {/* Content */}
-                                <h1 className="text-2xl font-bold text-slate-900 mb-4">{post.title}</h1>
+                                <h1 className="text-2xl font-bold text-slate-900 mb-4">{decodeHTML(post.title)}</h1>
                                 <div className="prose prose-slate max-w-none text-slate-700 whitespace-pre-line mb-6">
                                     {post.content}
                                 </div>

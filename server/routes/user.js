@@ -4,16 +4,7 @@ import { authMiddleware } from '../middleware/authMiddleware.js';
 import { deleteFile } from '../utils/fileHandler.js';
 import logger from '../utils/logger.js';
 
-// Helper function to sanitize input
-const sanitizeInput = (text) => {
-    if (!text) return '';
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-};
+// Note: MySQL prepared statements handle escaping automatically
 
 const router = express.Router();
 
@@ -86,7 +77,7 @@ router.post('/market-items', async (req, res, next) => {
 
         const [result] = await db.query(
             'INSERT INTO market_items (user_id, category_id, title, description, price, location, contact_phone, contact_line, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, category_id, sanitizeInput(title), sanitizeInput(description), price, sanitizeInput(location), sanitizeInput(contact_phone), sanitizeInput(contact_line), mainImage, 'available']
+            [req.user.id, category_id, title, description, price, location, contact_phone, contact_line, mainImage, 'available']
         );
 
         const itemId = result.insertId;
@@ -130,7 +121,7 @@ router.put('/market-items/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE market_items SET category_id=?, title=?, description=?, price=?, location=?, contact_phone=?, contact_line=?, image_url=? WHERE id=?',
-            [category_id, sanitizeInput(title), sanitizeInput(description), price, sanitizeInput(location), sanitizeInput(contact_phone), sanitizeInput(contact_line), image_url, req.params.id]
+            [category_id, title, description, price, location, contact_phone, contact_line, image_url, req.params.id]
         );
 
         // Update gallery images
@@ -273,7 +264,7 @@ router.post('/jobs', async (req, res, next) => {
 
         await db.query(
             'INSERT INTO jobs (user_id, category_id, title, company_name, description, job_type, salary_min, salary_max, salary_type, location, contact_email, contact_phone, contact_line, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, category_id, sanitizeInput(title), sanitizeInput(company_name), sanitizeInput(description), job_type, salary_min, salary_max, salary_type, sanitizeInput(location), sanitizeInput(contact_email), sanitizeInput(contact_phone), sanitizeInput(contact_line), 'open']
+            [req.user.id, category_id, title, company_name, description, job_type, salary_min, salary_max, salary_type, location, contact_email, contact_phone, contact_line, 'open']
         );
 
         res.json({ success: true, message: 'สร้างประกาศงานสำเร็จ' });
@@ -300,7 +291,7 @@ router.put('/jobs/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE jobs SET category_id=?, title=?, company_name=?, description=?, job_type=?, salary_min=?, salary_max=?, salary_type=?, location=?, contact_email=?, contact_phone=?, contact_line=? WHERE id=?',
-            [category_id, sanitizeInput(title), sanitizeInput(company_name), sanitizeInput(description), job_type, salary_min, salary_max, salary_type, sanitizeInput(location), sanitizeInput(contact_email), sanitizeInput(contact_phone), sanitizeInput(contact_line), req.params.id]
+            [category_id, title, company_name, description, job_type, salary_min, salary_max, salary_type, location, contact_email, contact_phone, contact_line, req.params.id]
         );
 
         res.json({ success: true, message: 'แก้ไขประกาศงานสำเร็จ' });
@@ -381,7 +372,7 @@ router.post('/posts', async (req, res, next) => {
 
         await db.query(
             'INSERT INTO community_posts (user_id, title, content, category, image_url, status) VALUES (?, ?, ?, ?, ?, ?)',
-            [req.user.id, sanitizeInput(title), sanitizeInput(content), category, image_url, 'active']
+            [req.user.id, title, content, category, image_url, 'active']
         );
 
         res.json({ success: true, message: 'สร้างโพสต์สำเร็จ' });
@@ -413,7 +404,7 @@ router.put('/posts/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE community_posts SET title=?, content=?, category=?, image_url=? WHERE id=?',
-            [sanitizeInput(title), sanitizeInput(content), category, image_url, req.params.id]
+            [title, content, category, image_url, req.params.id]
         );
 
         res.json({ success: true, message: 'แก้ไขโพสต์สำเร็จ' });
@@ -430,7 +421,7 @@ router.put('/profile', async (req, res, next) => {
 
         await db.query(
             'UPDATE users SET full_name = ?, phone = ?, avatar_url = ? WHERE id = ?',
-            [sanitizeInput(full_name), sanitizeInput(phone), avatar_url, req.user.id]
+            [full_name, phone, avatar_url, req.user.id]
         );
 
         res.json({ success: true, message: 'อัพเดทข้อมูลส่วนตัวสำเร็จ' });

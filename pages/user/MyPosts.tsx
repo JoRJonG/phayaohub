@@ -207,6 +207,12 @@ const MyPosts: React.FC = () => {
         setShowCreateModal(true);
     };
 
+    const decodeHTML = (html: string) => {
+        const txt = document.createElement('textarea');
+        txt.innerHTML = html;
+        return txt.value;
+    };
+
     const resetForm = () => {
         setIsEditing(false);
         setEditingId(null);
@@ -255,7 +261,7 @@ const MyPosts: React.FC = () => {
                                         )}
                                     </div>
                                     <div>
-                                        <h3 className="font-semibold text-slate-800 text-lg">{post.title}</h3>
+                                        <h3 className="font-semibold text-slate-800 text-lg">{decodeHTML(post.title)}</h3>
                                         <p className="text-slate-500 text-sm line-clamp-1">{post.content}</p>
                                         <div className="flex items-center gap-3 text-xs text-slate-400 mt-2">
                                             <span className="bg-blue-50 text-blue-600 px-2 py-0.5 rounded">{post.category}</span>

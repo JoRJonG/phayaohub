@@ -4,16 +4,7 @@ import { authMiddleware, adminMiddleware } from '../middleware/authMiddleware.js
 import { deleteFile } from '../utils/fileHandler.js';
 import logger from '../utils/logger.js';
 
-// Helper function to sanitize input
-const sanitizeInput = (text) => {
-    if (!text) return '';
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-};
+// Note: MySQL prepared statements handle escaping automatically
 
 const router = express.Router();
 
@@ -233,7 +224,7 @@ router.post('/users', async (req, res, next) => {
 
         await db.query(
             'INSERT INTO users (username, email, password_hash, full_name, phone, role) VALUES (?, ?, ?, ?, ?, ?)',
-            [sanitizeInput(username), sanitizeInput(email), password_hash, sanitizeInput(full_name), sanitizeInput(phone), role]
+            [username, email, password_hash, full_name, phone, role]
         );
 
         res.json({ success: true, message: 'สร้างผู้ใช้สำเร็จ' });
@@ -250,7 +241,7 @@ router.put('/users/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE users SET full_name = ?, phone = ?, status = ? WHERE id = ?',
-            [sanitizeInput(full_name), sanitizeInput(phone), status, req.params.id]
+            [full_name, phone, status, req.params.id]
         );
 
         res.json({ success: true, message: 'อัพเดทข้อมูลผู้ใช้สำเร็จ' });
@@ -337,7 +328,7 @@ router.post('/market-items', async (req, res, next) => {
 
         const [result] = await db.query(
             'INSERT INTO market_items (user_id, title, description, price, category_id, location, contact_phone, contact_line, condition_type, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, sanitizeInput(title), sanitizeInput(description), price, category_id, sanitizeInput(location), sanitizeInput(contact_phone), sanitizeInput(contact_line), condition_type, image_url, 'available']
+            [req.user.id, title, description, price, category_id, location, contact_phone, contact_line, condition_type, image_url, 'available']
         );
 
         const itemId = result.insertId;
@@ -445,7 +436,7 @@ router.put('/market-items/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE market_items SET title=?, description=?, price=?, category_id=?, location=?, contact_phone=?, contact_line=?, condition_type=?, image_url=?, status=? WHERE id=?',
-            [sanitizeInput(title), sanitizeInput(description), price, category_id, sanitizeInput(location), sanitizeInput(contact_phone), sanitizeInput(contact_line), condition_type, image_url, status, req.params.id]
+            [title, description, price, category_id, location, contact_phone, contact_line, condition_type, image_url, status, req.params.id]
         );
 
         // Update images if provided
@@ -560,7 +551,7 @@ router.put('/jobs/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE jobs SET title=?, company_name=?, description=?, job_type=?, salary_min=?, salary_max=?, salary_type=?, location=?, category_id=?, contact_email=?, contact_phone=?, contact_line=?, requirements=?, benefits=?, status=? WHERE id=?',
-            [sanitizeInput(title), sanitizeInput(company_name), sanitizeInput(description), job_type, salary_min, salary_max, salary_type, sanitizeInput(location), category_id, sanitizeInput(contact_email), sanitizeInput(contact_phone), sanitizeInput(contact_line), sanitizeInput(requirements), sanitizeInput(benefits), status, req.params.id]
+            [title, company_name, description, job_type, salary_min, salary_max, salary_type, location, category_id, contact_email, contact_phone, contact_line, requirements, benefits, status, req.params.id]
         );
 
         res.json({ success: true, message: 'อัพเดทข้อมูลงานสำเร็จ' });
@@ -580,7 +571,7 @@ router.post('/jobs', async (req, res, next) => {
 
         await db.query(
             'INSERT INTO jobs (user_id, title, company_name, description, job_type, salary_min, salary_max, salary_type, location, category_id, contact_email, contact_phone, contact_line, requirements, benefits, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, sanitizeInput(title), sanitizeInput(company_name), sanitizeInput(description), job_type, salary_min, salary_max, salary_type, sanitizeInput(location), category_id, sanitizeInput(contact_email), sanitizeInput(contact_phone), sanitizeInput(contact_line), sanitizeInput(requirements), sanitizeInput(benefits), 'open']
+            [req.user.id, title, company_name, description, job_type, salary_min, salary_max, salary_type, location, category_id, contact_email, contact_phone, contact_line, requirements, benefits, 'open']
         );
 
         res.json({ success: true, message: 'สร้างประกาศงานสำเร็จ' });
@@ -685,7 +676,7 @@ router.put('/posts/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE community_posts SET title=?, content=?, category=?, image_url=?, status=? WHERE id=?',
-            [sanitizeInput(title), sanitizeInput(content), category, image_url, status, req.params.id]
+            [title, content, category, image_url, status, req.params.id]
         );
 
         res.json({ success: true, message: 'อัพเดทข้อมูลโพสต์สำเร็จ' });
@@ -814,7 +805,7 @@ router.post('/guides', async (req, res, next) => {
 
         const [result] = await db.query(
             'INSERT INTO guides (title, slug, description, content, category, image_url, is_featured, status, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [sanitizeInput(title), slug || title.toLowerCase().replace(/\s+/g, '-'), sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured || false, status || 'published', latitude, longitude]
+            [title, slug || title.toLowerCase().replace(/\s+/g, '-'), description, content, category, image_url, is_featured || false, status || 'published', latitude, longitude]
         );
 
         const guideId = result.insertId;
@@ -852,7 +843,7 @@ router.put('/guides/:id', async (req, res, next) => {
 
         await db.query(
             'UPDATE guides SET title=?, slug=?, description=?, content=?, category=?, image_url=?, is_featured=?, status=?, latitude=?, longitude=? WHERE id=?',
-            [sanitizeInput(title), finalSlug, sanitizeInput(description), sanitizeInput(content), category, image_url, is_featured, status, latitude, longitude, req.params.id]
+            [title, finalSlug, description, content, category, image_url, is_featured, status, latitude, longitude, req.params.id]
         );
 
         // Update additional images

@@ -53,6 +53,12 @@ const Community: React.FC = () => {
     }
   };
 
+  const decodeHTML = (html: string) => {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -118,7 +124,7 @@ const Community: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">{post.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">{decodeHTML(post.title)}</h3>
                   <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
 
                   <div className="flex items-center gap-6 mt-4 pt-4 border-t border-gray-50 text-gray-400 text-sm">

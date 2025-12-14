@@ -24,14 +24,18 @@ export const sanitizeHtml = (req, res, next) => {
 export const sanitizeSql = (req, res, next) => {
     const dangerousPatterns = [
         /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|SCRIPT)\b)/gi,
-        /(--|;|\/\*|\*\/|xp_|sp_|0x[0-9a-f]+)/gi,
+        /(--|;|\/\*|\*\/|xp_|sp_)/gi,
         /(\bOR\b.*=.*|1=1|'=')/gi
     ];
 
     const checkValue = (value) => {
         if (typeof value === 'string') {
+            // Skip HTML entities - they are safe and not SQL injection
+            // Common entities: &quot; &amp; &lt; &gt; &#039;
+            const withoutEntities = value.replace(/&[a-z]+;|&#[0-9]+;/gi, '');
+
             for (const pattern of dangerousPatterns) {
-                if (pattern.test(value)) {
+                if (pattern.test(withoutEntities)) {
                     return false;
                 }
             }

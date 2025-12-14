@@ -377,6 +377,12 @@ const AdminPosts: React.FC = () => {
         }
     };
 
+    const decodeHTML = (html: string) => {
+        const txt = document.createElement('textarea');
+        txt.innerHTML = html;
+        return txt.value;
+    };
+
     const getStatusLabel = (status: string) => {
         switch (status) {
             case 'active': return 'ใช้งาน';
@@ -495,7 +501,7 @@ const AdminPosts: React.FC = () => {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-slate-800 line-clamp-1">{post.title}</p>
+                                                    <p className="font-medium text-slate-800 line-clamp-1">{decodeHTML(post.title)}</p>
                                                     <p className="text-sm text-slate-500 line-clamp-1">{post.content}</p>
                                                     {post.image_url && (
                                                         <a href={post.image_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1">
