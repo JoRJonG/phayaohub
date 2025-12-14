@@ -39,7 +39,11 @@ router.get('/', async (req, res) => {
         } else {
             query += ' ORDER BY is_featured DESC, created_at DESC LIMIT ? OFFSET ?';
         }
-        params.push(parseInt(limit), parseInt(offset));
+
+        const safeLimit = Math.min(parseInt(limit) || 50, 100);
+        const safeOffset = parseInt(offset) || 0;
+
+        params.push(safeLimit, safeOffset);
 
         const [guides] = await db.query(query, params);
         sendSuccess(res, guides);

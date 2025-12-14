@@ -49,8 +49,11 @@ router.get('/', async (req, res) => {
             params.push(`%${search}%`, `%${search}%`);
         }
 
+        const safeLimit = Math.min(parseInt(limit) || 20, 100);
+        const safeOffset = parseInt(offset) || 0;
+
         query += ' ORDER BY mi.created_at DESC LIMIT ? OFFSET ?';
-        params.push(parseInt(limit), parseInt(offset));
+        params.push(safeLimit, safeOffset);
 
         const [items] = await db.query(query, params);
 

@@ -53,8 +53,11 @@ router.get('/', async (req, res) => {
             params.push(`%${search}%`, `%${search}%`, `%${search}%`);
         }
 
+        const safeLimit = Math.min(parseInt(limit) || 20, 100);
+        const safeOffset = parseInt(offset) || 0;
+
         query += ' ORDER BY j.created_at DESC LIMIT ? OFFSET ?';
-        params.push(parseInt(limit), parseInt(offset));
+        params.push(safeLimit, safeOffset);
 
         const [jobs] = await db.query(query, params);
 
