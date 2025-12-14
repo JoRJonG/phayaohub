@@ -11,7 +11,11 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import uploadRoutes from './routes/upload.js';
 import authRoutes from './routes/auth.js';
-import dataRoutes from './routes/data.js';
+import marketRoutes from './routes/market.js';
+import jobRoutes from './routes/jobs.js';
+import communityRoutes from './routes/community.js';
+import guideRoutes from './routes/guides.js';
+import categoryRoutes from './routes/categories.js';
 import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
 import jobProfileRoutes from './routes/jobProfiles.js';
@@ -142,7 +146,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/job-profiles', jobProfileRoutes);
 app.use('/api/settings', settingsRoutes);
-app.use('/api', dataRoutes);
+app.use('/api/market-items', marketRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/community-posts', communityRoutes);
+app.use('/api/guides', guideRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Serve static files from the React app
 const distPath = path.join(__dirname, '../dist');

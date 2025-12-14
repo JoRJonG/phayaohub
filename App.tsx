@@ -40,6 +40,11 @@ const MyJobs = React.lazy(() => import('./pages/user/MyJobs'));
 const MyPosts = React.lazy(() => import('./pages/user/MyPosts'));
 const Profile = React.lazy(() => import('./pages/user/Profile'));
 
+// Error Pages
+const NotFound = React.lazy(() => import('./pages/errors/NotFound'));
+const Forbidden = React.lazy(() => import('./pages/errors/Forbidden'));
+const AccessDenied = React.lazy(() => import('./pages/errors/AccessDenied'));
+
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -176,6 +181,11 @@ const App: React.FC = () => {
               <Route path="deposit-resume" element={<JobProfileForm />} />
               <Route path="profile" element={<Profile />} />
             </Route>
+
+            {/* Error Routes */}
+            <Route path="/403" element={<Forbidden />} />
+            <Route path="/blocked" element={<AccessDenied />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
         <CookieConsent />
