@@ -14,6 +14,14 @@ const Login: React.FC = () => {
 
     const from = (location.state as any)?.from?.pathname || '/';
 
+    // ตรวจสอบว่ามาจาก session timeout หรือไม่
+    React.useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('session_expired') === 'true') {
+            setError('เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+        }
+    }, [location]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { initSession, updateActivity, checkSessionTimeout, clearSession } from '../utils/sessionManager';
 
 interface User {
     id: number;
@@ -47,12 +48,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
         if (savedToken) {
-            setToken(savedToken);
-            fetchCurrentUser(savedToken);
+            // ตรวจสอบ session timeout ก่อน
+            if (checkSessionTimeout()) {
+                // Session หมดอายุ - ล้างข้อมูลและ logout
+                localStorage.removeItem('token');
+                clearSession();
+                setIsLoading(false);
+                // Redirect ไปหน้า login พร้อมแจ้งเตือน
+                window.location.href = '/login?session_expired=true';
+            } else {
+                setToken(savedToken);
+                fetchCurrentUser(savedToken);
+            }
         } else {
             setIsLoading(false);
         }
     }, []);
+
+    // ตรวจสอบ session timeout ทุก 1 นาที
+    useEffect(() => {
+        if (!user) return;
+
+        const interval = setInterval(() => {
+            if (checkSessionTimeout()) {
+                logout();
+                window.location.href = '/login?session_expired=true';
+            }
+        }, 60000); // ตรวจสอบทุก 1 นาที
+
+        return () => clearInterval(interval);
+    }, [user]);
+
+    // Track user activity
+    useEffect(() => {
+        if (!user) return;
+
+        const handleActivity = () => {
+            updateActivity();
+        };
+
+        // ฟัง events ที่แสดงว่ามี user activity
+        const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+        events.forEach(event => {
+            window.addEventListener(event, handleActivity);
+        });
+
+        return () => {
+            events.forEach(event => {
+                window.removeEventListener(event, handleActivity);
+            });
+        };
+    }, [user]);
 
     // ดึงข้อมูลผู้ใช้ปัจจุบัน
     const fetchCurrentUser = async (authToken: string) => {
@@ -100,6 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setToken(data.token);
             setUser(data.user);
             localStorage.setItem('token', data.token);
+            // เริ่มต้น session
+            initSession();
         } catch (error) {
             throw error;
         }
@@ -125,6 +173,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setToken(data.token);
             setUser(data.user);
             localStorage.setItem('token', data.token);
+            // เริ่มต้น session
+            initSession();
         } catch (error) {
             throw error;
         }
@@ -135,6 +185,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
+        // ล้างข้อมูล session
+        clearSession();
     };
 
     const value = {
