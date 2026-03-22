@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ร้านอาหารพะเยา</Link></li>
               <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ที่พักพะเยา</Link></li>
-              <li><Link to="/job-seekers" className="hover:text-phayao-gold transition-colors">รายชื่อผู้หางาน</Link></li>
+              <li><Link to="/jobs/seekers" className="hover:text-phayao-gold transition-colors">รายชื่อผู้หางาน</Link></li>
               <li><Link to="/map" className="hover:text-phayao-gold transition-colors">แผนที่พะเยา</Link></li>
             </ul>
           </div>
