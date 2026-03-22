@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-900 text-gray-300 py-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold text-phayao-gold mb-4">Phayao Hub</h3>
             <p className="text-sm">
@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
               Email: contact@phayaohub.com <br />
               Facebook: Phayao Hub Official
             </p>
-            
+
             {/* ย้ายกลับมาอยู่ใต้ส่วนติดต่อเราฝั่งขวามือ ตามที่คุณต้องการ */}
             {visitorCount !== null && (
               <div className="mt-8 lg:mt-auto flex items-center gap-3 bg-slate-800/40 border border-white/5 rounded-full px-5 py-2 w-max shadow-sm backdrop-blur-md hover:bg-slate-800/70 hover:border-phayao-gold/30 transition-all duration-300 group cursor-default">
