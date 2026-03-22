@@ -1,10 +1,11 @@
 import express from 'express';
 import { db } from '../db.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/authMiddleware.js';
 import logger from '../utils/logger.js';
 import { checkAndIncrementView } from '../services/viewService.js';
 import { sendSuccess, sendError } from '../utils/responseHandler.js';
 import { sanitizeInput } from '../utils/sanitizers.js';
+import { formatMarketItemDTO, formatMarketItemsDTO } from '../dtos/MarketDTO.js';
 
 const router = express.Router();
 
@@ -13,14 +14,15 @@ const router = express.Router();
  * @desc    Get market items
  * @access  Public
  */
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
         const { category_id, status, search, limit = 20, offset = 0 } = req.query;
 
         let query = `
       SELECT 
         mi.id, mi.category_id, mi.title, mi.description, mi.price, 
-        mi.condition_type, mi.location, mi.status, mi.created_at, mi.view_count,
+        mi.condition_type, mi.location, mi.contact_phone, mi.contact_line, 
+        mi.status, mi.created_at, mi.view_count, mi.user_id,
         u.full_name as seller_full_name,
         c.name as category_name,
         c.slug as category_slug,
@@ -85,7 +87,9 @@ router.get('/', async (req, res) => {
         const [countResult] = await db.query(countQuery, countParams);
         const total = countResult[0].total;
 
-        res.json({ success: true, data: items, total }); // Keeping original format for list + total
+        const dtoItems = formatMarketItemsDTO(items, req.user);
+
+        res.json({ success: true, data: dtoItems, total }); // Keeping original format for list + total
     } catch (error) {
         sendError(res, 'Get market items error', 500, error);
     }
@@ -113,12 +117,12 @@ router.get('/:id/images', async (req, res) => {
  * @desc    Get single market item
  * @access  Public
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', optionalAuthMiddleware, async (req, res) => {
     try {
         const [items] = await db.query(
             `SELECT mi.id, mi.category_id, mi.title, mi.description, mi.price, 
                     mi.condition_type, mi.location, mi.contact_phone, mi.contact_line, 
-                    mi.status, mi.created_at, mi.view_count,
+                    mi.status, mi.created_at, mi.view_count, mi.user_id,
                     u.full_name as seller_full_name,
                     c.name as category_name, c.slug as category_slug,
                     (SELECT image_url FROM market_images WHERE item_id = mi.id AND is_primary = TRUE LIMIT 1) as primary_image
@@ -138,7 +142,9 @@ router.get('/:id', async (req, res) => {
             await db.query('UPDATE market_items SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        sendSuccess(res, items[0]);
+        const dtoItem = formatMarketItemDTO(items[0], req.user);
+
+        sendSuccess(res, dtoItem);
     } catch (error) {
         sendError(res, 'Get market item error', 500, error);
     }

@@ -297,18 +297,18 @@ const JobProfileForm = () => {
                                         <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
                                             <User size={14} />
                                             <span>{profile.email}</span>
-                                            {profile.phone && (
+                                            {profile.phone ? (
                                                 <>
                                                     <span className="mx-1">•</span>
                                                     <span>{profile.phone}</span>
                                                 </>
-                                            )}
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                                    {profile.address && (
+                                    {profile.address ? (
                                         <div className="flex gap-2">
                                             <MapPin size={18} className="text-gray-400 mt-0.5" />
                                             <div>
@@ -316,8 +316,8 @@ const JobProfileForm = () => {
                                                 <p className="text-gray-600 text-sm">{profile.address}</p>
                                             </div>
                                         </div>
-                                    )}
-                                    {profile.education && (
+                                    ) : null}
+                                    {profile.education ? (
                                         <div className="flex gap-2">
                                             <GraduationCap size={18} className="text-gray-400 mt-0.5" />
                                             <div>
@@ -325,8 +325,8 @@ const JobProfileForm = () => {
                                                 <p className="text-gray-600 text-sm">{profile.education}</p>
                                             </div>
                                         </div>
-                                    )}
-                                    {profile.experience && (
+                                    ) : null}
+                                    {profile.experience ? (
                                         <div className="flex gap-2 md:col-span-2">
                                             <Briefcase size={18} className="text-gray-400 mt-0.5" />
                                             <div>
@@ -334,8 +334,8 @@ const JobProfileForm = () => {
                                                 <p className="text-gray-600 text-sm whitespace-pre-line">{profile.experience}</p>
                                             </div>
                                         </div>
-                                    )}
-                                    {profile.skills && (
+                                    ) : null}
+                                    {profile.skills ? (
                                         <div className="flex gap-2 md:col-span-2">
                                             <div className="mt-0.5"><FileText size={18} className="text-gray-400" /></div>
                                             <div>
@@ -343,7 +343,7 @@ const JobProfileForm = () => {
                                                 <p className="text-gray-600 text-sm">{profile.skills}</p>
                                             </div>
                                         </div>
-                                    )}
+                                    ) : null}
                                 </div>
 
                                 {profile.resume_url && (
@@ -402,7 +402,7 @@ const JobProfileForm = () => {
             </div>
 
             {/* Modal */}
-            {showModal && (
+            {showModal ? (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
@@ -527,12 +527,12 @@ const JobProfileForm = () => {
                                                 </label>
                                             </div>
                                             <p className="text-xs text-gray-500">PDF, PNG, JPG up to 10MB</p>
-                                            {resumeFile && (
+                                            {resumeFile ? (
                                                 <p className="text-sm text-green-600 font-medium mt-2">
                                                     เลือกไฟล์: {resumeFile.name}
                                                 </p>
-                                            )}
-                                            {formData.resume_url && !resumeFile && (
+                                            ) : null}
+                                            {formData.resume_url && !resumeFile ? (
                                                 <div className="mt-2">
                                                     <a
                                                         href={formData.resume_url}
@@ -544,7 +544,7 @@ const JobProfileForm = () => {
                                                         ดูไฟล์เดิมที่อัพโหลดไว้
                                                     </a>
                                                 </div>
-                                            )}
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
@@ -569,7 +569,7 @@ const JobProfileForm = () => {
                         </div>
                     </div>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

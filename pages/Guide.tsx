@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Star } from 'lucide-react';
+import SEO from '../components/SEO';
 
 interface Guide {
   id: number;
@@ -53,6 +54,10 @@ const Guide: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <SEO 
+        title="คู่มือท่องเที่ยวพะเยา - ที่เที่ยว ที่พัก ร้านอาหาร" 
+        description="แนะนำสถานที่ท่องเที่ยว ร้านอาหารอร่อย และที่พักน่านอนในจังหวัดพะเยา" 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter Tabs */}
         <div className="flex justify-center space-x-2 mb-8 overflow-x-auto no-scrollbar py-2">

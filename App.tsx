@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { disableDevTools } from './utils/disableDevTools';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PublicLayout from './components/PublicLayout';
 
 // Lazy load pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -78,85 +79,22 @@ const App: React.FC = () => {
         <ScrollToTop />
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Home /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/market" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Marketplace /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/market/:id" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><MarketItemDetail /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/jobs" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Jobs /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/jobs/:id" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><JobDetail /></main>
-                <Footer />
-              </div>
-            } />
+            {/* Public Routes with Shared Layout */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/market" element={<Marketplace />} />
+              <Route path="/market/:id" element={<MarketItemDetail />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/jobs/:id" element={<JobDetail />} />
+              <Route path="/jobs/seekers" element={<JobSeekerList />} />
+              <Route path="/guide" element={<Guide />} />
+              <Route path="/guide/:id" element={<GuideDetail />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/community/:id" element={<PostDetail />} />
+              <Route path="/map" element={<Map />} />
+            </Route>
 
-            <Route path="/jobs/seekers" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><JobSeekerList /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/guide" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Guide /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/guide/:id" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><GuideDetail /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/community" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Community /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/community/:id" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><PostDetail /></main>
-                <Footer />
-              </div>
-            } />
-            <Route path="/map" element={
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow"><Map /></main>
-                <Footer />
-              </div>
-            } />
+            {/* Auth Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 

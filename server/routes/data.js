@@ -3,9 +3,10 @@ import { db } from '../db.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/authMiddleware.js';
 import logger from '../utils/logger.js';
 import { checkAndIncrementView } from '../services/viewService.js';
-
-
-const router = express.Router();
+import { formatMarketItemsDTO, formatMarketItemDTO } from '../dtos/MarketDTO.js';
+import { formatJobsDTO, formatJobDTO } from '../dtos/JobDTO.js';
+import { formatCommunityPostsDTO, formatCommunityPostDTO } from '../dtos/CommunityDTO.js';
+import { formatGuidesDTO, formatGuideDTO } from '../dtos/GuideDTO.js';const router = express.Router();
 
 
 // ดึงหมวดหมู่ทั้งหมด
@@ -31,14 +32,15 @@ router.get('/categories', async (req, res, next) => {
 });
 
 // ดึงสินค้าตลาดมือสอง
-router.get('/market-items', async (req, res, next) => {
+router.get('/market-items', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const { category_id, status, search, limit = 20, offset = 0 } = req.query;
 
         let query = `
       SELECT 
         mi.id, mi.category_id, mi.title, mi.description, mi.price, 
-        mi.condition_type, mi.location, mi.status, mi.created_at, mi.view_count,
+        mi.condition_type, mi.location, mi.contact_phone, mi.contact_line, 
+        mi.status, mi.created_at, mi.view_count, mi.user_id,
         u.full_name as seller_full_name,
         c.name as category_name,
         c.slug as category_slug,
@@ -100,7 +102,9 @@ router.get('/market-items', async (req, res, next) => {
         const [countResult] = await db.query(countQuery, countParams);
         const total = countResult[0].total;
 
-        res.json({ success: true, data: items, total });
+        const dtoItems = formatMarketItemsDTO(items, req.user);
+
+        res.json({ success: true, data: dtoItems, total });
     } catch (error) {
         logger.error('Get market items error', error);
         next(error);
@@ -122,12 +126,12 @@ router.get('/market-items/:id/images', async (req, res, next) => {
 });
 
 // Get single market item
-router.get('/market-items/:id', async (req, res, next) => {
+router.get('/market-items/:id', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const [items] = await db.query(
             `SELECT mi.id, mi.category_id, mi.title, mi.description, mi.price, 
                     mi.condition_type, mi.location, mi.contact_phone, mi.contact_line, 
-                    mi.status, mi.created_at, mi.view_count,
+                    mi.status, mi.created_at, mi.view_count, mi.user_id,
                     u.full_name as seller_full_name,
                     c.name as category_name, c.slug as category_slug,
                     (SELECT image_url FROM market_images WHERE item_id = mi.id AND is_primary = TRUE LIMIT 1) as primary_image
@@ -147,7 +151,9 @@ router.get('/market-items/:id', async (req, res, next) => {
             await db.query('UPDATE market_items SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        res.json({ success: true, data: items[0] });
+        const dtoItem = formatMarketItemDTO(items[0], req.user);
+
+        res.json({ success: true, data: dtoItem });
     } catch (error) {
         logger.error('Get market item error', error);
         next(error);
@@ -174,14 +180,14 @@ router.post('/market-items', authMiddleware, async (req, res, next) => {
 });
 
 // ดึงประกาศงาน
-router.get('/jobs', async (req, res, next) => {
+router.get('/jobs', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const { category_id, job_type, status, search, limit = 20, offset = 0 } = req.query;
 
         let query = `
       SELECT 
         j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
-        j.salary_min, j.salary_max, j.salary_type, j.location, j.created_at, j.view_count,
+        j.salary_min, j.salary_max, j.salary_type, j.location, j.created_at, j.view_count, j.status, j.user_id,
         u.full_name as poster_full_name,
         c.name as category_name,
         c.slug as category_slug
@@ -252,7 +258,7 @@ router.get('/jobs', async (req, res, next) => {
         const [countResult] = await db.query(countQuery, countParams);
         const total = countResult[0].total;
 
-        res.json({ success: true, data: jobs, total });
+        res.json({ success: true, data: formatJobsDTO(jobs, req.user), total });
     } catch (error) {
         logger.error('Get jobs error', error);
         next(error);
@@ -260,13 +266,13 @@ router.get('/jobs', async (req, res, next) => {
 });
 
 // Get single job
-router.get('/jobs/:id', async (req, res, next) => {
+router.get('/jobs/:id', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const [jobs] = await db.query(
             `SELECT j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
                     j.salary_min, j.salary_max, j.salary_type, j.location, 
                     j.contact_email, j.contact_phone, j.contact_line,
-                    j.requirements, j.benefits, j.status, j.created_at, j.view_count,
+                    j.requirements, j.benefits, j.status, j.created_at, j.view_count, j.user_id,
                     c.name as category_name, c.slug as category_slug
              FROM jobs j
              LEFT JOIN categories c ON j.category_id = c.id
@@ -283,7 +289,7 @@ router.get('/jobs/:id', async (req, res, next) => {
             await db.query('UPDATE jobs SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        res.json({ success: true, data: jobs[0] });
+        res.json({ success: true, data: formatJobDTO(jobs[0], req.user) });
     } catch (error) {
         logger.error('Get job error', error);
         next(error);
@@ -325,7 +331,7 @@ router.get('/community-posts', optionalAuthMiddleware, async (req, res, next) =>
 
         let query = `
       SELECT 
-        cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
+        cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count, cp.user_id,
         u.full_name,
         u.avatar_url,
         (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
@@ -392,13 +398,7 @@ router.get('/community-posts', optionalAuthMiddleware, async (req, res, next) =>
         const [countResult] = await db.query(countQuery, countParamsClean);
         const total = countResult[0].total;
 
-        // Convert is_favorited to boolean
-        const postsWithBool = posts.map(post => ({
-            ...post,
-            is_favorited: !!post.is_favorited
-        }));
-
-        res.json({ success: true, data: postsWithBool, total });
+        res.json({ success: true, data: formatCommunityPostsDTO(posts, req.user), total });
     } catch (error) {
         logger.error('Get community posts error', error);
         next(error);
@@ -424,15 +424,17 @@ router.post('/community-posts', authMiddleware, async (req, res, next) => {
 });
 
 // Get single community post
-router.get('/community-posts/:id', async (req, res, next) => {
+router.get('/community-posts/:id', optionalAuthMiddleware, async (req, res, next) => {
     try {
+        const userId = req.user ? req.user.id : 0;
         const [posts] = await db.query(
-            `SELECT cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
-                    u.full_name, u.avatar_url
+            `SELECT cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count, cp.user_id,
+                    u.full_name, u.avatar_url,
+                    (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
              FROM community_posts cp
              LEFT JOIN users u ON cp.user_id = u.id
              WHERE cp.id = ?`,
-            [req.params.id]
+            [userId, req.params.id]
         );
 
         if (posts.length === 0) {
@@ -444,7 +446,7 @@ router.get('/community-posts/:id', async (req, res, next) => {
             await db.query('UPDATE community_posts SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        res.json({ success: true, data: posts[0] });
+        res.json({ success: true, data: formatCommunityPostDTO(posts[0], req.user) });
     } catch (error) {
         logger.error('Get post error', error);
         next(error);
@@ -505,7 +507,7 @@ router.post('/community-posts/:id/comments', authMiddleware, async (req, res, ne
 });
 
 // ดึงคู่มือท่องเที่ยว (เที่ยว พัก กิน)
-router.get('/guides', async (req, res, next) => {
+router.get('/guides', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const { category, status, is_featured, sort, limit = 50, offset = 0 } = req.query;
 
@@ -536,7 +538,7 @@ router.get('/guides', async (req, res, next) => {
         params.push(parseInt(limit), parseInt(offset));
 
         const [guides] = await db.query(query, params);
-        res.json({ success: true, data: guides });
+        res.json({ success: true, data: formatGuidesDTO(guides, req.user) });
     } catch (error) {
         logger.error('Get guides error', error);
         next(error);
@@ -544,7 +546,7 @@ router.get('/guides', async (req, res, next) => {
 });
 
 // Get single guide
-router.get('/guides/:id', async (req, res, next) => {
+router.get('/guides/:id', optionalAuthMiddleware, async (req, res, next) => {
     try {
         const [guides] = await db.query(
             'SELECT * FROM guides WHERE id = ?',
@@ -566,7 +568,10 @@ router.get('/guides/:id', async (req, res, next) => {
             await db.query('UPDATE guides SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        res.json({ success: true, data: guide });
+        const dtoGuide = formatGuideDTO(guide, req.user);
+        dtoGuide.images = images;
+
+        res.json({ success: true, data: dtoGuide });
     } catch (error) {
         logger.error('Get guide error', error);
         next(error);

@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0">
+            <Link to="/" className="flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue rounded-lg">
               <span className="font-bold text-2xl tracking-tight text-phayao-gold">
                 Phayao<span className="text-white">Hub</span>
               </span>
@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue ${isActive(link.path)
                       ? 'bg-blue-800 text-phayao-gold shadow-md'
                       : 'text-white hover:bg-blue-800 hover:shadow-sm'
                       }`}
@@ -62,11 +62,11 @@ const Navbar: React.FC = () => {
                 <div className="relative ml-4">
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-all duration-200 group"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition-colors duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
                   >
-                    <div className="w-9 h-9 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden ring-2 ring-transparent group-hover:ring-white/30 transition-all">
+                    <div className="w-9 h-9 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden ring-2 ring-transparent group-hover:ring-white/30 transition-shadow">
                       {user?.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                        <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" width={48} height={48} />
                       ) : (
                         (user?.full_name || 'U').charAt(0).toUpperCase()
                       )}
@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-phayao-gold text-phayao-blue flex items-center justify-center font-bold overflow-hidden">
                             {user?.avatar_url ? (
-                              <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                              <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" width={48} height={48} />
                             ) : (
                               (user?.full_name || 'U').charAt(0).toUpperCase()
                             )}
@@ -130,14 +130,14 @@ const Navbar: React.FC = () => {
                 <div className="flex items-center gap-2 ml-4">
                   <Link
                     to="/login"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-800 transition-all duration-200 border border-white/20"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-blue-800 transition-colors duration-200 border border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
                   >
                     <User size={18} />
                     <span>เข้าสู่ระบบ</span>
                   </Link>
                   <Link
                     to="/register"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-all duration-200 shadow-md hover:shadow-lg"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-colors duration-200 shadow-md hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
                   >
                     <User size={18} />
                     <span>สมัครสมาชิก</span>
@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="bg-blue-800 inline-flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-white hover:bg-blue-700 focus:outline-none"
+              className="bg-blue-800 inline-flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -188,7 +188,7 @@ const Navbar: React.FC = () => {
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${isActive(link.path)
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue ${isActive(link.path)
                     ? 'bg-blue-800 text-phayao-gold shadow-lg scale-[1.02]'
                     : 'text-white hover:bg-blue-700 hover:translate-x-1'
                     }`}
@@ -219,7 +219,7 @@ const Navbar: React.FC = () => {
                   <Link
                     to="/admin"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-all duration-200 hover:translate-x-1"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition duration-200 hover:translate-x-1"
                   >
                     <Settings size={20} className="flex-shrink-0" />
                     <span>Admin Dashboard</span>
@@ -238,7 +238,7 @@ const Navbar: React.FC = () => {
                     handleLogout();
                     setIsOpen(false);
                   }}
-                  className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-red-600 transition-all duration-200 hover:translate-x-1"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-red-600 transition duration-200 hover:translate-x-1"
                 >
                   <LogOut size={20} className="flex-shrink-0" />
                   <span>ออกจากระบบ</span>
@@ -249,7 +249,7 @@ const Navbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-all duration-200 border border-white/20"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-blue-700 transition-colors duration-200 border border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
                 >
                   <User size={20} />
                   <span>เข้าสู่ระบบ</span>
@@ -257,7 +257,7 @@ const Navbar: React.FC = () => {
                 <Link
                   to="/register"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-all duration-200 shadow-lg"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-semibold bg-phayao-gold text-phayao-blue hover:bg-yellow-400 transition-colors duration-200 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue"
                 >
                   <User size={20} />
                   <span>สมัครสมาชิก</span>

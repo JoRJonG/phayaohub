@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, DollarSign, Tag, User, Phone, MessageCircle, Calendar, Eye } from 'lucide-react';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface MarketItem {
     id: number;
@@ -104,6 +106,22 @@ const MarketItemDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            <SEO 
+                title={`${item.title} - ตลาดซื้อขายพะเยา`}
+                description={`${item.title} ราคา ${item.price.toLocaleString()} บาท. ${item.description.substring(0, 120)}...`}
+                ogImage={selectedImage || undefined}
+            />
+            <StructuredData 
+                type="product"
+                data={{
+                    name: item.title,
+                    description: item.description,
+                    image: selectedImage || 'https://phayaohub.com/og-image.jpg',
+                    price: item.price,
+                    url: window.location.href,
+                    availability: item.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+                }}
+            />
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button

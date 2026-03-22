@@ -68,4 +68,29 @@ router.put('/hero-bg', authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
+// Record a new visit
+router.post('/visit', async (req, res) => {
+    try {
+        await db.query(
+            'INSERT INTO system_settings (setting_key, setting_value) VALUES ("total_visitors", "1") ON DUPLICATE KEY UPDATE setting_value = CAST(setting_value AS UNSIGNED) + 1'
+        );
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Record visit error:', error);
+        res.status(500).json({ success: false });
+    }
+});
+
+// Get total visitors
+router.get('/visitors', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT setting_value FROM system_settings WHERE setting_key = "total_visitors"');
+        const count = rows.length > 0 ? parseInt(rows[0].setting_value, 10) : 0;
+        res.json({ success: true, count });
+    } catch (error) {
+        console.error('Get visitors error:', error);
+        res.status(500).json({ success: false, count: 0 });
+    }
+});
+
 export default router;

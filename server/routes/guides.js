@@ -3,6 +3,8 @@ import { db } from '../db.js';
 import logger from '../utils/logger.js';
 import { checkAndIncrementView } from '../services/viewService.js';
 import { sendSuccess, sendError } from '../utils/responseHandler.js';
+import { optionalAuthMiddleware } from '../middleware/authMiddleware.js';
+import { formatGuideDTO, formatGuidesDTO } from '../dtos/GuideDTO.js';
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ const router = express.Router();
  * @desc    Get guides
  * @access  Public
  */
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
         const { category, status, is_featured, sort, limit = 50, offset = 0 } = req.query;
 
@@ -46,7 +48,7 @@ router.get('/', async (req, res) => {
         params.push(safeLimit, safeOffset);
 
         const [guides] = await db.query(query, params);
-        sendSuccess(res, guides);
+        sendSuccess(res, formatGuidesDTO(guides, req.user));
     } catch (error) {
         sendError(res, 'Get guides error', 500, error);
     }
@@ -57,7 +59,7 @@ router.get('/', async (req, res) => {
  * @desc    Get single guide
  * @access  Public
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', optionalAuthMiddleware, async (req, res) => {
     try {
         const [guides] = await db.query(
             'SELECT * FROM guides WHERE id = ?',
@@ -79,7 +81,10 @@ router.get('/:id', async (req, res) => {
             await db.query('UPDATE guides SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        sendSuccess(res, guide);
+        const dtoGuide = formatGuideDTO(guide, req.user);
+        dtoGuide.images = images;
+
+        sendSuccess(res, dtoGuide);
     } catch (error) {
         sendError(res, 'Get guide error', 500, error);
     }

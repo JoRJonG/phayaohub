@@ -1,10 +1,11 @@
 import express from 'express';
 import { db } from '../db.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/authMiddleware.js';
 import logger from '../utils/logger.js';
 import { checkAndIncrementView } from '../services/viewService.js';
 import { sendSuccess, sendError } from '../utils/responseHandler.js';
 import { sanitizeInput } from '../utils/sanitizers.js';
+import { formatJobDTO, formatJobsDTO } from '../dtos/JobDTO.js';
 
 const router = express.Router();
 
@@ -13,14 +14,14 @@ const router = express.Router();
  * @desc    Get all jobs
  * @access  Public
  */
-router.get('/', async (req, res) => {
+router.get('/', optionalAuthMiddleware, async (req, res) => {
     try {
         const { category_id, job_type, status, search, limit = 20, offset = 0 } = req.query;
 
         let query = `
       SELECT 
         j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
-        j.salary_min, j.salary_max, j.salary_type, j.location, j.created_at, j.view_count,
+        j.salary_min, j.salary_max, j.salary_type, j.location, j.created_at, j.view_count, j.status, j.user_id,
         u.full_name as poster_full_name,
         c.name as category_name,
         c.slug as category_slug
@@ -94,7 +95,9 @@ router.get('/', async (req, res) => {
         const [countResult] = await db.query(countQuery, countParams);
         const total = countResult[0].total;
 
-        res.json({ success: true, data: jobs, total });
+        const dtoJobs = formatJobsDTO(jobs, req.user);
+
+        res.json({ success: true, data: dtoJobs, total });
     } catch (error) {
         sendError(res, 'Get jobs error', 500, error);
     }
@@ -105,13 +108,13 @@ router.get('/', async (req, res) => {
  * @desc    Get single job
  * @access  Public
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', optionalAuthMiddleware, async (req, res) => {
     try {
         const [jobs] = await db.query(
             `SELECT j.id, j.category_id, j.title, j.company_name, j.description, j.job_type,
                     j.salary_min, j.salary_max, j.salary_type, j.location, 
                     j.contact_email, j.contact_phone, j.contact_line,
-                    j.requirements, j.benefits, j.status, j.created_at, j.view_count,
+                    j.requirements, j.benefits, j.status, j.created_at, j.view_count, j.user_id,
                     c.name as category_name, c.slug as category_slug
              FROM jobs j
              LEFT JOIN categories c ON j.category_id = c.id
@@ -128,7 +131,9 @@ router.get('/:id', async (req, res) => {
             await db.query('UPDATE jobs SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
 
-        sendSuccess(res, jobs[0]);
+        const dtoJob = formatJobDTO(jobs[0], req.user);
+
+        sendSuccess(res, dtoJob);
     } catch (error) {
         sendError(res, 'Get job error', 500, error);
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageSquare, Heart, Share2, User, Clock, Send, Eye } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import SEO from '../components/SEO';
 
 interface Comment {
     id: number;
@@ -215,6 +216,11 @@ const PostDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 py-8">
+            <SEO 
+                title={`${post.title} | Phayao Talk`}
+                description={post.content.substring(0, 120) + "..."}
+                ogImage={post.image_url || undefined}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Back Button */}
                 <button
@@ -247,11 +253,11 @@ const PostDetail: React.FC = () => {
                                             {formatDate(post.created_at)}
                                         </div>
                                     </div>
-                                    {post.category && (
+                                    {post.category ? (
                                         <span className="ml-auto px-3 py-1 bg-blue-50 text-phayao-blue text-sm font-medium rounded-full">
                                             {post.category}
                                         </span>
-                                    )}
+                                    ) : null}
                                 </div>
 
                                 {/* Content */}
@@ -261,11 +267,11 @@ const PostDetail: React.FC = () => {
                                 </div>
 
                                 {/* Image */}
-                                {post.image_url && (
+                                {post.image_url ? (
                                     <div className="mb-6 rounded-lg overflow-hidden">
                                         <img src={post.image_url} alt={post.title} className="w-full h-auto object-cover" />
                                     </div>
-                                )}
+                                ) : null}
 
                                 {/* Footer Stats */}
                                 <div className="flex items-center gap-6 pt-4 border-t border-slate-100 text-slate-500">

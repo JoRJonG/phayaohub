@@ -8,6 +8,7 @@ import logger from '../utils/logger.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { formatUserDTO } from '../dtos/UserDTO.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,14 +60,14 @@ router.post('/register', authLimiter, validate(registerValidation), async (req, 
             success: true,
             message: 'สมัครสมาชิกสำเร็จ',
             token,
-            user: {
+            user: formatUserDTO({
                 id: result.insertId,
                 username,
                 email,
-                full_name: full_name || null,
-                phone: phone || null,
+                full_name,
+                phone,
                 role: 'user'
-            }
+            })
         });
     } catch (error) {
         logger.error('Register error', error);
@@ -136,15 +137,7 @@ router.post('/login', authLimiter, validate(loginValidation), async (req, res, n
             success: true,
             message: 'เข้าสู่ระบบสำเร็จ',
             token,
-            user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                full_name: user.full_name,
-                phone: user.phone,
-                avatar_url: user.avatar_url,
-                role: user.role
-            }
+            user: formatUserDTO(user)
         });
     } catch (error) {
         logger.error('Login error', error);
@@ -169,7 +162,7 @@ router.get('/me', authMiddleware, async (req, res, next) => {
 
         res.json({
             success: true,
-            user: users[0]
+            user: formatUserDTO(users[0])
         });
     } catch (error) {
         logger.error('Get user error', error);

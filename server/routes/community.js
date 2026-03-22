@@ -5,6 +5,7 @@ import logger from '../utils/logger.js';
 import { checkAndIncrementView } from '../services/viewService.js';
 import { sendSuccess, sendError } from '../utils/responseHandler.js';
 import { sanitizeInput } from '../utils/sanitizers.js';
+import { formatCommunityPostDTO, formatCommunityPostsDTO } from '../dtos/CommunityDTO.js';
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
 
         let query = `
       SELECT 
-        cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
+        cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count, cp.user_id,
         u.full_name,
         u.avatar_url,
         (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
@@ -83,13 +84,9 @@ router.get('/', optionalAuthMiddleware, async (req, res) => {
         const [countResult] = await db.query(countQuery, countParamsClean);
         const total = countResult[0].total;
 
-        // Convert is_favorited to boolean
-        const postsWithBool = posts.map(post => ({
-            ...post,
-            is_favorited: !!post.is_favorited
-        }));
+        const dtoPosts = formatCommunityPostsDTO(posts, req.user);
 
-        res.json({ success: true, data: postsWithBool, total });
+        res.json({ success: true, data: dtoPosts, total });
     } catch (error) {
         sendError(res, 'Get community posts error', 500, error);
     }
@@ -129,15 +126,17 @@ router.post('/', authMiddleware, async (req, res) => {
  * @desc    Get single community post
  * @access  Public
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', optionalAuthMiddleware, async (req, res) => {
     try {
+        const userId = req.user ? req.user.id : 0;
         const [posts] = await db.query(
-            `SELECT cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count,
-                    u.full_name, u.avatar_url
+            `SELECT cp.id, cp.title, cp.content, cp.category, cp.image_url, cp.status, cp.created_at, cp.view_count, cp.comment_count, cp.user_id,
+                    u.full_name, u.avatar_url,
+                    (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
              FROM community_posts cp
              LEFT JOIN users u ON cp.user_id = u.id
              WHERE cp.id = ?`,
-            [req.params.id]
+            [userId, req.params.id]
         );
 
         if (posts.length === 0) {
@@ -148,8 +147,10 @@ router.get('/:id', async (req, res) => {
         await checkAndIncrementView(req, res, 'post', req.params.id, async () => {
             await db.query('UPDATE community_posts SET view_count = view_count + 1 WHERE id = ?', [req.params.id]);
         });
+        
+        const dtoPost = formatCommunityPostDTO(posts[0], req.user);
 
-        sendSuccess(res, posts[0]);
+        sendSuccess(res, dtoPost);
     } catch (error) {
         sendError(res, 'Get post error', 500, error);
     }

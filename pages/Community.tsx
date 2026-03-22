@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import SEO from '../components/SEO';
 
 interface Post {
   id: number;
@@ -75,6 +76,10 @@ const Community: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
+      <SEO 
+        title="Phayao Talk - เว็บบอร์ดพูดคุย แลกเปลี่ยน แจ้งข่าวสารพะเยา" 
+        description="ชุมชนออนไลน์สำหรับชาวพะเยา พูดคุยเรื่องทั่วไป แจ้งข่าวสาร รีวิวร้านอาหาร ที่เที่ยวและที่พัก" 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <div>

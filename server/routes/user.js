@@ -3,6 +3,9 @@ import { db } from '../db.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { deleteFile } from '../utils/fileHandler.js';
 import logger from '../utils/logger.js';
+import { formatMarketItemsDTO, formatMarketItemDTO } from '../dtos/MarketDTO.js';
+import { formatJobsDTO, formatJobDTO } from '../dtos/JobDTO.js';
+import { formatCommunityPostsDTO } from '../dtos/CommunityDTO.js';
 
 // Note: MySQL prepared statements handle escaping automatically
 
@@ -17,14 +20,16 @@ router.use(authMiddleware);
 router.get('/market-items', async (req, res, next) => {
     try {
         const [items] = await db.query(
-            `SELECT mi.*, c.name as category_name 
+            `SELECT mi.*, c.name as category_name, c.slug as category_slug, u.full_name as seller_full_name,
+                    (SELECT image_url FROM market_images WHERE item_id = mi.id AND is_primary = TRUE LIMIT 1) as primary_image
              FROM market_items mi 
              LEFT JOIN categories c ON mi.category_id = c.id 
+             LEFT JOIN users u ON mi.user_id = u.id
              WHERE mi.user_id = ? 
              ORDER BY mi.created_at DESC`,
             [req.user.id]
         );
-        res.json({ success: true, data: items });
+        res.json({ success: true, data: formatMarketItemsDTO(items, req.user) });
     } catch (error) {
         logger.error('Get user items error', error);
         next(error);
@@ -35,9 +40,11 @@ router.get('/market-items', async (req, res, next) => {
 router.get('/market-items/:id', async (req, res, next) => {
     try {
         const [items] = await db.query(
-            `SELECT mi.*, c.name as category_name 
+            `SELECT mi.*, c.name as category_name, c.slug as category_slug, u.full_name as seller_full_name,
+                    (SELECT image_url FROM market_images WHERE item_id = mi.id AND is_primary = TRUE LIMIT 1) as primary_image
              FROM market_items mi 
              LEFT JOIN categories c ON mi.category_id = c.id 
+             LEFT JOIN users u ON mi.user_id = u.id
              WHERE mi.id = ? AND mi.user_id = ?`,
             [req.params.id, req.user.id]
         );
@@ -54,9 +61,10 @@ router.get('/market-items/:id', async (req, res, next) => {
             [item.id]
         );
 
-        item.images = images;
+        const dtoItem = formatMarketItemDTO(item, req.user);
+        dtoItem.images = images;
 
-        res.json({ success: true, data: item });
+        res.json({ success: true, data: dtoItem });
     } catch (error) {
         logger.error('Get item error', error);
         next(error);
@@ -217,14 +225,15 @@ router.delete('/market-items/:id', async (req, res, next) => {
 router.get('/jobs', async (req, res, next) => {
     try {
         const [jobs] = await db.query(
-            `SELECT j.*, c.name as category_name 
+            `SELECT j.*, c.name as category_name, c.slug as category_slug, u.full_name as poster_full_name 
              FROM jobs j 
              LEFT JOIN categories c ON j.category_id = c.id 
+             LEFT JOIN users u ON j.user_id = u.id
              WHERE j.user_id = ? 
              ORDER BY j.created_at DESC`,
             [req.user.id]
         );
-        res.json({ success: true, data: jobs });
+        res.json({ success: true, data: formatJobsDTO(jobs, req.user) });
     } catch (error) {
         logger.error('Get user jobs error', error);
         next(error);
@@ -235,9 +244,10 @@ router.get('/jobs', async (req, res, next) => {
 router.get('/jobs/:id', async (req, res, next) => {
     try {
         const [jobs] = await db.query(
-            `SELECT j.*, c.name as category_name 
+            `SELECT j.*, c.name as category_name, c.slug as category_slug, u.full_name as poster_full_name 
              FROM jobs j 
              LEFT JOIN categories c ON j.category_id = c.id 
+             LEFT JOIN users u ON j.user_id = u.id
              WHERE j.id = ? AND j.user_id = ?`,
             [req.params.id, req.user.id]
         );
@@ -246,7 +256,7 @@ router.get('/jobs/:id', async (req, res, next) => {
             return res.status(404).json({ success: false, error: 'ไม่พบประกาศงาน' });
         }
 
-        res.json({ success: true, data: jobs[0] });
+        res.json({ success: true, data: formatJobDTO(jobs[0], req.user) });
     } catch (error) {
         logger.error('Get job error', error);
         next(error);
@@ -351,10 +361,14 @@ router.delete('/jobs/:id', async (req, res, next) => {
 router.get('/posts', async (req, res, next) => {
     try {
         const [posts] = await db.query(
-            `SELECT * FROM community_posts WHERE user_id = ? ORDER BY created_at DESC`,
-            [req.user.id]
+            `SELECT cp.*, u.full_name, u.avatar_url,
+                    (SELECT COUNT(*) FROM favorites f WHERE f.item_type = 'post' AND f.item_id = cp.id AND f.user_id = ?) > 0 as is_favorited
+             FROM community_posts cp 
+             LEFT JOIN users u ON cp.user_id = u.id
+             WHERE cp.user_id = ? ORDER BY cp.created_at DESC`,
+            [req.user.id, req.user.id]
         );
-        res.json({ success: true, data: posts });
+        res.json({ success: true, data: formatCommunityPostsDTO(posts, req.user) });
     } catch (error) {
         logger.error('Get user posts error', error);
         next(error);

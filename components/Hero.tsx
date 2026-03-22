@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 
 const Hero: React.FC = () => {
@@ -31,10 +31,17 @@ const Hero: React.FC = () => {
   return (
     <div className="relative h-[500px] w-full bg-gray-900 overflow-hidden">
       {/* Background Image - Simulating Kwan Phayao Sunset */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-60"
-        style={{ backgroundImage: `url("${bgImage}")` }}
-      ></div>
+      {bgImage && (
+        <img
+          src={bgImage}
+          alt="Phayao Hub Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          fetchPriority="high"
+          decoding="sync"
+          width="1920"
+          height="500"
+        />
+      )}
 
       {/* Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-t from-phayao-blue/90 to-transparent"></div>
@@ -49,35 +56,35 @@ const Hero: React.FC = () => {
 
         {/* Search Bar with Autocomplete */}
         <div className="w-full max-w-lg">
-          <SearchBar placeholder="ค้นหา... งาน, ที่พัก, ของกิน, สินค้า" />
+          <SearchBar placeholder="ค้นหา… งาน, ที่พัก, ของกิน, สินค้า" />
         </div>
 
         {/* Quick Tags */}
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <span
-            onClick={() => navigate('/jobs')}
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          <Link
+            to="/jobs"
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
           >
             #งานว่าง
-          </span>
-          <span
-            onClick={() => navigate('/market')}
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          </Link>
+          <Link
+            to="/market"
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
           >
             #ของมือสอง
-          </span>
-          <span
-            onClick={() => navigate('/guide')}
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          </Link>
+          <Link
+            to="/guide"
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
           >
             #คาเฟ่
-          </span>
-          <span
-            onClick={() => navigate('/guide')}
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+          </Link>
+          <Link
+            to="/guide"
+            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
           >
             #ที่พัก
-          </span>
+          </Link>
         </div>
       </div>
     </div>

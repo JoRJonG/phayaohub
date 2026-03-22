@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -99,6 +100,10 @@ const Jobs: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
+      <SEO 
+        title="หางานพะเยา - แหล่งรวมงานดี เงินเดือนโดนใจในจังหวัดพะเยา" 
+        description="ค้นหางานประจำ งานพาร์ทไทม์ และฟรีแลนซ์ ในจังหวัดพะเยา มีงานใหม่ๆ อัพเดททุกวัน" 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">

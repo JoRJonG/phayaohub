@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, Briefcase, DollarSign, Building2, Mail, Phone, MessageCircle, Eye } from 'lucide-react';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface Job {
     id: number;
@@ -100,6 +102,23 @@ const JobDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 pb-12">
+            <SEO 
+                title={`${job.title} - ${job.company_name} | หางานพะเยา`}
+                description={`รับสมัคร ${job.title} โดย ${job.company_name} สถานที่: ${job.location || 'พะเยา'}. ${job.description.substring(0, 120)}...`}
+            />
+            <StructuredData 
+                type="jobPosting"
+                data={{
+                    title: job.title,
+                    description: job.description,
+                    companyName: job.company_name,
+                    location: job.location || 'พะเยา',
+                    employmentType: job.job_type.toUpperCase(),
+                    datePosted: job.created_at,
+                    url: window.location.href,
+                    salary: job.salary_min ? { min: job.salary_min, max: job.salary_max } : undefined
+                }}
+            />
             {/* Header Banner */}
             <div className="bg-white border-b border-slate-200 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-8">

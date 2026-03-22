@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Eye, Star, Calendar, X, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import SEO from '../components/SEO';
 
 interface Guide {
     id: number;
@@ -128,6 +129,11 @@ const GuideDetail: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            <SEO 
+                title={`${guide.title} | เที่ยวพะเยา`}
+                description={guide.description ? `${guide.description.substring(0, 120)}...` : `${guide.title} ที่เที่ยว ร้านอาหาร และที่พักน่าสนใจในจังหวัดพะเยา`}
+                ogImage={allImages[0] || undefined}
+            />
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button
