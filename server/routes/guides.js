@@ -82,7 +82,10 @@ router.get('/:id', optionalAuthMiddleware, async (req, res) => {
         });
 
         const dtoGuide = formatGuideDTO(guide, req.user);
-        dtoGuide.images = images;
+        dtoGuide.images = images.map(img => ({
+            ...img,
+            image_url: img.image_url ? (img.image_url.startsWith('http') || img.image_url.startsWith('/') ? img.image_url : `/${img.image_url}`) : null
+        }));
 
         sendSuccess(res, dtoGuide);
     } catch (error) {

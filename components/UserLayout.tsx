@@ -3,6 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import UserSidebar from './user/Sidebar';
+import SEO from './SEO';
 
 const UserLayout: React.FC = () => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -27,6 +28,7 @@ const UserLayout: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
+            <SEO title="User Dashboard | Phayao Hub" noindex={true} />
             {/* Sidebar */}
             <UserSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 

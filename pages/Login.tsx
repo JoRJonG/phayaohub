@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import SEO from '../components/SEO';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -39,6 +40,10 @@ const Login: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-12">
+            <SEO 
+                title="เข้าสู่ระบบ | Phayao Hub" 
+                description="เข้าสู่ระบบ Phayao Hub เพื่อจัดการข้อมูล ประกาศขายของ หรือหางาน" 
+            />
             <div className="max-w-md w-full">
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     <div className="text-center mb-8">

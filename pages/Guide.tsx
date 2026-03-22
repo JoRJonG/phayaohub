@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Star } from 'lucide-react';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface Guide {
   id: number;
@@ -57,6 +58,13 @@ const Guide: React.FC = () => {
       <SEO 
         title="คู่มือท่องเที่ยวพะเยา - ที่เที่ยว ที่พัก ร้านอาหาร" 
         description="แนะนำสถานที่ท่องเที่ยว ร้านอาหารอร่อย และที่พักน่านอนในจังหวัดพะเยา" 
+      />
+      <StructuredData 
+        type="breadcrumb" 
+        data={[
+          { name: 'หน้าแรก', item: '/' },
+          { name: 'คู่มือท่องเที่ยว', item: '/guide' }
+        ]} 
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter Tabs */}

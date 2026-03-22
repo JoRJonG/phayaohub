@@ -27,12 +27,21 @@ const Footer: React.FC = () => {
 
           </div>
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">เมนูลัด</h4>
+            <h4 className="text-lg font-semibold text-white mb-4">บริการยอดนิยม</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/market" className="hover:text-phayao-gold transition-colors">ตลาดซื้อขาย</Link></li>
-              <li><Link to="/jobs" className="hover:text-phayao-gold transition-colors">หางาน</Link></li>
-              <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ท่องเที่ยว</Link></li>
-              <li><Link to="/community" className="hover:text-phayao-gold transition-colors">เว็บบอร์ด</Link></li>
+              <li><Link to="/market" className="hover:text-phayao-gold transition-colors">ของมือสองพะเยา</Link></li>
+              <li><Link to="/jobs" className="hover:text-phayao-gold transition-colors">หางานในพะเยา</Link></li>
+              <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ที่เที่ยวพะเยา</Link></li>
+              <li><Link to="/community" className="hover:text-phayao-gold transition-colors">พูดคุย/เว็บบอร์ด</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-lg font-semibold text-white mb-4">ข้อมูลเพิ่มเติม</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ร้านอาหารพะเยา</Link></li>
+              <li><Link to="/guide" className="hover:text-phayao-gold transition-colors">ที่พักพะเยา</Link></li>
+              <li><Link to="/job-seekers" className="hover:text-phayao-gold transition-colors">รายชื่อผู้หางาน</Link></li>
+              <li><Link to="/map" className="hover:text-phayao-gold transition-colors">แผนที่พะเยา</Link></li>
             </ul>
           </div>
           <div className="flex flex-col h-full">

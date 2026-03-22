@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Search, MapPin, Briefcase, GraduationCap, User, Eye, X, ExternalLink } from 'lucide-react';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface JobProfile {
     id: number;
@@ -70,6 +72,18 @@ const JobSeekerList = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 py-8">
+            <SEO 
+                title="คนหางานพะเยา - ค้นหาผู้สมัครงานและแรงงานในจังหวัดพะเยา" 
+                description="รวบรวมรายชื่อผู้สนใจหางานในจังหวัดพะเยา พร้อมข้อมูลทักษะและประสบการณ์ สำหรับนายจ้างที่ต้องการคนทำงาน" 
+            />
+            <StructuredData 
+                type="breadcrumb" 
+                data={[
+                    { name: 'หน้าแรก', item: '/' },
+                    { name: 'หางาน', item: '/jobs' },
+                    { name: 'คนหางาน', item: '/jobs/seekers' }
+                ]} 
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">คนหางาน</h1>

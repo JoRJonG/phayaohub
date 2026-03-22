@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Eye, Star, Calendar, X, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface Guide {
     id: number;
@@ -134,6 +135,14 @@ const GuideDetail: React.FC = () => {
                 description={guide.description ? `${guide.description.substring(0, 120)}...` : `${guide.title} ที่เที่ยว ร้านอาหาร และที่พักน่าสนใจในจังหวัดพะเยา`}
                 ogImage={allImages[0] || undefined}
             />
+            <StructuredData 
+                type="breadcrumb"
+                data={[
+                    { name: 'หน้าหลัก', url: 'https://phayaohub.com/' },
+                    { name: 'คู่มือพะเยา', url: 'https://phayaohub.com/guide' },
+                    { name: guide.title, url: window.location.href }
+                ]}
+            />
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button
@@ -154,7 +163,7 @@ const GuideDetail: React.FC = () => {
                         >
                             <img
                                 src={allImages[0]}
-                                alt={guide.title}
+                                alt={`${guide.title} - สถานที่แนะนำในพะเยา`}
                                 className="w-full h-auto block"
                             />
                             {allImages.length > 1 && (

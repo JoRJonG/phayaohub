@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface MarketItem {
   id: number;
@@ -92,13 +93,21 @@ const Marketplace: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
       <SEO 
-        title="ตลาดซื้อขายพะเยา - ค้นหาสินค้า OTOP และของมือสอง" 
-        description="ซื้อขายสินค้าออนไลน์ในจังหวัดพะเยา ค้นหาสินค้า OTOP ของดีเมืองพะเยา และสินค้ามือสองคุณภาพดี" 
+        title="ของมือสองพะเยา - ตลาดซื้อขายสินค้า OTOP และของใช้มือสอง" 
+        description="แหล่งรวมของมือสองพะเยา ซื้อขายสินค้าออนไลน์ในจังหวัดพะเยา ค้นหาสินค้า OTOP ของดีเมืองพะเยา และสินค้ามือสองสภาพดีราคาถูก" 
+      />
+      <StructuredData 
+        type="breadcrumb" 
+        data={[
+          { name: 'หน้าแรก', item: '/' },
+          { name: 'ตลาดของมือสอง', item: '/market' }
+        ]} 
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Phayao Market <span className="text-phayao-gold text-lg font-normal">ตลาดซื้อขาย</span>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          ของมือสองพะเยา <span className="text-phayao-gold text-lg font-normal">| ตลาดซื้อขายออนไลน์</span>
         </h1>
+        <p className="text-gray-500 mb-6 text-sm">ศูนย์รวมสินค้ามือสองในจังหวัดพะเยา สินค้า OTOP และของใช้คุณภาพดีจากชาวพะเยา</p>
 
         {/* Filter Bar */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-6">
@@ -144,7 +153,7 @@ const Marketplace: React.FC = () => {
                     {item.primary_image ? (
                       <img
                         src={item.primary_image}
-                        alt={item.title}
+                        alt={`ของมือสองพะเยา: ${item.title}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                         loading="lazy"
                         decoding="async"

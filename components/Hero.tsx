@@ -34,10 +34,10 @@ const Hero: React.FC = () => {
       {bgImage && (
         <img
           src={bgImage}
-          alt="Phayao Hub Background"
+          alt="บรรยากาศกว๊านพะเยา ยามเย็น - Phayao Hub ศูนย์รวมคนพะเยา"
           className="absolute inset-0 w-full h-full object-cover opacity-60"
           fetchPriority="high"
-          decoding="sync"
+          decoding="async"
           width="1920"
           height="500"
         />

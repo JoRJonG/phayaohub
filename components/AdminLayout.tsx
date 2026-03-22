@@ -3,6 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from './admin/Sidebar';
+import SEO from './SEO';
 
 const AdminLayout: React.FC = () => {
     const { user, isAuthenticated, isLoading } = useAuth();
@@ -27,6 +28,7 @@ const AdminLayout: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
+            <SEO title="Admin Panel | Phayao Hub" noindex={true} />
             {/* Sidebar */}
             <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 

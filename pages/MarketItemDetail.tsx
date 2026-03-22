@@ -122,6 +122,14 @@ const MarketItemDetail: React.FC = () => {
                     availability: item.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
                 }}
             />
+            <StructuredData 
+                type="breadcrumb"
+                data={[
+                    { name: 'หน้าหลัก', url: 'https://phayaohub.com/' },
+                    { name: 'ตลาดซื้อขาย', url: 'https://phayaohub.com/market' },
+                    { name: item.title, url: window.location.href }
+                ]}
+            />
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button
@@ -140,10 +148,10 @@ const MarketItemDetail: React.FC = () => {
                             <div className="aspect-square bg-gray-200">
                                 {selectedImage ? (
                                     <img
-                                        src={selectedImage}
-                                        alt={item.title}
-                                        className="w-full h-full object-cover"
-                                    />
+                                    src={selectedImage}
+                                    alt={`${item.title} - ของมือสองพะเยา`}
+                                    className="w-full h-full object-contain"
+                                />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-400">
                                         <svg className="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -119,6 +119,14 @@ const JobDetail: React.FC = () => {
                     salary: job.salary_min ? { min: job.salary_min, max: job.salary_max } : undefined
                 }}
             />
+            <StructuredData 
+                type="breadcrumb"
+                data={[
+                    { name: 'หน้าหลัก', url: 'https://phayaohub.com/' },
+                    { name: 'งานพะเยา', url: 'https://phayaohub.com/jobs' },
+                    { name: job.title, url: window.location.href }
+                ]}
+            />
             {/* Header Banner */}
             <div className="bg-white border-b border-slate-200 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-8">

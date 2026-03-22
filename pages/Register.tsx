@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import SEO from '../components/SEO';
 
 const Register: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -77,6 +78,10 @@ const Register: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-12">
+            <SEO 
+                title="สมัครสมาชิก | Phayao Hub" 
+                description="ร่วมเป็นส่วนหนึ่งของชุมชนพะเยา สมัครเพื่อประกาศขายของ หางาน และร่วมพูดคุย" 
+            />
             <div className="max-w-md w-full">
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     <div className="text-center mb-8">

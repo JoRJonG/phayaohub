@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface Post {
   id: number;
@@ -80,11 +81,18 @@ const Community: React.FC = () => {
         title="Phayao Talk - เว็บบอร์ดพูดคุย แลกเปลี่ยน แจ้งข่าวสารพะเยา" 
         description="ชุมชนออนไลน์สำหรับชาวพะเยา พูดคุยเรื่องทั่วไป แจ้งข่าวสาร รีวิวร้านอาหาร ที่เที่ยวและที่พัก" 
       />
+      <StructuredData 
+        type="breadcrumb" 
+        data={[
+          { name: 'หน้าแรก', item: '/' },
+          { name: 'ชุมชนพะเยา', item: '/community' }
+        ]} 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Phayao Talk</h1>
-            <p className="text-gray-500 text-sm mt-1">พื้นที่พูดคุย แลกเปลี่ยน แจ้งข่าวสาร</p>
+            <h1 className="text-3xl font-bold text-gray-900">ชุมชนพะเยา - Phayao Talk</h1>
+            <p className="text-gray-500 text-sm mt-1">พื้นที่พูดคุย แลกเปลี่ยน แจ้งข่าวสารสำหรับคนพะเยา</p>
           </div>
           {isAuthenticated && (
             <div className="hidden"></div>

@@ -19,6 +19,7 @@ import categoryRoutes from './routes/categories.js';
 import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
 import jobProfileRoutes from './routes/jobProfiles.js';
+import settingsRoutes from './routes/settings.js';
 import * as jobProfileService from './services/jobProfileService.js';
 import { db } from './db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
@@ -138,8 +139,6 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {
 }));
 
 // Routes
-import settingsRoutes from './routes/settings.js';
-
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadLimiter, uploadRoutes); // เพิ่ม uploadLimiter
 app.use('/api/admin', adminRoutes);

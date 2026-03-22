@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Upload, FileText, Save, AlertCircle, Plus, Edit, Trash2, Briefcase, MapPin, GraduationCap, User, ExternalLink } from 'lucide-react';
 import Swal from 'sweetalert2';
+import SEO from '../components/SEO';
 
 const JobProfileForm = () => {
     const { user, token, isLoading: authLoading } = useAuth();
@@ -243,6 +244,7 @@ const JobProfileForm = () => {
 
     return (
         <div className="space-y-6">
+            <SEO title="ฝากประวัติงาน | Phayao Hub" noindex={true} />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800">ฝากประวัติงาน</h1>

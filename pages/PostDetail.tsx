@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageSquare, Heart, Share2, User, Clock, Send, Eye } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 interface Comment {
     id: number;
@@ -221,6 +222,14 @@ const PostDetail: React.FC = () => {
                 description={post.content.substring(0, 120) + "..."}
                 ogImage={post.image_url || undefined}
             />
+            <StructuredData 
+                type="breadcrumb"
+                data={[
+                    { name: 'หน้าหลัก', url: 'https://phayaohub.com/' },
+                    { name: 'ชุมชนพะเยา', url: 'https://phayaohub.com/community' },
+                    { name: post.title, url: window.location.href }
+                ]}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Back Button */}
                 <button
@@ -241,7 +250,7 @@ const PostDetail: React.FC = () => {
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
                                         {post.avatar_url ? (
-                                            <img src={post.avatar_url} alt={post.full_name} className="w-full h-full object-cover" />
+                                            <img src={post.avatar_url} alt={`โปรไฟล์ของ ${post.full_name}`} className="w-full h-full object-cover" />
                                         ) : (
                                             <User className="text-slate-400" size={20} />
                                         )}
@@ -269,7 +278,7 @@ const PostDetail: React.FC = () => {
                                 {/* Image */}
                                 {post.image_url ? (
                                     <div className="mb-6 rounded-lg overflow-hidden">
-                                        <img src={post.image_url} alt={post.title} className="w-full h-auto object-cover" />
+                                        <img src={post.image_url} alt={`รูปภาพประกอบโพสต์: ${post.title}`} className="w-full h-auto object-cover" />
                                     </div>
                                 ) : null}
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Job {
@@ -104,10 +105,17 @@ const Jobs: React.FC = () => {
         title="หางานพะเยา - แหล่งรวมงานดี เงินเดือนโดนใจในจังหวัดพะเยา" 
         description="ค้นหางานประจำ งานพาร์ทไทม์ และฟรีแลนซ์ ในจังหวัดพะเยา มีงานใหม่ๆ อัพเดททุกวัน" 
       />
+      <StructuredData 
+        type="breadcrumb" 
+        data={[
+          { name: 'หน้าแรก', item: '/' },
+          { name: 'หางาน', item: '/jobs' }
+        ]} 
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
-            Phayao Jobs <span className="text-amber-500 text-lg font-normal">งานพะเยา</span>
+            หางานพะเยา <span className="text-amber-500 text-lg font-normal">| แหล่งรวมงานในจังหวัดพะเยา</span>
           </h1>
           {isAuthenticated && (
             <div className="hidden"></div>

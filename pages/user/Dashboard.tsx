@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserActivities } from '../../services/api';
+import SEO from '../../components/SEO';
 
 const UserDashboard: React.FC = () => {
     const { user } = useAuth();
@@ -156,6 +157,7 @@ const UserDashboard: React.FC = () => {
 
     return (
         <div className="space-y-8">
+            <SEO title="แดชบอร์ดผู้ใช้งาน | Phayao Hub" noindex={true} />
             {/* Welcome Section */}
             <div className="bg-gradient-to-r from-phayao-blue to-blue-800 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
                 <div className="relative z-10">

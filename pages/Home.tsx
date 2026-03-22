@@ -118,8 +118,8 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <SEO 
-        title="Phayao Hub | รวมทุกเรื่องราวเพื่อชาวพะเยา" 
-        description="ศูนย์รวมข้อมูลจังหวัดพะเยา รวมสถานที่ท่องเที่ยว ร้านอาหาร ตลาดและงาน" 
+        title="Phayao Hub | ศูนย์รวมของมือสองพะเยา ท่องเที่ยว และที่กินพะเยา" 
+        description="ศูนย์รวมข้อมูลจังหวัดพะเยา แหล่งซื้อขายของมือสองพะเยา สินค้า OTOP แนะนำที่เที่ยวพะเยา และประกาศหางาน" 
       />
       <StructuredData 
         type="organization" 
@@ -141,8 +141,8 @@ const Home: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
-            <h3 className="font-bold text-lg text-slate-800">ตลาดพะเยา</h3>
-            <p className="text-slate-500 text-xs mt-1">สินค้า OTOP & มือสอง</p>
+            <h3 className="font-bold text-lg text-slate-800">ของมือสองพะเยา</h3>
+            <p className="text-slate-500 text-xs mt-1">ตลาด OTOP & ของใช้มือสอง</p>
           </Link>
 
           <Link to="/jobs" className="group bg-white p-4 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition duration-500 border border-slate-100 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2" style={{ animationDelay: '0.1s' }}>
@@ -200,7 +200,7 @@ const Home: React.FC = () => {
                   {guide.image_url ? (
                     <img
                       src={guide.image_url}
-                      alt={guide.title}
+                      alt={`ท่องเที่ยวพะเยา: ${guide.title}`}
                       width={400}
                       height={300}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -258,7 +258,7 @@ const Home: React.FC = () => {
                     {product.primary_image || product.image_url ? (
                       <img
                         src={product.primary_image || product.image_url}
-                        alt={product.title}
+                        alt={`ของมือสองพะเยา: ${product.title}`}
                         width={400}
                         height={300}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"

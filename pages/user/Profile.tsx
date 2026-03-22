@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Camera, Save, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 import Swal from 'sweetalert2';
+import SEO from '../../components/SEO';
 
 const Profile: React.FC = () => {
     const { user, login } = useAuth(); // We might need a way to update user in context without full login, but for now we can rely on page reload or just updating local state
@@ -162,6 +163,7 @@ const Profile: React.FC = () => {
 
     return (
         <div className="max-w-4xl mx-auto space-y-8">
+            <SEO title="จัดการข้อมูลส่วนตัว | Phayao Hub" noindex={true} />
             <h1 className="text-2xl font-bold text-slate-800">จัดการข้อมูลส่วนตัว</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

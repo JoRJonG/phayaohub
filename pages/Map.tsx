@@ -5,20 +5,21 @@ import L from 'leaflet';
 import { Map as MapIcon, Navigation, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getGuides } from '../services/api';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
-// Fix for Leaflet default icon not showing in React
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
+// Fix for Leaflet default icon not showing in React/Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
 });
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 interface GuideLocation {
     id: number;
@@ -91,6 +92,17 @@ const MapPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col">
+            <SEO 
+                title="แผนที่พะเยา - ค้นหาที่เที่ยว ร้านอาหาร และที่พักบนแผนที่" 
+                description="สำรวจพิกัดสถานที่ท่องเที่ยว ร้านอาหาร และที่พักในจังหวัดพะเยา ผ่านแผนที่แบบ Interactive" 
+            />
+            <StructuredData 
+                type="breadcrumb" 
+                data={[
+                    { name: 'หน้าแรก', item: '/' },
+                    { name: 'แผนที่พะเยา', item: '/map' }
+                ]} 
+            />
             {/* Header */}
             <div className="bg-white shadow-sm py-4 px-4 sm:px-6 lg:px-8 z-10">
                 <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
