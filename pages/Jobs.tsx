@@ -114,9 +114,9 @@ const Jobs: React.FC = () => {
         ]} 
       />
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">
-            หางานพะเยา <span className="text-amber-500 text-lg font-normal">| แหล่งรวมงานในจังหวัดพะเยา</span>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            หางานพะเยา <span className="text-amber-500 text-base sm:text-lg font-normal block sm:inline mt-1 sm:mt-0">| แหล่งรวมงานในจังหวัดพะเยา</span>
           </h1>
           {isAuthenticated && (
             <div className="hidden"></div>
@@ -129,8 +129,8 @@ const Jobs: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="ค้นหางาน..."
-            className="block w-full max-w-md px-4 py-2 border border-white/40 bg-white/60 backdrop-blur-md rounded-xl focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue shadow-sm transition-all"
+            placeholder="ค้นหางาน, ตำแหน่ง, ชื่อบริษัท..."
+            className="block w-full max-w-md px-4 py-2.5 sm:py-2 border border-white/40 bg-white/60 backdrop-blur-md rounded-xl focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue shadow-sm transition-all"
           />
         </div>
 
@@ -147,34 +147,34 @@ const Jobs: React.FC = () => {
           <div className="space-y-4">
             {jobs.length > 0 ? (
               jobs.map((job) => (
-                <Link to={`/jobs/${job.id}`} key={job.id} className="glass-panel p-6 rounded-2xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 flex flex-col sm:flex-row justify-between sm:items-center block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-                  <div className="mb-4 sm:mb-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-semibold text-gray-800 group-hover:text-phayao-blue transition">
+                <Link to={`/jobs/${job.id}`} key={job.id} className="bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col sm:flex-row justify-between sm:items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2 group">
+                  <div className="mb-4 sm:mb-0 flex-1 min-w-0 pr-0 sm:pr-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 group-hover:text-phayao-blue transition truncate w-full sm:w-auto">
                         {job.title}
                       </h3>
-                      <span className={`text-xs px-2 py-0.5 rounded border ${job.job_type === 'full_time' ? 'bg-green-50 text-green-700 border-green-200' :
+                      <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded border ${job.job_type === 'full_time' ? 'bg-green-50 text-green-700 border-green-200' :
                         job.job_type === 'part_time' ? 'bg-orange-50 text-orange-700 border-orange-200' :
                           'bg-purple-50 text-purple-700 border-purple-200'
                         }`}>
                         {getJobTypeLabel(job.job_type)}
                       </span>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 text-sm text-gray-500">
+                    <div className="flex flex-wrap gap-2 sm:gap-6 text-xs sm:text-sm text-gray-500">
                       <span className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                         {job.company_name}
                       </span>
                       <span className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         {job.location}
                       </span>
                       <span className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         {formatDate(job.created_at)}
                       </span>
                       <span className="flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -182,8 +182,9 @@ const Jobs: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-phayao-blue mb-2">{formatSalary(job)}</div>
+                  <div className="sm:text-right mt-1 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-0 w-full sm:w-auto flex justify-between sm:block items-center">
+                    <span className="text-xs text-gray-500 sm:hidden">เงินเดือน</span>
+                    <div className="text-base sm:text-lg font-bold text-phayao-blue">{formatSalary(job)}</div>
                   </div>
                 </Link>
               ))
@@ -197,21 +198,21 @@ const Jobs: React.FC = () => {
 
         {/* Pagination */}
         {!isLoading && totalPages > 1 && (
-          <div className="flex justify-center mt-8 gap-2">
+          <div className="flex flex-wrap justify-center mt-8 gap-2">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-3 sm:px-4 py-2 border border-white/50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ก่อนหน้า
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
+            <span className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
               หน้า {currentPage} จาก {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-3 sm:px-4 py-2 border border-white/50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ถัดไป
             </button>

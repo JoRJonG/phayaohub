@@ -113,9 +113,9 @@ const Community: React.FC = () => {
           <div className="space-y-4">
             {posts.length > 0 ? (
               posts.map((post) => (
-                <div key={post.id} onClick={() => navigate(`/community/${post.id}`)} className="glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer">
+                <div key={post.id} onClick={() => navigate(`/community/${post.id}`)} className="bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden border border-gray-200">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 flex-shrink-0 overflow-hidden border border-white/50">
                       {post.avatar_url ? (
                         <img
                           src={post.avatar_url}
@@ -131,31 +131,31 @@ const Community: React.FC = () => {
                       )}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-xs font-semibold text-gray-700">
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">
                         {post.full_name || 'ผู้ใช้งาน'}
                       </span>
-                      <span className="text-[10px] text-gray-400">{formatDate(post.created_at)}</span>
+                      <span className="text-[10px] sm:text-xs text-gray-400">{formatDate(post.created_at)}</span>
                     </div>
                     {post.category && (
-                      <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">
+                      <span className="ml-auto text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-blue-50/80 text-blue-600 font-medium">
                         {post.category}
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2">{decodeHTML(post.title)}</h3>
-                  <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
+                  <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-2 leading-snug">{decodeHTML(post.title)}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 sm:line-clamp-3">{post.content}</p>
 
-                  <div className="flex items-center gap-6 mt-4 pt-4 border-t border-white/20 text-gray-400 text-sm">
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100/50 text-gray-400 text-xs sm:text-sm">
                     <button className={`flex items-center gap-1 transition ${post.is_favorited ? 'text-red-500' : 'hover:text-red-500'}`}>
-                      <svg className="w-5 h-5" fill={post.is_favorited ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                      {post.like_count} ถูกใจ
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill={post.is_favorited ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                      {post.like_count} <span className="hidden sm:inline">ถูกใจ</span>
                     </button>
                     <button className="flex items-center gap-1 hover:text-blue-500 transition">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-                      {post.comment_count} ความเห็น
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                      {post.comment_count} <span className="hidden sm:inline">ความเห็น</span>
                     </button>
                     <div className="flex items-center gap-1 ml-auto">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
@@ -174,21 +174,21 @@ const Community: React.FC = () => {
 
         {/* Pagination */}
         {!isLoading && totalPages > 1 && (
-          <div className="flex justify-center mt-8 gap-2">
+          <div className="flex flex-wrap justify-center mt-8 gap-2">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-3 sm:px-4 py-2 border border-white/50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ก่อนหน้า
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
+            <span className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
               หน้า {currentPage} จาก {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="px-3 sm:px-4 py-2 border border-white/50 rounded-xl text-xs sm:text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ถัดไป
             </button>

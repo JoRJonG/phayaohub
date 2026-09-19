@@ -29,7 +29,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <div className="relative h-[450px] w-full bg-slate-900 overflow-hidden">
+    <div className="relative min-h-[400px] md:h-[500px] w-full bg-slate-900 overflow-hidden">
       {/* Background Image - Simulating Kwan Phayao Sunset */}
       {bgImage && (
         <img
@@ -46,11 +46,11 @@ const Hero: React.FC = () => {
       {/* Overlay */}
       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]"></div>
 
-      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-          รวมทุกเรื่องราว <span className="text-phayao-gold">เพื่อชาวพะเยา</span>
+      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4 py-12 md:py-0">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 md:mb-6 tracking-tight leading-tight">
+          รวมทุกเรื่องราว <span className="text-phayao-gold block sm:inline">เพื่อชาวพะเยา</span>
         </h1>
-        <p className="text-lg md:text-xl text-slate-200 mb-10 max-w-xl font-light">
+        <p className="text-base md:text-xl text-slate-200 mb-8 md:mb-10 max-w-xl font-light px-2">
           หางาน หาที่เที่ยว ซื้อขายของ หรือพูดคุยแลกเปลี่ยน ครบจบในที่เดียว
         </p>
 

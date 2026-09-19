@@ -172,14 +172,14 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 xl:hidden transition-opacity duration-300"
+          className="fixed inset-0 top-[64px] bg-black/50 z-40 xl:hidden transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="xl:hidden fixed top-16 left-0 right-0 bottom-0 z-50 bg-white shadow-2xl overflow-y-auto animate-in slide-in-from-top duration-300" id="mobile-menu">
+        <div className="xl:hidden absolute top-full left-0 right-0 z-50 bg-white shadow-2xl overflow-y-auto max-h-[calc(100vh-64px)] border-t border-gray-100" id="mobile-menu">
           <div className="px-4 pt-4 pb-6 space-y-2">
             {navLinks.map((link) => {
               const Icon = link.icon;

@@ -103,41 +103,41 @@ const Guide: React.FC = () => {
             <p>ไม่พบข้อมูล</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
             {guides.map((guide) => (
-              <Link to={`/guide/${guide.id}`} key={guide.id} className="glass-panel rounded-2xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden flex flex-col h-full block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-                <div className="w-full h-48 bg-white/40">
+              <Link to={`/guide/${guide.id}`} key={guide.id} className="bg-white/80 backdrop-blur-lg border border-white/40 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+                <div className="w-full h-40 sm:h-48 bg-white/40 relative">
                   {guide.image_url ? (
                     <img
                       src={guide.image_url}
                       alt={guide.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                       decoding="async"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <MapPin className="text-gray-400" size={48} />
+                    <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+                      <MapPin className="text-gray-400" size={40} />
                     </div>
                   )}
-                </div>
-                <div className="p-4 flex flex-col justify-between flex-grow">
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-bold text-amber-500 tracking-wide uppercase">
-                        {getCategoryLabel(guide.category)}
+                  <div className="absolute top-2 left-2 flex gap-1">
+                    <span className="text-[10px] font-bold text-amber-600 bg-amber-50/90 backdrop-blur-sm px-2 py-0.5 rounded-full uppercase shadow-sm border border-amber-200/50">
+                      {getCategoryLabel(guide.category)}
+                    </span>
+                    {guide.is_featured && (
+                      <span className="flex items-center justify-center bg-yellow-400/90 backdrop-blur-sm text-white w-5 h-5 rounded-full shadow-sm">
+                        <Star size={12} fill="currentColor" />
                       </span>
-                      {guide.is_featured && (
-                        <span className="flex items-center text-sm text-yellow-400">
-                          <Star size={16} fill="currentColor" />
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{guide.title}</h3>
-                    <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed">{guide.description || guide.content}</p>
+                    )}
                   </div>
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center text-sm text-gray-400">
-                    <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                </div>
+                <div className="p-4 sm:p-5 flex flex-col justify-between flex-grow">
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1.5 sm:mb-2 line-clamp-2 leading-tight">{guide.title}</h3>
+                    <p className="text-gray-500 text-xs sm:text-sm line-clamp-2 leading-relaxed">{guide.description || guide.content}</p>
+                  </div>
+                  <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100 flex items-center text-xs sm:text-sm text-gray-400">
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>

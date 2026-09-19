@@ -132,48 +132,48 @@ const Home: React.FC = () => {
       />
       <Hero />
 
-      <section className="py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <section className="py-8 md:py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
 
-          <Link to="/market" className="group glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-            <div className="w-14 h-14 bg-blue-50/80 text-phayao-blue rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <Link to="/market" className="group bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 aspect-[4/3] sm:aspect-square flex flex-col items-center justify-center text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50/80 text-phayao-blue rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-blue-100 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
-            <h3 className="font-bold text-lg text-slate-800">ของมือสองพะเยา</h3>
-            <p className="text-slate-500 text-xs mt-1">ตลาด OTOP & ของใช้มือสอง</p>
+            <h3 className="font-bold text-sm sm:text-lg text-slate-800">ของมือสองพะเยา</h3>
+            <p className="text-slate-500 text-[10px] sm:text-xs mt-1 hidden sm:block">ตลาด OTOP & ของใช้มือสอง</p>
           </Link>
 
-          <Link to="/jobs" className="group glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2" style={{ animationDelay: '0.1s' }}>
-            <div className="w-14 h-14 bg-amber-50/80 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <Link to="/jobs" className="group bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 aspect-[4/3] sm:aspect-square flex flex-col items-center justify-center text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-50/80 text-amber-600 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-amber-100 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="font-bold text-lg text-slate-800">งานพะเยา</h3>
-            <p className="text-slate-500 text-xs mt-1">งานประจำ & Part-time</p>
+            <h3 className="font-bold text-sm sm:text-lg text-slate-800">งานพะเยา</h3>
+            <p className="text-slate-500 text-[10px] sm:text-xs mt-1 hidden sm:block">งานประจำ & Part-time</p>
           </Link>
 
-          <Link to="/guide" className="group glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2" style={{ animationDelay: '0.2s' }}>
-            <div className="w-14 h-14 bg-green-50/80 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <Link to="/guide" className="group bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 aspect-[4/3] sm:aspect-square flex flex-col items-center justify-center text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-50/80 text-green-600 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-green-100 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <h3 className="font-bold text-lg text-slate-800">เที่ยวพะเยา</h3>
-            <p className="text-slate-500 text-xs mt-1">กิน เที่ยว พัก</p>
+            <h3 className="font-bold text-sm sm:text-lg text-slate-800">เที่ยวพะเยา</h3>
+            <p className="text-slate-500 text-[10px] sm:text-xs mt-1 hidden sm:block">กิน เที่ยว พัก</p>
           </Link>
 
-          <Link to="/map" className="group glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 aspect-square flex flex-col items-center justify-center text-center animate-fadeIn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2" style={{ animationDelay: '0.3s' }}>
-            <div className="w-14 h-14 bg-purple-50/80 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <Link to="/map" className="group bg-white/80 backdrop-blur-lg border border-white/40 p-4 sm:p-6 rounded-2xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 aspect-[4/3] sm:aspect-square flex flex-col items-center justify-center text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-purple-50/80 text-purple-600 rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-purple-100 transition-colors duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
             </div>
-            <h3 className="font-bold text-lg text-slate-800">แผนที่พะเยา</h3>
-            <p className="text-slate-500 text-xs mt-1">แผนที่ท่องเที่ยว</p>
+            <h3 className="font-bold text-sm sm:text-lg text-slate-800">แผนที่พะเยา</h3>
+            <p className="text-slate-500 text-[10px] sm:text-xs mt-1 hidden sm:block">แผนที่ท่องเที่ยว</p>
           </Link>
 
         </div>
@@ -199,8 +199,8 @@ const Home: React.FC = () => {
                 ไม่มีสถานที่แนะนำในขณะนี้
               </div>
             ) : featuredGuides.map((guide) => (
-              <Link to={`/guide/${guide.id}`} key={guide.id} className="rounded-2xl overflow-hidden glass-panel hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-                <div className="h-48 bg-slate-100/50 overflow-hidden">
+              <Link to={`/guide/${guide.id}`} key={guide.id} className="rounded-2xl overflow-hidden bg-white/80 backdrop-blur-lg border border-white/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+                <div className="h-40 sm:h-48 bg-slate-100/50 overflow-hidden relative">
                   {guide.image_url ? (
                     <img
                       src={guide.image_url}
@@ -218,20 +218,13 @@ const Home: React.FC = () => {
                       </svg>
                     </div>
                   )}
+                  <span className="absolute top-2 left-2 text-[10px] font-medium text-slate-600 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
+                    {guide.category}
+                  </span>
                 </div>
-                <div className="p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">{guide.category}</span>
-                    <span className="flex items-center gap-1 text-xs text-slate-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      {guide.view_count || 0}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-lg truncate text-slate-800">{guide.title}</h3>
-                  <p className="text-slate-500 text-sm mt-1.5 line-clamp-2 leading-relaxed">{guide.description || guide.content}</p>
+                <div className="p-4 sm:p-5">
+                  <h3 className="font-bold text-base sm:text-lg truncate text-slate-800">{guide.title}</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm mt-1 sm:mt-1.5 line-clamp-2 leading-relaxed">{guide.description || guide.content}</p>
                 </div>
               </Link>
             ))}
@@ -257,8 +250,8 @@ const Home: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {featuredProducts.map((product) => (
-                <Link to={`/market/${product.id}`} key={product.id} className="rounded-2xl overflow-hidden glass-panel hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-                  <div className="h-48 bg-slate-100/50 overflow-hidden">
+                <Link to={`/market/${product.id}`} key={product.id} className="rounded-2xl overflow-hidden bg-white/80 backdrop-blur-lg border border-white/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+                  <div className="h-40 sm:h-48 bg-slate-100/50 overflow-hidden relative">
                     {product.primary_image || product.image_url ? (
                       <img
                         src={product.primary_image || product.image_url}
@@ -271,31 +264,26 @@ const Home: React.FC = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300">
-                        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
                     )}
-                  </div>
-                  <div className="p-5">
-                    <div className="flex justify-between items-start mb-3">
-                      {product.category_name && (
-                        <span className="text-xs font-medium text-phayao-blue bg-blue-50 px-2.5 py-1 rounded-full">{product.category_name}</span>
-                      )}
-                      <span className="flex items-center gap-1 text-xs text-slate-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        {product.view_count || 0}
+                    {product.location && (
+                      <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded shadow-sm">
+                        {product.location}
                       </span>
-                    </div>
-                    <h3 className="font-bold text-lg truncate text-slate-800">{product.title}</h3>
+                    )}
+                  </div>
+                  <div className="p-4 sm:p-5">
+                    {product.category_name && (
+                      <span className="text-[10px] font-medium text-phayao-blue bg-blue-50 px-2 py-0.5 rounded-md mb-2 inline-block">
+                        {product.category_name}
+                      </span>
+                    )}
+                    <h3 className="font-bold text-base sm:text-lg truncate text-slate-800 leading-tight">{product.title}</h3>
                     <div className="flex justify-between items-center mt-3">
-                      <span className="text-phayao-gold font-bold text-lg">฿{new Intl.NumberFormat('th-TH').format(product.price)}</span>
-                      {product.location && (
-                        <span className="text-xs text-slate-500">{product.location}</span>
-                      )}
+                      <span className="text-phayao-gold font-bold text-base sm:text-lg">฿{new Intl.NumberFormat('th-TH').format(product.price)}</span>
                     </div>
                   </div>
                 </Link>
@@ -307,13 +295,13 @@ const Home: React.FC = () => {
 
       {/* Latest Jobs & Community */}
       <section className="py-12 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
 
           {/* Jobs */}
-          <div className="glass-panel p-8 rounded-3xl">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-xl font-bold text-slate-800 tracking-tight">Phayao Jobs <span className="text-sm text-slate-400 font-normal ml-2 hidden sm:inline">งานพะเยา</span></h2>
-              <Link to="/jobs" className="text-sm font-medium text-slate-500 hover:text-phayao-blue transition-colors">ดูทั้งหมด</Link>
+          <div className="bg-white/80 backdrop-blur-lg border border-white/40 p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm">
+            <div className="flex justify-between items-center mb-5 sm:mb-8">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-800 tracking-tight">Phayao Jobs <span className="text-xs sm:text-sm text-slate-400 font-normal ml-2 hidden sm:inline">งานพะเยา</span></h2>
+              <Link to="/jobs" className="text-xs sm:text-sm font-medium text-slate-500 hover:text-phayao-blue transition-colors bg-white/50 px-3 py-1 rounded-full border border-slate-100">ดูทั้งหมด</Link>
             </div>
             <div className="space-y-1">
               {jLoad ? (
@@ -331,25 +319,20 @@ const Home: React.FC = () => {
                 </div>
               ) : (
                 latestJobs.map((job) => (
-                  <Link to={`/jobs/${job.id}`} key={job.id} className="flex justify-between items-start border-b border-white/20 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0 hover:bg-white/40 transition-colors p-3 -mx-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
-                    <div>
-                      <h4 className="font-bold text-slate-800">{job.title}</h4>
-                      <p className="text-sm text-slate-500 mt-1">{job.company_name}</p>
-                      <div className="flex gap-2 mt-2">
-                        <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md font-medium">{getJobTypeLabel(job.job_type)}</span>
+                  <Link to={`/jobs/${job.id}`} key={job.id} className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-white/20 pb-4 mb-4 last:border-0 last:pb-0 last:mb-0 hover:bg-white/40 transition-colors p-3 -mx-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2 gap-3 sm:gap-0">
+                    <div className="flex-1 min-w-0 pr-0 sm:pr-4">
+                      <h4 className="font-bold text-slate-800 truncate">{job.title}</h4>
+                      <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1 truncate">{job.company_name}</p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="text-[10px] sm:text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-md font-medium">{getJobTypeLabel(job.job_type)}</span>
                         {job.location && (
-                          <span className="text-xs text-slate-400 py-0.5">{job.location}</span>
+                          <span className="text-[10px] sm:text-xs text-slate-400 py-0.5">{job.location}</span>
                         )}
-                        <span className="flex items-center gap-1 text-xs text-slate-400 py-0.5 ml-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                          {job.view_count || 0}
-                        </span>
                       </div>
                     </div>
-                    <span className="text-sm font-semibold text-green-600">{formatSalary(job)}</span>
+                    <span className="text-sm font-semibold text-green-600 sm:text-right w-full sm:w-auto">
+                      {formatSalary(job)}
+                    </span>
                   </Link>
                 ))
               )}
@@ -357,24 +340,24 @@ const Home: React.FC = () => {
           </div>
 
           {/* Community Feed */}
-          <div className="glass-panel p-8 rounded-3xl flex flex-col h-full">
-            <div className="flex justify-between items-center mb-8">
+          <div className="bg-white/80 backdrop-blur-lg border border-white/40 p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm flex flex-col h-full">
+            <div className="flex justify-between items-center mb-5 sm:mb-8">
               <Link to="/community" className="group flex items-center gap-2">
-                <h2 className="text-xl font-bold text-slate-800 tracking-tight group-hover:text-phayao-blue transition-colors">Phayao Talk</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-800 tracking-tight group-hover:text-phayao-blue transition-colors">Phayao Talk</h2>
               </Link>
-              <Link to="/community" className="text-sm font-medium text-slate-500 hover:text-phayao-blue transition-colors">ดูทั้งหมด</Link>
+              <Link to="/community" className="text-xs sm:text-sm font-medium text-slate-500 hover:text-phayao-blue transition-colors bg-white/50 px-3 py-1 rounded-full border border-slate-100">ดูทั้งหมด</Link>
             </div>
-            <div className="space-y-1 flex-grow">
+            <div className="space-y-1 flex-grow flex flex-col">
               {poLoad ? (
                 Array.from({ length: 4 }).map((_, i) => <PostSkeleton key={`po-skel-${i}`} />)
               ) : trendingPosts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 h-full min-h-[200px]">
-                  <div className="w-14 h-14 bg-blue-50 text-phayao-blue rounded-full flex items-center justify-center mb-4">
-                    <MessageCircle size={28} />
+                <div className="flex-grow flex flex-col items-center justify-center py-10 px-4 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 min-h-[200px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50 text-phayao-blue rounded-full flex items-center justify-center mb-3 sm:mb-4">
+                    <MessageCircle size={24} className="sm:w-7 sm:h-7" />
                   </div>
-                  <h3 className="text-base font-bold text-slate-800 mb-1">ยังไม่มีกระทู้พูดคุย</h3>
-                  <p className="text-sm text-slate-500 mb-5">มาเริ่มบทสนทนาแรกของวันนี้กันเถอะ</p>
-                  <Link to="/community" className="text-sm font-medium text-phayao-blue bg-blue-50 hover:bg-blue-100 px-5 py-2.5 rounded-xl transition-colors">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-800 mb-1">ยังไม่มีกระทู้พูดคุย</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mb-5">มาเริ่มบทสนทนาแรกของวันนี้กันเถอะ</p>
+                  <Link to="/community" className="text-xs sm:text-sm font-medium text-phayao-blue bg-blue-50 hover:bg-blue-100 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-colors">
                     ตั้งกระทู้ใหม่
                   </Link>
                 </div>
@@ -411,8 +394,8 @@ const Home: React.FC = () => {
                 ))
               )}
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <Link to="/community" className="block w-full text-center bg-blue-50 text-phayao-blue py-2 rounded-lg hover:bg-phayao-blue hover:text-white transition font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+            <div className="mt-4 pt-4 border-t border-slate-100/60 mt-auto">
+              <Link to="/community" className="block w-full text-center bg-slate-50/80 border border-slate-100 text-slate-600 py-2 sm:py-2.5 rounded-xl hover:bg-phayao-blue hover:text-white hover:border-phayao-blue transition-all font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2 shadow-sm">
                 ไปที่เว็บบอร์ด
               </Link>
             </div>
