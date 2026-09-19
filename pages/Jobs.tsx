@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
 import { useAuth } from '../contexts/AuthContext';
+import AdBanner from '../components/AdBanner';
 
 interface Job {
   id: number;
@@ -100,7 +101,7 @@ const Jobs: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen relative z-10 py-8">
       <SEO 
         title="หางานพะเยา - แหล่งรวมงานดี เงินเดือนโดนใจในจังหวัดพะเยา" 
         description="ค้นหางานประจำ งานพาร์ทไทม์ และฟรีแลนซ์ ในจังหวัดพะเยา มีงานใหม่ๆ อัพเดททุกวัน" 
@@ -112,7 +113,7 @@ const Jobs: React.FC = () => {
           { name: 'หางาน', item: '/jobs' }
         ]} 
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
             หางานพะเยา <span className="text-amber-500 text-lg font-normal">| แหล่งรวมงานในจังหวัดพะเยา</span>
@@ -129,8 +130,12 @@ const Jobs: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ค้นหางาน..."
-            className="block w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue"
+            className="block w-full max-w-md px-4 py-2 border border-white/40 bg-white/60 backdrop-blur-md rounded-xl focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue shadow-sm transition-all"
           />
+        </div>
+
+        <div className="mb-6">
+          <AdBanner className="rounded-2xl overflow-hidden glass-panel" />
         </div>
 
         {isLoading ? (
@@ -142,7 +147,7 @@ const Jobs: React.FC = () => {
           <div className="space-y-4">
             {jobs.length > 0 ? (
               jobs.map((job) => (
-                <Link to={`/jobs/${job.id}`} key={job.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col sm:flex-row justify-between sm:items-center block">
+                <Link to={`/jobs/${job.id}`} key={job.id} className="glass-panel p-6 rounded-2xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 flex flex-col sm:flex-row justify-between sm:items-center block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
                   <div className="mb-4 sm:mb-0">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-semibold text-gray-800 group-hover:text-phayao-blue transition">
@@ -196,17 +201,17 @@ const Jobs: React.FC = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ก่อนหน้า
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md">
+            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
               หน้า {currentPage} จาก {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ถัดไป
             </button>

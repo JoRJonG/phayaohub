@@ -282,23 +282,23 @@ const MyJobs: React.FC = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 {isLoading ? (
                     <div className="p-8 text-center text-slate-500">กำลังโหลดข้อมูล...</div>
                 ) : jobs.length === 0 ? (
                     <div className="p-12 text-center text-slate-500 flex flex-col items-center">
                         <Briefcase size={48} className="text-slate-300 mb-4" />
                         <p>คุณยังไม่มีประกาศงาน</p>
-                        <button onClick={() => setShowCreateModal(true)} className="mt-4 text-phayao-blue hover:underline">
+                        <button onClick={() => setShowCreateModal(true)} className="mt-4 text-phayao-blue hover:underline font-medium">
                             เริ่มลงประกาศงานแรกของคุณ
                         </button>
                     </div>
                 ) : (
-                    <div className="divide-y divide-slate-100">
+                    <div className="p-2 space-y-1">
                         {jobs.map((job) => (
-                            <div key={job.id} className="p-6 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div key={job.id} className="p-4 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+                                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-phayao-blue flex-shrink-0">
                                         <Briefcase size={24} />
                                     </div>
                                     <div>
@@ -344,8 +344,8 @@ const MyJobs: React.FC = () => {
 
             {/* Create Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col border border-slate-100">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-slate-800">{editJob ? 'แก้ไขประกาศงาน' : 'ลงประกาศงานใหม่'}</h2>
                             <button onClick={() => { setShowCreateModal(false); resetForm(); }} className="text-slate-400 hover:text-slate-600">

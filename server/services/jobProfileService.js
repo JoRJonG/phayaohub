@@ -62,7 +62,13 @@ export const getProfileByUserId = async (userId) => {
       WHERE jp.user_id = ?
         `;
     const [rows] = await db.query(query, [userId]);
-    return rows[0];
+    const profile = rows[0];
+    
+    if (profile && !profile.photo_url && !profile.avatar_url) {
+        profile.photo_url = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.full_name)}&background=random`;
+    }
+    
+    return profile;
 };
 
 export const getAllProfiles = async () => {
@@ -76,7 +82,12 @@ export const getAllProfiles = async () => {
     ORDER BY jp.created_at DESC
         `;
     const [rows] = await db.query(query);
-    return rows;
+    return rows.map(row => {
+        if (!row.photo_url && !row.avatar_url) {
+            row.photo_url = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.full_name)}&background=random`;
+        }
+        return row;
+    });
 };
 
 export const incrementViewCount = async (id) => {

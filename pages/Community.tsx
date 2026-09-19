@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
+import AdBanner from '../components/AdBanner';
 
 interface Post {
   id: number;
@@ -76,7 +77,7 @@ const Community: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen relative z-10 py-8">
       <SEO 
         title="Phayao Talk - เว็บบอร์ดพูดคุย แลกเปลี่ยน แจ้งข่าวสารพะเยา" 
         description="ชุมชนออนไลน์สำหรับชาวพะเยา พูดคุยเรื่องทั่วไป แจ้งข่าวสาร รีวิวร้านอาหาร ที่เที่ยวและที่พัก" 
@@ -88,7 +89,7 @@ const Community: React.FC = () => {
           { name: 'ชุมชนพะเยา', item: '/community' }
         ]} 
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">ชุมชนพะเยา - Phayao Talk</h1>
@@ -97,6 +98,10 @@ const Community: React.FC = () => {
           {isAuthenticated && (
             <div className="hidden"></div>
           )}
+        </div>
+
+        <div className="mb-6">
+          <AdBanner className="rounded-2xl overflow-hidden glass-panel" />
         </div>
 
         {isLoading ? (
@@ -108,7 +113,7 @@ const Community: React.FC = () => {
           <div className="space-y-4">
             {posts.length > 0 ? (
               posts.map((post) => (
-                <div key={post.id} onClick={() => navigate(`/community/${post.id}`)} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-blue-200 transition cursor-pointer">
+                <div key={post.id} onClick={() => navigate(`/community/${post.id}`)} className="glass-panel p-6 rounded-3xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden border border-gray-200">
                       {post.avatar_url ? (
@@ -140,7 +145,7 @@ const Community: React.FC = () => {
                   <h3 className="text-lg font-bold text-gray-800 mb-2">{decodeHTML(post.title)}</h3>
                   <p className="text-sm text-gray-600 line-clamp-2">{post.content}</p>
 
-                  <div className="flex items-center gap-6 mt-4 pt-4 border-t border-gray-50 text-gray-400 text-sm">
+                  <div className="flex items-center gap-6 mt-4 pt-4 border-t border-white/20 text-gray-400 text-sm">
                     <button className={`flex items-center gap-1 transition ${post.is_favorited ? 'text-red-500' : 'hover:text-red-500'}`}>
                       <svg className="w-5 h-5" fill={post.is_favorited ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                       {post.like_count} ถูกใจ
@@ -173,17 +178,17 @@ const Community: React.FC = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ก่อนหน้า
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md">
+            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
               หน้า {currentPage} จาก {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ถัดไป
             </button>

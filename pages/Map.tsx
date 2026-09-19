@@ -105,7 +105,7 @@ const MapPage: React.FC = () => {
             />
             {/* Header */}
             <div className="bg-white shadow-sm py-4 px-4 sm:px-6 lg:px-8 z-10">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-purple-100 rounded-lg text-purple-600">
                             <MapIcon size={24} />

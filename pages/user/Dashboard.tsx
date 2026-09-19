@@ -159,37 +159,38 @@ const UserDashboard: React.FC = () => {
         <div className="space-y-8">
             <SEO title="แดชบอร์ดผู้ใช้งาน | Phayao Hub" noindex={true} />
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-phayao-blue to-blue-800 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-hidden">
                 <div className="relative z-10">
-                    <h1 className="text-3xl font-bold mb-2">สวัสดี, {user?.full_name || user?.username}! 👋</h1>
-                    <p className="text-blue-100 max-w-xl">
-                        ยินดีต้อนรับสู่หน้าจัดการส่วนตัวของคุณ ที่นี่คุณสามารถจัดการสินค้า ประกาศงาน และโพสต์ต่างๆ ของคุณได้อย่างง่ายดาย
+                    <h1 className="text-2xl font-bold text-slate-800 mb-1">สวัสดี, {user?.full_name || user?.username}! 👋</h1>
+                    <p className="text-slate-500 max-w-xl">
+                        ยินดีต้อนรับสู่แดชบอร์ดส่วนตัวของคุณ จัดการประกาศและกิจกรรมต่างๆ ได้ง่ายๆ ที่นี่
                     </p>
                 </div>
-                <div className="absolute right-0 top-0 h-full w-1/3 bg-white/5 skew-x-12 transform translate-x-12"></div>
-                <div className="absolute right-20 bottom-0 h-full w-1/3 bg-white/5 skew-x-12 transform translate-x-12"></div>
+                {/* Decorative Element */}
+                <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
+                <div className="absolute right-12 -bottom-6 w-32 h-32 bg-amber-50 rounded-full blur-2xl opacity-50 pointer-events-none"></div>
             </div>
 
             {/* Quick Stats & Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, index) => (
-                    <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow group">
+                    <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-minimal-hover transition-all duration-300 group flex flex-col h-full">
                         <div className="flex items-center justify-between mb-4">
                             <div className={`p-3 rounded-lg ${stat.bg}`}>
                                 {stat.icon}
                             </div>
                             <Link
                                 to={stat.link}
-                                className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-phayao-blue group-hover:text-white transition-colors"
+                                className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-phayao-sky group-hover:text-white transition-colors"
                             >
                                 <ArrowRight size={16} />
                             </Link>
                         </div>
                         <h3 className="text-slate-500 text-sm font-medium">{stat.title}</h3>
-                        <div className="mt-4 pt-4 border-t border-slate-50">
+                        <div className="mt-auto pt-4 border-t border-slate-50">
                             <Link
                                 to={stat.link}
-                                className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-phayao-blue text-white hover:bg-blue-700 transition-colors text-sm font-medium shadow-sm"
+                                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-phayao-gold text-white hover:bg-yellow-600 transition-colors text-sm font-medium shadow-sm hover:shadow-md"
                             >
                                 <Plus size={16} />
                                 {stat.action}
@@ -200,8 +201,8 @@ const UserDashboard: React.FC = () => {
             </div>
 
             {/* Recent Activity Placeholder */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">กิจกรรมล่าสุด</h2>
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+                <h2 className="text-lg font-bold text-slate-800 mb-6">กิจกรรมล่าสุด</h2>
                 <div className="space-y-4">
                     {isLoading ? (
                         <div className="text-center py-8 text-slate-400">กำลังโหลด...</div>
@@ -217,7 +218,7 @@ const UserDashboard: React.FC = () => {
                             <Link
                                 key={`${activity.type}-${activity.id}`}
                                 to={getActivityLink(activity.type, activity.id)}
-                                className="flex items-center justify-between p-4 rounded-lg border border-slate-100 hover:bg-slate-50 transition group"
+                                className="flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-all duration-200 group"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activity.type === 'market' ? 'bg-green-50' :

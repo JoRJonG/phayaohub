@@ -237,23 +237,23 @@ const MyPosts: React.FC = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 {isLoading ? (
                     <div className="p-8 text-center text-slate-500">กำลังโหลดข้อมูล...</div>
                 ) : posts.length === 0 ? (
                     <div className="p-12 text-center text-slate-500 flex flex-col items-center">
                         <MessageSquare size={48} className="text-slate-300 mb-4" />
                         <p>คุณยังไม่มีโพสต์</p>
-                        <button onClick={() => { resetForm(); setShowCreateModal(true); }} className="mt-4 text-phayao-blue hover:underline">
+                        <button onClick={() => { resetForm(); setShowCreateModal(true); }} className="mt-4 text-phayao-blue hover:underline font-medium">
                             เริ่มตั้งกระทู้แรกของคุณ
                         </button>
                     </div>
                 ) : (
-                    <div className="divide-y divide-slate-100">
+                    <div className="p-2 space-y-1">
                         {posts.map((post) => (
-                            <div key={post.id} className="p-6 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div key={post.id} className="p-4 hover:bg-slate-50 rounded-xl border border-transparent hover:border-slate-100 transition-all duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden border border-slate-200">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-50 flex-shrink-0 flex items-center justify-center overflow-hidden border border-slate-100">
                                         {post.image_url ? (
                                             <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
                                         ) : (
@@ -304,8 +304,8 @@ const MyPosts: React.FC = () => {
 
             {/* Create Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col border border-slate-100">
                         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-slate-800">{isEditing ? 'แก้ไขโพสต์' : 'ตั้งกระทู้ใหม่'}</h2>
                             <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">

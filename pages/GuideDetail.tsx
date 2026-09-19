@@ -143,7 +143,7 @@ const GuideDetail: React.FC = () => {
                     { name: guide.title, url: window.location.href }
                 ]}
             />
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-[1440px] mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button
                     onClick={() => navigate('/guide')}
@@ -304,7 +304,7 @@ const GuideDetail: React.FC = () => {
 
                     {/* Image */}
                     <div
-                        className="max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-4"
+                        className="max-w-[1440px] max-h-[90vh] w-full h-full flex items-center justify-center p-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img

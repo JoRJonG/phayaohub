@@ -24,7 +24,7 @@ import * as jobProfileService from './services/jobProfileService.js';
 import { db } from './db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 import { generalLimiter, botBlocker, sensitiveFileBlocker, uploadLimiter } from './middleware/securityMiddleware.js';
-import { sanitizeHtml, sanitizeSql } from './middleware/sanitizeMiddleware.js';
+import { sanitizeHtml } from './middleware/sanitizeMiddleware.js';
 import logger from './utils/logger.js';
 
 // Enforce JWT Secret
@@ -130,7 +130,7 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Input sanitization middleware
 app.use(sanitizeHtml);
-app.use(sanitizeSql);
+
 
 // เสิร์ฟไฟล์ static จากโฟลเดอร์ uploads พร้อม Cache-Control
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads'), {

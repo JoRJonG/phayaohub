@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FileText, Search, MapPin, Briefcase, GraduationCap, User, Eye, X, ExternalLink } from 'lucide-react';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
+import AdBanner from '../components/AdBanner';
 
 interface JobProfile {
     id: number;
@@ -71,7 +72,7 @@ const JobSeekerList = () => {
     const isPdf = (url: string) => url.toLowerCase().endsWith('.pdf');
 
     return (
-        <div className="min-h-screen bg-slate-50 py-8">
+        <div className="min-h-screen relative z-10 py-8">
             <SEO 
                 title="คนหางานพะเยา - ค้นหาผู้สมัครงานและแรงงานในจังหวัดพะเยา" 
                 description="รวบรวมรายชื่อผู้สนใจหางานในจังหวัดพะเยา พร้อมข้อมูลทักษะและประสบการณ์ สำหรับนายจ้างที่ต้องการคนทำงาน" 
@@ -84,7 +85,7 @@ const JobSeekerList = () => {
                     { name: 'คนหางาน', item: '/jobs/seekers' }
                 ]} 
             />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">คนหางาน</h1>
                     <p className="text-gray-600">ค้นหาผู้สมัครงานที่มีคุณสมบัติตรงใจคุณ</p>
@@ -97,8 +98,12 @@ const JobSeekerList = () => {
                         placeholder="ค้นหาจากชื่อ, ทักษะ, หรือประสบการณ์..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                        className="w-full pl-10 pr-4 py-3 border border-white/40 bg-white/60 backdrop-blur-md rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all"
                     />
+                </div>
+
+                <div className="mb-6">
+                    <AdBanner className="rounded-2xl overflow-hidden glass-panel" />
                 </div>
 
                 {loading ? (
@@ -109,7 +114,7 @@ const JobSeekerList = () => {
                 ) : (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredProfiles.map(profile => (
-                            <div key={profile.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 overflow-hidden border border-gray-100 flex flex-col">
+                            <div key={profile.id} className="glass-panel rounded-2xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden flex flex-col">
                                 <div className="p-6 flex-grow">
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3">
@@ -158,7 +163,7 @@ const JobSeekerList = () => {
                                     </div>
                                 </div>
 
-                                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+                                <div className="px-6 py-4 bg-white/40 border-t border-white/20 flex justify-between items-center">
                                     <span className="text-xs text-gray-500">
                                         {new Date(profile.created_at).toLocaleDateString('th-TH')}
                                     </span>
@@ -187,9 +192,9 @@ const JobSeekerList = () => {
 
                 {/* Detail Modal */}
                 {showModal && selectedProfile && (
-                    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
-                        <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
-                            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                        <div className="bg-white/90 backdrop-blur-xl rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh]">
+                            <div className="p-6 border-b border-white/40 flex justify-between items-center bg-white/50">
                                 <div className="flex items-center gap-4">
                                     {selectedProfile.avatar_url ? (
                                         <img

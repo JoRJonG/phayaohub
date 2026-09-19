@@ -21,6 +21,8 @@ const PostDetail = React.lazy(() => import('./pages/PostDetail'));
 const Map = React.lazy(() => import('./pages/Map'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Register = React.lazy(() => import('./pages/Register'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 
 // Admin Pages
 const AdminLayout = React.lazy(() => import('./components/AdminLayout'));
@@ -97,6 +99,8 @@ const App: React.FC = () => {
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
 
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>

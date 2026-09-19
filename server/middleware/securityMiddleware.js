@@ -14,6 +14,8 @@ export const generalLimiter = rateLimit({
         error: 'Too many requests from this IP, please try again after 15 minutes'
     },
     skip: (req) => {
+        // Skip rate limiting in development mode
+        if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) return true;
         // Skip rate limiting for static files
         return req.path.startsWith('/uploads');
     }
@@ -137,6 +139,21 @@ export const changePasswordValidation = [
         .not().equals('current_password').withMessage('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม')
 ];
 
+export const forgotPasswordValidation = [
+    body('email')
+        .trim()
+        .isEmail().withMessage('รูปแบบอีเมลไม่ถูกต้อง')
+        .normalizeEmail()
+];
+
+export const resetPasswordValidation = [
+    body('token')
+        .notEmpty().withMessage('ไม่พบ Token สำหรับรีเซ็ตรหัสผ่าน'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษร')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('รหัสผ่านใหม่ต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข')
+];
+
 // Upload Rate Limiter
 export const uploadLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
@@ -160,6 +177,8 @@ export const apiLimiter = rateLimit({
         error: 'คำขอมากเกินไป กรุณารอสักครู่'
     },
     skip: (req) => {
+        // Skip rate limiting in development mode
+        if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) return true;
         // Skip for static files and uploads
         return req.path.startsWith('/uploads');
     }

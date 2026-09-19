@@ -1,71 +1,23 @@
-// Sanitize HTML input to prevent XSS (Fallback version - no external dependencies)
+import DOMPurify from 'isomorphic-dompurify';
+
+// Sanitize HTML input to prevent XSS using DOMPurify
 export const sanitizeHtml = (req, res, next) => {
     // Skip if no body (e.g., GET requests)
     if (!req.body || Object.keys(req.body).length === 0) {
         return next();
     }
 
+    // List of fields that might contain user input needing sanitization
     const fieldsToSanitize = ['title', 'description', 'content', 'message', 'full_name', 'company_name', 'location', 'requirements', 'benefits'];
 
     for (const field of fieldsToSanitize) {
         if (req.body[field] && typeof req.body[field] === 'string') {
-            // Simple HTML tag removal (fallback)
-            req.body[field] = req.body[field]
-                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                .replace(/<[^>]+>/g, '')
-                .trim();
-        }
-    }
-
-    next();
-};
-
-// Sanitize SQL-like characters (extra layer of protection)
-export const sanitizeSql = (req, res, next) => {
-    const dangerousPatterns = [
-        /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|SCRIPT)\b)/gi,
-        /(--|;|\/\*|\*\/|xp_|sp_)/gi,
-        /(\bOR\b.*=.*|1=1|'=')/gi
-    ];
-
-    const checkValue = (value) => {
-        if (typeof value === 'string') {
-            // Skip HTML entities - they are safe and not SQL injection
-            // Common entities: &quot; &amp; &lt; &gt; &#039;
-            const withoutEntities = value.replace(/&[a-z]+;|&#[0-9]+;/gi, '');
-
-            for (const pattern of dangerousPatterns) {
-                if (pattern.test(withoutEntities)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
-
-    // Check all body parameters (skip if no body)
-    if (req.body && Object.keys(req.body).length > 0) {
-        for (const key in req.body) {
-            if (!checkValue(req.body[key])) {
-                console.warn(`Blocked suspicious input in field: ${key}, value: ${req.body[key]}`);
-                return res.status(400).json({
-                    success: false,
-                    error: 'ตรวจพบข้อมูลที่ไม่ถูกต้อง กรุณาตรวจสอบข้อมูลที่กรอก'
-                });
-            }
-        }
-    }
-
-    // Check query parameters (skip if no query)
-    if (req.query && Object.keys(req.query).length > 0) {
-        for (const key in req.query) {
-            if (!checkValue(req.query[key])) {
-                console.warn(`Blocked suspicious query param: ${key}, value: ${req.query[key]}`);
-                return res.status(400).json({
-                    success: false,
-                    error: 'ตรวจพบข้อมูลที่ไม่ถูกต้อง'
-                });
-            }
+            req.body[field] = DOMPurify.sanitize(req.body[field], {
+                // Allow basic formatting for rich text areas, strip everything else
+                ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'u', 's', 'blockquote'],
+                ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style'],
+                KEEP_CONTENT: true
+            }).trim();
         }
     }
 

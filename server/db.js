@@ -34,8 +34,10 @@ const dbConfig = {
   database: getEnv('DB_NAME', 'MYSQL_DATABASE', 'MYSQL_DB') || 'phayaohub',
   port: parsedPort,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 100, // เพิ่มจาก 10 เป็น 100 เพื่อรองรับโหลดสูง
   queueLimit: 0,
+  connectTimeout: 10000, // 10 วินาที 
+  acquireTimeout: 10000, // 10 วินาที
   timezone: '+07:00',
   dateStrings: true
 };

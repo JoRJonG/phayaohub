@@ -335,11 +335,11 @@ const AdminGuides: React.FC = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-sm uppercase tracking-wider">
+                            <tr className="bg-slate-50 border-b border-slate-100 text-slate-600 text-sm uppercase tracking-wider">
                                 <th className="p-4 font-semibold">รายการ</th>
                                 <th className="p-4 font-semibold">หมวดหมู่</th>
                                 <th className="p-4 font-semibold">สถานะ</th>

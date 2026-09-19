@@ -73,6 +73,7 @@ router.get('/market-items/:id', async (req, res, next) => {
 
 // Create Market Item
 router.post('/market-items', async (req, res, next) => {
+    let connection;
     try {
         const { title, description, price, category_id, location, contact_phone, contact_line, images } = req.body;
 
@@ -80,10 +81,13 @@ router.post('/market-items', async (req, res, next) => {
             return res.status(400).json({ success: false, error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
         }
 
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
         // Use first image as main image, or empty string
         const mainImage = (images && images.length > 0) ? images[0] : '';
 
-        const [result] = await db.query(
+        const [result] = await connection.query(
             'INSERT INTO market_items (user_id, category_id, title, description, price, location, contact_phone, contact_line, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [req.user.id, category_id, title, description, price, location, contact_phone, contact_line, mainImage, 'available']
         );
@@ -93,16 +97,20 @@ router.post('/market-items', async (req, res, next) => {
         // Insert gallery images
         if (images && Array.isArray(images) && images.length > 0) {
             const imageValues = images.map((url, index) => [itemId, url, index === 0, index]);
-            await db.query(
+            await connection.query(
                 'INSERT INTO market_images (item_id, image_url, is_primary, display_order) VALUES ?',
                 [imageValues]
             );
         }
 
+        await connection.commit();
         res.json({ success: true, message: 'สร้างสินค้าสำเร็จ' });
     } catch (error) {
+        if (connection) await connection.rollback();
         logger.error('Create item error', error);
         next(error);
+    } finally {
+        if (connection) connection.release();
     }
 });
 
@@ -499,42 +507,51 @@ router.delete('/posts/:id', async (req, res, next) => {
 
 // Toggle Favorite (Add/Remove)
 router.post('/favorites', async (req, res, next) => {
+    let connection;
     try {
         const { item_type, item_id } = req.body;
 
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
         // Check if already favorited
-        const [existing] = await db.query(
+        const [existing] = await connection.query(
             'SELECT id FROM favorites WHERE user_id = ? AND item_type = ? AND item_id = ?',
             [req.user.id, item_type, item_id]
         );
 
         if (existing.length > 0) {
             // Remove favorite
-            await db.query('DELETE FROM favorites WHERE id = ?', [existing[0].id]);
+            await connection.query('DELETE FROM favorites WHERE id = ?', [existing[0].id]);
 
             // Decrement like_count if it's a post
             if (item_type === 'post') {
-                await db.query('UPDATE community_posts SET like_count = GREATEST(like_count - 1, 0) WHERE id = ?', [item_id]);
+                await connection.query('UPDATE community_posts SET like_count = GREATEST(like_count - 1, 0) WHERE id = ?', [item_id]);
             }
 
+            await connection.commit();
             res.json({ success: true, isFavorited: false, message: 'ลบจากรายการโปรดแล้ว' });
         } else {
             // Add favorite
-            await db.query(
+            await connection.query(
                 'INSERT INTO favorites (user_id, item_type, item_id) VALUES (?, ?, ?)',
                 [req.user.id, item_type, item_id]
             );
 
             // Increment like_count if it's a post
             if (item_type === 'post') {
-                await db.query('UPDATE community_posts SET like_count = like_count + 1 WHERE id = ?', [item_id]);
+                await connection.query('UPDATE community_posts SET like_count = like_count + 1 WHERE id = ?', [item_id]);
             }
 
+            await connection.commit();
             res.json({ success: true, isFavorited: true, message: 'เพิ่มในรายการโปรดแล้ว' });
         }
     } catch (error) {
+        if (connection) await connection.rollback();
         logger.error('Toggle favorite error', error);
         next(error);
+    } finally {
+        if (connection) connection.release();
     }
 });
 

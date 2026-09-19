@@ -100,14 +100,14 @@ const AdminSettings: React.FC = () => {
                 <h1 className="text-2xl font-bold text-slate-800">ตั้งค่าเว็บไซต์</h1>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                 <h2 className="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-2">
                     <ImageIcon size={20} className="text-phayao-blue" />
                     รูปภาพพื้นหลังหน้าแรก (Hero Banner)
                 </h2>
 
                 <div className="space-y-6">
-                    <div className="relative w-full h-64 md:h-96 bg-slate-100 rounded-xl overflow-hidden border-2 border-dashed border-slate-300 group">
+                    <div className="relative w-full h-64 md:h-96 bg-slate-50 rounded-2xl overflow-hidden border-2 border-dashed border-slate-200 group">
                         {previewUrl || heroBg ? (
                             <img
                                 src={previewUrl || heroBg}

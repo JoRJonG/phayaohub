@@ -3,8 +3,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { db } from '../db.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
-import { authLimiter, validate, registerValidation, loginValidation, changePasswordValidation } from '../middleware/securityMiddleware.js';
+import { authLimiter, validate, registerValidation, loginValidation, changePasswordValidation, forgotPasswordValidation, resetPasswordValidation } from '../middleware/securityMiddleware.js';
 import logger from '../utils/logger.js';
+import { sendEmail } from '../utils/email.js';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -22,18 +24,6 @@ router.post('/register', authLimiter, validate(registerValidation), async (req, 
     try {
         const { username, email, password, full_name, phone } = req.body;
 
-        // ตรวจสอบว่า username หรือ email ซ้ำหรือไม่
-        const [existingUsers] = await db.query(
-            'SELECT id FROM users WHERE username = ? OR email = ?',
-            [username, email]
-        );
-
-        if (existingUsers.length > 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'ชื่อผู้ใช้หรืออีเมลนี้ถูกใช้งานแล้ว'
-            });
-        }
 
         // เข้ารหัสรหัสผ่าน
         const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
@@ -279,6 +269,99 @@ router.put('/change-password', authMiddleware, validate(changePasswordValidation
         });
     } catch (error) {
         logger.error('Change password error', error);
+        next(error);
+    }
+});
+
+// ขอรีเซ็ตรหัสผ่าน (ลืมรหัสผ่าน)
+router.post('/forgot-password', authLimiter, validate(forgotPasswordValidation), async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        // ค้นหาผู้ใช้ด้วยอีเมล
+        const [users] = await db.query('SELECT id, username FROM users WHERE email = ?', [email]);
+        
+        if (users.length === 0) {
+            // เพื่อความปลอดภัย ไม่ควรบอกว่ามีหรือไม่มีอีเมลในระบบ แต่ให้ตอบกลับสำเร็จไปเลย
+            return res.json({
+                success: true,
+                message: 'หากอีเมลนี้มีอยู่ในระบบ เราได้ส่งลิงก์รีเซ็ตรหัสผ่านไปให้แล้ว'
+            });
+        }
+
+        const user = users[0];
+
+        // สร้าง Token (ใช้ crypto สุ่ม string 64 ตัวอักษร)
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        
+        // กำหนดเวลาหมดอายุ (1 ชั่วโมง)
+        const resetExpires = new Date();
+        resetExpires.setHours(resetExpires.getHours() + 1);
+
+        // บันทึก Token ลงในฐานข้อมูล
+        await db.query(
+            'UPDATE users SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?',
+            [resetToken, resetExpires, user.id]
+        );
+
+        // ส่งอีเมล (จะ Console log หรือส่งจริงขึ้นอยู่กับค่าคอนฟิกใน .env)
+        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+        const emailHtml = `
+            <h2>ตั้งรหัสผ่านใหม่ PhayaoHub</h2>
+            <p>เราได้รับการร้องขอให้ตั้งรหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
+            <p>กรุณาคลิกที่ลิงก์ด้านล่างเพื่อตั้งรหัสผ่านใหม่ ลิงก์นี้จะหมดอายุภายใน 1 ชั่วโมง</p>
+            <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #1e3a8a; color: white; text-decoration: none; border-radius: 5px;">ตั้งรหัสผ่านใหม่</a>
+            <p>หากปุ่มกดไม่ได้ ให้คัดลอกลิงก์ด้านล่างไปวางบนเบราว์เซอร์:</p>
+            <p>${resetUrl}</p>
+        `;
+        
+        await sendEmail(email, 'รีเซ็ตรหัสผ่านบัญชี PhayaoHub', emailHtml);
+
+        res.json({
+            success: true,
+            message: 'หากอีเมลนี้มีอยู่ในระบบ เราได้ส่งลิงก์รีเซ็ตรหัสผ่านไปให้แล้ว'
+        });
+    } catch (error) {
+        logger.error('Forgot password error', error);
+        next(error);
+    }
+});
+
+// ตั้งรหัสผ่านใหม่ด้วย Token
+router.post('/reset-password', authLimiter, validate(resetPasswordValidation), async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+
+        // ค้นหาผู้ใช้ด้วย Token และยังไม่หมดอายุ
+        const [users] = await db.query(
+            'SELECT id FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()',
+            [token]
+        );
+
+        if (users.length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'ลิงก์รีเซ็ตรหัสผ่านไม่ถูกต้อง หรือหมดอายุแล้ว'
+            });
+        }
+
+        const user = users[0];
+
+        // เข้ารหัสรหัสผ่านใหม่
+        const password_hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+        // อัปเดตรหัสผ่าน และเคลียร์ Token ทิ้ง
+        await db.query(
+            'UPDATE users SET password_hash = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?',
+            [password_hash, user.id]
+        );
+
+        res.json({
+            success: true,
+            message: 'เปลี่ยนรหัสผ่านสำเร็จ คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้ทันที'
+        });
+    } catch (error) {
+        logger.error('Reset password error', error);
         next(error);
     }
 });

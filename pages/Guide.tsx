@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Star } from 'lucide-react';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
+import AdBanner from '../components/AdBanner';
 
 interface Guide {
   id: number;
@@ -54,7 +55,7 @@ const Guide: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen relative z-10">
       <SEO 
         title="คู่มือท่องเที่ยวพะเยา - ที่เที่ยว ที่พัก ร้านอาหาร" 
         description="แนะนำสถานที่ท่องเที่ยว ร้านอาหารอร่อย และที่พักน่านอนในจังหวัดพะเยา" 
@@ -66,7 +67,7 @@ const Guide: React.FC = () => {
           { name: 'คู่มือท่องเที่ยว', item: '/guide' }
         ]} 
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter Tabs */}
         <div className="flex justify-center space-x-2 mb-8 overflow-x-auto no-scrollbar py-2">
           {[
@@ -78,14 +79,18 @@ const Guide: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveCategory(tab.id)}
-              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === tab.id
-                ? 'bg-phayao-blue text-white shadow-md'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
+              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${activeCategory === tab.id
+                ? 'bg-phayao-blue/90 backdrop-blur-md text-white shadow-lg'
+                : 'bg-white/60 backdrop-blur-md text-gray-600 hover:bg-white/80 border border-white/50'
                 }`}
             >
               {tab.label}
             </button>
           ))}
+        </div>
+
+        <div className="mb-6">
+          <AdBanner className="rounded-2xl overflow-hidden glass-panel" />
         </div>
 
         {/* Places Grid */}
@@ -100,8 +105,8 @@ const Guide: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
             {guides.map((guide) => (
-              <Link to={`/guide/${guide.id}`} key={guide.id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col h-full block">
-                <div className="w-full h-48">
+              <Link to={`/guide/${guide.id}`} key={guide.id} className="glass-panel rounded-2xl hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden flex flex-col h-full block group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-phayao-blue focus-visible:ring-offset-2">
+                <div className="w-full h-48 bg-white/40">
                   {guide.image_url ? (
                     <img
                       src={guide.image_url}
@@ -145,7 +150,7 @@ const Guide: React.FC = () => {
         )}
 
         {/* Map Section */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
+        <div className="glass-panel p-8 rounded-3xl text-center">
           <div className="max-w-2xl mx-auto">
             <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <MapPin size={32} />

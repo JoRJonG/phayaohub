@@ -436,11 +436,11 @@ const AdminMarketItems: React.FC = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-sm uppercase tracking-wider">
+                            <tr className="bg-slate-50 border-b border-slate-100 text-slate-600 text-sm uppercase tracking-wider">
                                 <th className="p-4 font-semibold">สินค้า</th>
                                 <th className="p-4 font-semibold">ราคา</th>
                                 <th className="p-4 font-semibold">หมวดหมู่</th>
@@ -539,8 +539,8 @@ const AdminMarketItems: React.FC = () => {
             {/* Create Modal */}
             {
                 showCreateModal && (
-                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col border border-slate-100">
                             <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                                 <h2 className="text-xl font-bold text-slate-800">{isEditing ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่'}</h2>
                                 <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">

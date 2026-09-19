@@ -9,7 +9,10 @@ import {
     Activity,
     ArrowUpRight,
     ArrowDownRight,
-    Clock
+    Clock,
+    Server,
+    HardDrive,
+    Cpu
 } from 'lucide-react';
 import {
     AreaChart,
@@ -42,17 +45,21 @@ const AdminDashboard: React.FC = () => {
     const [stats, setStats] = useState<Stats | null>(null);
     const [activities, setActivities] = useState<ActivityItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [chartPeriod, setChartPeriod] = useState<'weekly' | 'monthly'>('weekly');
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchStats();
+        fetchStats(chartPeriod);
+    }, [chartPeriod]);
+
+    useEffect(() => {
         fetchActivity();
     }, []);
 
-    const fetchStats = async () => {
+    const fetchStats = async (period: string = 'weekly') => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('/api/admin/stats', {
+            const response = await fetch(`/api/admin/stats?period=${period}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -186,13 +193,13 @@ const AdminDashboard: React.FC = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {statCards.map((card, index) => (
-                    <div key={index} className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                    <div key={index} className="bg-white rounded-2xl p-5 md:p-6 shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-minimal-hover transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`p-3 rounded-lg ${card.bg}`}>
+                            <div className={`p-3 rounded-xl ${card.bg}`}>
                                 {card.icon}
                             </div>
                             {card.change > 0 && (
-                                <div className="flex items-center gap-1 text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                                <div className="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
                                     <TrendingUp size={14} />
                                     <span>+{card.change}</span>
                                 </div>
@@ -207,36 +214,50 @@ const AdminDashboard: React.FC = () => {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Main Chart */}
-                <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 p-4 md:p-6">
-                    <div className="flex items-center justify-between mb-6">
+                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-5 md:p-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                         <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
                             <Activity size={20} className="text-phayao-blue" />
-                            สถิติการใช้งานรายสัปดาห์
+                            สถิติการใช้งาน{chartPeriod === 'weekly' ? 'รายสัปดาห์' : 'รายเดือน'}
                         </h2>
+                        <div className="flex bg-slate-100 p-1 rounded-lg">
+                            <button 
+                                onClick={() => setChartPeriod('weekly')}
+                                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${chartPeriod === 'weekly' ? 'bg-white text-phayao-blue shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                7 วันล่าสุด
+                            </button>
+                            <button 
+                                onClick={() => setChartPeriod('monthly')}
+                                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${chartPeriod === 'monthly' ? 'bg-white text-phayao-blue shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                            >
+                                6 เดือนย้อนหลัง
+                            </button>
+                        </div>
                     </div>
                     <div className="h-64 md:h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                             <AreaChart data={stats?.chartData || []}>
                                 <defs>
                                     <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#1e3a8a" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#1e3a8a" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorItems" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
                                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                                     </linearGradient>
-                                    <linearGradient id="colorItems" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#a855f7" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
-                                    </linearGradient>
                                     <linearGradient id="colorPosts" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                     </linearGradient>
                                     <linearGradient id="colorSeekers" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#ec4899" stopOpacity={0.1} />
-                                        <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#64748b" stopOpacity={0.1} />
+                                        <stop offset="95%" stopColor="#64748b" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -245,34 +266,36 @@ const AdminDashboard: React.FC = () => {
                                 <Tooltip
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 />
-                                <Area type="monotone" dataKey="users" name="ผู้ใช้ใหม่" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorUsers)" />
-                                <Area type="monotone" dataKey="items" name="สินค้าใหม่" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorItems)" />
-                                <Area type="monotone" dataKey="jobs" name="งานใหม่" stroke="#a855f7" strokeWidth={2} fillOpacity={1} fill="url(#colorJobs)" />
-                                <Area type="monotone" dataKey="posts" name="โพสต์ใหม่" stroke="#f97316" strokeWidth={2} fillOpacity={1} fill="url(#colorPosts)" />
-                                <Area type="monotone" dataKey="seekers" name="คนหางานใหม่" stroke="#ec4899" strokeWidth={2} fillOpacity={1} fill="url(#colorSeekers)" />
+                                <Area type="monotone" dataKey="users" name="ผู้ใช้ใหม่" stroke="#1e3a8a" strokeWidth={2} fillOpacity={1} fill="url(#colorUsers)" />
+                                <Area type="monotone" dataKey="items" name="สินค้าใหม่" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorItems)" />
+                                <Area type="monotone" dataKey="jobs" name="งานใหม่" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorJobs)" />
+                                <Area type="monotone" dataKey="posts" name="โพสต์ใหม่" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorPosts)" />
+                                <Area type="monotone" dataKey="seekers" name="คนหางานใหม่" stroke="#64748b" strokeWidth={2} fillOpacity={1} fill="url(#colorSeekers)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Recent Activity / Quick Actions */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <h2 className="text-lg font-bold text-slate-800 mb-4">กิจกรรมล่าสุด</h2>
-                    <div className="space-y-4">
+                {/* Right Side Stack */}
+                <div className="space-y-6">
+                    {/* Recent Activity / Quick Actions */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+                        <h2 className="text-lg font-bold text-slate-800 mb-6">กิจกรรมล่าสุด</h2>
+                    <div className="space-y-2">
                         {activities.length === 0 ? (
-                            <p className="text-slate-500 text-sm text-center py-4">ไม่มีกิจกรรมล่าสุด</p>
+                            <p className="text-slate-400 text-sm text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200">ไม่มีกิจกรรมล่าสุด</p>
                         ) : (
                             activities.map((item, i) => (
                                 <div
                                     key={i}
                                     onClick={() => handleActivityClick(item)}
-                                    className="flex items-start gap-3 pb-4 border-b border-slate-50 last:border-0 last:pb-0 cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors"
+                                    className="flex items-start gap-3 pb-3 border-b border-slate-50 last:border-0 last:pb-0 cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-xl transition-colors"
                                 >
-                                    <div className={`w-8 h-8 rounded-full ${getActivityColor(item.type)} flex items-center justify-center flex-shrink-0`}>
+                                    <div className={`w-9 h-9 rounded-full ${getActivityColor(item.type)} flex items-center justify-center flex-shrink-0`}>
                                         {getActivityIcon(item.type)}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-sm text-slate-800 font-medium truncate" title={getActivityText(item)}>
+                                        <p className="text-sm text-slate-800 font-bold truncate" title={getActivityText(item)}>
                                             {getActivityText(item)}
                                         </p>
                                         <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
@@ -285,9 +308,10 @@ const AdminDashboard: React.FC = () => {
                         )}
                     </div>
 
-                    <button className="w-full mt-6 py-2 text-sm text-phayao-blue font-medium hover:bg-blue-50 rounded-lg transition-colors">
+                    <button className="w-full mt-6 py-2.5 text-sm text-phayao-blue bg-blue-50 font-semibold hover:bg-blue-100 rounded-xl transition-colors">
                         ดูทั้งหมด
                     </button>
+                </div>
                 </div>
             </div>
         </div>

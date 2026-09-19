@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
   full_name VARCHAR(100),
   phone VARCHAR(20),
   avatar_url VARCHAR(500),
+  reset_password_token VARCHAR(255) DEFAULT NULL,
+  reset_password_expires DATETIME DEFAULT NULL,
   role ENUM('user', 'admin') DEFAULT 'user',
   status ENUM('active', 'suspended') DEFAULT 'active',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

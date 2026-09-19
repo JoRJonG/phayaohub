@@ -43,9 +43,9 @@ const UserSidebar: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => v
 
             {/* Sidebar Container */}
             <aside className={`
-        fixed top-0 left-0 z-50 h-screen w-64 bg-white border-r border-slate-200 text-slate-600 transition-transform duration-300 ease-in-out
+        fixed top-0 left-0 z-50 h-screen w-64 bg-white border-r border-slate-100 text-slate-600 transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static
+        lg:translate-x-0 lg:static lg:h-[calc(100vh-4rem)] lg:sticky lg:top-0
       `}>
                 <div className="flex flex-col h-full">
                     {/* Header */}
@@ -87,10 +87,10 @@ const UserSidebar: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => v
                                         to={item.path}
                                         end={item.path === '/user'}
                                         className={({ isActive }) => `
-                      flex items-center gap-3 px-3 py-3 rounded-lg transition-colors
+                      flex items-center gap-3 px-4 py-3 transition-all duration-200
                       ${isActive
-                                                ? 'bg-phayao-blue text-white shadow-md shadow-blue-500/20'
-                                                : 'text-slate-600 hover:bg-slate-50'
+                                                ? 'bg-blue-50/50 text-phayao-blue font-semibold border-r-4 border-phayao-blue'
+                                                : 'text-slate-600 hover:bg-slate-50 hover:text-phayao-blue border-r-4 border-transparent'
                                             }
                     `}
                                         onClick={() => setIsOpen(false)}

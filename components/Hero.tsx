@@ -29,7 +29,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <div className="relative h-[500px] w-full bg-gray-900 overflow-hidden">
+    <div className="relative h-[450px] w-full bg-slate-900 overflow-hidden">
       {/* Background Image - Simulating Kwan Phayao Sunset */}
       {bgImage && (
         <img
@@ -43,14 +43,14 @@ const Hero: React.FC = () => {
         />
       )}
 
-      {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-phayao-blue/90 to-transparent"></div>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]"></div>
 
       <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4">
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-          รวมทุกเรื่องราว.. <span className="text-phayao-gold">เพื่อชาวพะเยา</span>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
+          รวมทุกเรื่องราว <span className="text-phayao-gold">เพื่อชาวพะเยา</span>
         </h1>
-        <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl drop-shadow-md">
+        <p className="text-lg md:text-xl text-slate-200 mb-10 max-w-xl font-light">
           หางาน หาที่เที่ยว ซื้อขายของ หรือพูดคุยแลกเปลี่ยน ครบจบในที่เดียว
         </p>
 
@@ -60,28 +60,28 @@ const Hero: React.FC = () => {
         </div>
 
         {/* Quick Tags */}
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             to="/jobs"
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+            className="px-4 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md rounded-full text-sm text-white transition-all duration-200 hover:-translate-y-0.5"
           >
             #งานว่าง
           </Link>
           <Link
             to="/market"
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+            className="px-4 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md rounded-full text-sm text-white transition-all duration-200 hover:-translate-y-0.5"
           >
             #ของมือสอง
           </Link>
           <Link
             to="/guide"
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+            className="px-4 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md rounded-full text-sm text-white transition-all duration-200 hover:-translate-y-0.5"
           >
             #คาเฟ่
           </Link>
           <Link
             to="/guide"
-            className="px-3 py-1 bg-white/20 hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-phayao-blue backdrop-blur-sm rounded-full text-sm text-white cursor-pointer transition"
+            className="px-4 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md rounded-full text-sm text-white transition-all duration-200 hover:-translate-y-0.5"
           >
             #ที่พัก
           </Link>

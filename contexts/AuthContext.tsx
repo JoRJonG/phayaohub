@@ -14,8 +14,9 @@ interface User {
 interface AuthContextType {
     user: User | null;
     token: string | null;
-    login: (username: string, password: string) => Promise<void>;
     register: (userData: RegisterData) => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
+    resetPassword: (token: string, password: string) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
     isLoading: boolean;
@@ -180,6 +181,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    // ลืมรหัสผ่าน
+    const forgotPassword = async (email: string) => {
+        try {
+            const response = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'เกิดข้อผิดพลาด');
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // ตั้งรหัสผ่านใหม่
+    const resetPassword = async (token: string, password: string) => {
+        try {
+            const response = await fetch('/api/auth/reset-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, password })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'เกิดข้อผิดพลาด');
+        } catch (error) {
+            throw error;
+        }
+    };
+
     // ออกจากระบบ
     const logout = () => {
         setUser(null);
@@ -194,6 +225,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         login,
         register,
+        forgotPassword,
+        resetPassword,
         logout,
         isAuthenticated: !!user,
         isLoading

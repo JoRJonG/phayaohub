@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
 import StructuredData from '../components/StructuredData';
+import AdBanner from '../components/AdBanner';
 
 interface MarketItem {
   id: number;
@@ -91,7 +92,7 @@ const Marketplace: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8">
+    <div className="min-h-screen relative z-10 py-8">
       <SEO 
         title="ของมือสองพะเยา - ตลาดซื้อขายสินค้า OTOP และของใช้มือสอง" 
         description="แหล่งรวมของมือสองพะเยา ซื้อขายสินค้าออนไลน์ในจังหวัดพะเยา ค้นหาสินค้า OTOP ของดีเมืองพะเยา และสินค้ามือสองสภาพดีราคาถูก" 
@@ -103,7 +104,7 @@ const Marketplace: React.FC = () => {
           { name: 'ตลาดของมือสอง', item: '/market' }
         ]} 
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           ของมือสองพะเยา <span className="text-phayao-gold text-lg font-normal">| ตลาดซื้อขายออนไลน์</span>
         </h1>
@@ -116,7 +117,7 @@ const Marketplace: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="block w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue sm:text-sm rounded-md border"
+              className="block w-48 pl-3 pr-10 py-2 text-base border-white/40 bg-white/60 backdrop-blur-md focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue sm:text-sm rounded-xl border shadow-sm transition-all"
             >
               <option value="">ทุกหมวดหมู่</option>
               {categories.map(cat => (
@@ -133,9 +134,13 @@ const Marketplace: React.FC = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="ค้นหาสินค้า..."
-              className="block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue"
+              className="block w-full px-4 py-2 border border-white/40 bg-white/60 backdrop-blur-md rounded-xl focus:outline-none focus:ring-phayao-blue focus:border-phayao-blue shadow-sm transition-all"
             />
           </div>
+        </div>
+
+        <div className="mb-6">
+          <AdBanner className="rounded-2xl overflow-hidden glass-panel" />
         </div>
 
         {/* Product Grid */}
@@ -148,8 +153,8 @@ const Marketplace: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {items.length > 0 ? (
               items.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg shadow-sm hover:shadow-lg transition duration-200 overflow-hidden group">
-                  <div className="h-56 bg-gray-200 relative overflow-hidden">
+                <div key={item.id} className="glass-panel rounded-2xl overflow-hidden hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 group">
+                  <div className="h-56 bg-white/40 relative overflow-hidden">
                     {item.primary_image ? (
                       <img
                         src={item.primary_image}
@@ -188,7 +193,7 @@ const Marketplace: React.FC = () => {
                       <span className="text-lg font-bold text-phayao-gold">
                         ฿{item.price.toLocaleString()}
                       </span>
-                      <Link to={`/market/${item.id}`} className="text-xs bg-phayao-blue text-white px-3 py-1.5 rounded hover:bg-blue-800 transition">
+                      <Link to={`/market/${item.id}`} className="text-xs font-medium bg-phayao-blue/90 backdrop-blur-sm text-white px-4 py-2 rounded-xl hover:bg-phayao-blue hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                         ดูรายละเอียด
                       </Link>
                     </div>
@@ -209,17 +214,17 @@ const Marketplace: React.FC = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ก่อนหน้า
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-md">
+            <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md border border-white/50 rounded-xl">
               หน้า {currentPage} จาก {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-white/50 rounded-xl text-sm font-medium text-gray-700 bg-white/60 backdrop-blur-md hover:bg-white/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ถัดไป
             </button>

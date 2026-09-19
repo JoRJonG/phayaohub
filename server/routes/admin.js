@@ -1,4 +1,5 @@
 import express from 'express';
+import os from 'os';
 import { db } from '../db.js';
 import { authMiddleware, adminMiddleware } from '../middleware/authMiddleware.js';
 import { deleteFile } from '../utils/fileHandler.js';
@@ -23,54 +24,60 @@ router.get('/stats', async (req, res, next) => {
         const [recentUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)');
         const [recentItems] = await db.query('SELECT COUNT(*) as count FROM market_items WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)');
 
-        // Generate Chart Data (Last 7 Days)
+        // Generate Chart Data
         const chartData = [];
-        const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+        const { period } = req.query;
 
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
-            const dayName = days[date.getDay()];
+        if (period === 'monthly') {
+            // Generate Monthly data for the last 6 months
+            const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date();
+                date.setMonth(date.getMonth() - i);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const monthName = monthNames[date.getMonth()];
+                
+                const [dailyUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month]);
+                const [dailyItems] = await db.query('SELECT COUNT(*) as count FROM market_items WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month]);
+                const [dailyJobs] = await db.query('SELECT COUNT(*) as count FROM jobs WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month]);
+                const [dailyPosts] = await db.query('SELECT COUNT(*) as count FROM community_posts WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month]);
+                const [dailySeekers] = await db.query('SELECT COUNT(*) as count FROM job_profiles WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?', [year, month]);
 
-            // Count users
-            const [dailyUsers] = await db.query(
-                'SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = ?',
-                [dateStr]
-            );
+                chartData.push({
+                    name: `${monthName}`,
+                    users: dailyUsers[0].count,
+                    items: dailyItems[0].count,
+                    jobs: dailyJobs[0].count,
+                    posts: dailyPosts[0].count,
+                    seekers: dailySeekers[0].count
+                });
+            }
+        } else {
+            // Generate Daily Data (Last 7 Days)
+            const days = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayName = days[date.getDay()];
 
-            // Count items
-            const [dailyItems] = await db.query(
-                'SELECT COUNT(*) as count FROM market_items WHERE DATE(created_at) = ?',
-                [dateStr]
-            );
+                const [dailyUsers] = await db.query('SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = ?', [dateStr]);
+                const [dailyItems] = await db.query('SELECT COUNT(*) as count FROM market_items WHERE DATE(created_at) = ?', [dateStr]);
+                const [dailyJobs] = await db.query('SELECT COUNT(*) as count FROM jobs WHERE DATE(created_at) = ?', [dateStr]);
+                const [dailyPosts] = await db.query('SELECT COUNT(*) as count FROM community_posts WHERE DATE(created_at) = ?', [dateStr]);
+                const [dailySeekers] = await db.query('SELECT COUNT(*) as count FROM job_profiles WHERE DATE(created_at) = ?', [dateStr]);
 
-            // Count jobs
-            const [dailyJobs] = await db.query(
-                'SELECT COUNT(*) as count FROM jobs WHERE DATE(created_at) = ?',
-                [dateStr]
-            );
-
-            // Count posts
-            const [dailyPosts] = await db.query(
-                'SELECT COUNT(*) as count FROM community_posts WHERE DATE(created_at) = ?',
-                [dateStr]
-            );
-
-            // Count job seekers (profiles)
-            const [dailySeekers] = await db.query(
-                'SELECT COUNT(*) as count FROM job_profiles WHERE DATE(created_at) = ?',
-                [dateStr]
-            );
-
-            chartData.push({
-                name: dayName,
-                users: dailyUsers[0].count,
-                items: dailyItems[0].count,
-                jobs: dailyJobs[0].count,
-                posts: dailyPosts[0].count,
-                seekers: dailySeekers[0].count
-            });
+                chartData.push({
+                    name: dayName,
+                    users: dailyUsers[0].count,
+                    items: dailyItems[0].count,
+                    jobs: dailyJobs[0].count,
+                    posts: dailyPosts[0].count,
+                    seekers: dailySeekers[0].count
+                });
+            }
         }
 
         res.json({
@@ -106,6 +113,34 @@ router.get('/recent-activity', async (req, res, next) => {
         res.json({ success: true, data: activities });
     } catch (error) {
         logger.error('Get recent activity error', error);
+        next(error);
+    }
+});
+
+// System Status
+router.get('/system-status', async (req, res, next) => {
+    try {
+        const totalMem = os.totalmem();
+        const freeMem = os.freemem();
+        const usedMem = totalMem - freeMem;
+        const memoryUsage = (usedMem / totalMem) * 100;
+        
+        res.json({
+            success: true,
+            data: {
+                uptime: os.uptime(),
+                loadavg: os.loadavg(),
+                memory: {
+                    total: totalMem,
+                    free: freeMem,
+                    used: usedMem,
+                    percentage: parseFloat(memoryUsage.toFixed(1))
+                },
+                nodeVersion: process.version
+            }
+        });
+    } catch (error) {
+        logger.error('Get system status error', error);
         next(error);
     }
 });

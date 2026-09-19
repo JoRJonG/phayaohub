@@ -129,7 +129,7 @@ const JobDetail: React.FC = () => {
             />
             {/* Header Banner */}
             <div className="bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 py-8">
+                <div className="max-w-[1440px] mx-auto px-4 py-8">
                     <button
                         onClick={() => navigate('/jobs')}
                         className="flex items-center gap-2 text-slate-500 hover:text-phayao-blue mb-6 transition text-sm font-medium"
@@ -180,7 +180,7 @@ const JobDetail: React.FC = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-[1440px] mx-auto px-4 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Main Content */}
                     <div className="lg:col-span-2 space-y-8">

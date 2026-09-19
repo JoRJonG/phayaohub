@@ -130,7 +130,7 @@ const MarketItemDetail: React.FC = () => {
                     { name: item.title, url: window.location.href }
                 ]}
             />
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-[1440px] mx-auto px-4 py-8">
                 {/* Back Button */}
                 <button
                     onClick={() => navigate('/market')}
