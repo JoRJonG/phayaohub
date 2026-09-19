@@ -314,8 +314,10 @@ router.post('/forgot-password', authLimiter, validate(forgotPasswordValidation),
             <p>หากปุ่มกดไม่ได้ ให้คัดลอกลิงก์ด้านล่างไปวางบนเบราว์เซอร์:</p>
             <p>${resetUrl}</p>
         `;
-        
-        await sendEmail(email, 'รีเซ็ตรหัสผ่านบัญชี PhayaoHub', emailHtml);
+        // ส่งอีเมลแบบ Asynchronous เพื่อไม่ให้ผู้ใช้ต้องรอนาน (ป้องกันหน้าเว็บค้าง)
+        sendEmail(email, 'รีเซ็ตรหัสผ่านบัญชี PhayaoHub', emailHtml).catch(error => {
+            logger.error('Failed to send reset password email:', error);
+        });
 
         res.json({
             success: true,
