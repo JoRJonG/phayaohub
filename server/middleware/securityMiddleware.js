@@ -108,7 +108,7 @@ export const registerValidation = [
     body('email')
         .trim()
         .isEmail().withMessage('รูปแบบอีเมลไม่ถูกต้อง')
-        .normalizeEmail(),
+        .normalizeEmail({ gmail_remove_dots: false }),
     body('password')
         .isLength({ min: 8 }).withMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('รหัสผ่านต้องมีตัวพิมพ์เล็ก ตัวพิมพ์ใหญ่ และตัวเลข'),
@@ -143,7 +143,7 @@ export const forgotPasswordValidation = [
     body('email')
         .trim()
         .isEmail().withMessage('รูปแบบอีเมลไม่ถูกต้อง')
-        .normalizeEmail()
+        .normalizeEmail({ gmail_remove_dots: false })
 ];
 
 export const resetPasswordValidation = [
