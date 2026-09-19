@@ -51,14 +51,14 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"], // React needs unsafe-inline
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://pagead2.googlesyndication.com", "https://partner.googleadservices.com", "https://www.googletagservices.com", "https://static.cloudflareinsights.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:", "https://pagead2.googlesyndication.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https:"],
+      connectSrc: ["'self'", "https:", "https://pagead2.googlesyndication.com"],
       mediaSrc: ["'self'"],
       objectSrc: ["'none'"],
-      frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com"],
+      frameSrc: ["'self'", "https://www.google.com", "https://maps.google.com", "https://www.youtube.com", "https://googleads.g.doubleclick.net"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
       upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
