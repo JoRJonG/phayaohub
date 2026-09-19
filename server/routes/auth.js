@@ -305,7 +305,8 @@ router.post('/forgot-password', authLimiter, validate(forgotPasswordValidation),
         );
 
         // ส่งอีเมล (จะ Console log หรือส่งจริงขึ้นอยู่กับค่าคอนฟิกใน .env)
-        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+        const frontendUrl = process.env.FRONTEND_URL || process.env.VITE_API_URL || 'http://localhost:5173';
+        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
         const emailHtml = `
             <h2>ตั้งรหัสผ่านใหม่ PhayaoHub</h2>
             <p>เราได้รับการร้องขอให้ตั้งรหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
